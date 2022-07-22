@@ -1,0 +1,9 @@
+[submodule "extlib/libsais"]
+	path = extlib/libsais
+	url = git@github.com:IlyaGrebnov/libsais.git
+[submodule "extlib/bit_vector"]
+	path = extlib/bit_vector
+	url = git@github.com:pasta-toolbox/bit_vector.git
+[submodule "extlib/tlx"]
+	path = extlib/tlx
+	url = git@github.com:tlx/tlx.git
