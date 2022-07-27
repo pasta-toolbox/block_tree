@@ -1,0 +1,7 @@
+/cmake-build-debug/*
+/out/*
+/.idea/*
+.DS_Store
+*/.DS_Store
+/extlib/*
+

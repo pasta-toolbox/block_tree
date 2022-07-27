@@ -1,0 +1,2 @@
+add_library(bv_block_tree bv_blocktree_lpf.hpp)
+set_target_properties(bv_block_tree PROPERTIES LINKER_LANGUAGE CXX)
