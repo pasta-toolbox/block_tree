@@ -13,9 +13,9 @@
 #define BLOCK_TREE_BV_BLOCKTREE_LPF_H
 class BVBlockTree {
 public:
-    int32_t tau_;
-    int32_t max_leaf_length_;
-    int32_t s_;
+    int64_t tau_;
+    int64_t max_leaf_length_;
+    int64_t s_;
     std::vector<pasta::BitVector*> block_tree_types_;
     std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>*> block_tree_types_rs_;
     std::vector<std::vector<int64_t>*> block_tree_pointers_;
@@ -23,14 +23,25 @@ public:
     std::vector<int64_t> block_size_lvl_;
     std::vector<int64_t> leaf_pointer_;
     std::vector<u_int8_t> leaves_;
-    BVBlockTree(std::vector<uint8_t>& text, int32_t tau, int32_t max_leaf_length, int32_t s) {
-        s_ = s;
+    BVBlockTree(std::vector<uint8_t>& text, int32_t tau, int32_t max_leaf_length, int64_t s) {
+        s_ = 0;
         tau_ = tau;
         max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpfptr arrays;
         std::vector<int64_t> lpf(text.size());
         std::vector<int64_t> lpf_ptr(text.size());
         lpf_array64(text, lpf, lpf_ptr);
+        int64_t z = 0;
+        int64_t padding = 0;
+        calculate_lz_factor(s_,lpf);
+        calculate_padding(padding, text.size());
+        std::vector<int64_t> lpf_padding(padding);
+        lpf_padding[0] = 0;
+        for (int64_t i = 1; i < lpf_padding.size(); i++) {
+            lpf_padding[i] = lpf_padding.size() - i;
+        }
+        lpf.insert(lpf.end(), lpf_padding.begin(), lpf_padding.end());
+        std::cout << lpf.size() << std::endl;
         int64_t max_factor = 0;
         for (auto a: lpf) {
             if (max_factor <= a) {
@@ -38,13 +49,13 @@ public:
             }
         }
         int blocks = s_;
-        int block_size = text.size() / blocks;
+        int block_size = lpf.size() / blocks;
         std::vector<int64_t> block_text_inx(blocks);
         for (int i = 0; i < blocks; i++) {
             block_text_inx[i] = (i * block_size);
         }
         while (block_size > max_leaf_length_) {
-            std::cout << block_size << " " << block_text_inx.size()<< " " << max_factor <<  std::endl;
+            std::cout << block_size << " " << block_text_inx.size() <<  std::endl;
             block_size_lvl_.push_back(block_size);
             pasta::BitVector* bv = new pasta::BitVector(block_text_inx.size(),0);
             std::vector<int64_t>* pointers = new std::vector<int64_t>();
@@ -109,7 +120,12 @@ public:
         leaf_pointer_ = block_text_inx;
         for (auto ptr: leaf_pointer_) {
             for (int i = 0; i < block_size; i++) {
-                leaves_.push_back(text[ptr + i]);
+                if (ptr + i < text.size()) {
+                    leaves_.push_back(text[ptr + i]);
+                } else {
+                    leaves_.push_back(0);
+                }
+
             }
         }
         for (auto bv : block_tree_types_) {
@@ -153,6 +169,27 @@ public:
         int rank_blk = block_tree_types_rs_[block_tree_types_rs_.size() -1]->rank1(blk_pointer);
         std::cout << rank_blk << std::endl;
         return leaves_[leaf_pointer_[rank_blk] + off];
+    }
+private:
+    void calculate_lz_factor(int64_t &z, std::vector<int64_t> &lpf) {
+        int64_t temp_z = 0;
+        int64_t lz = 0;
+        while (lz < lpf.size()) {
+            lz = lz + std::max(1LL, lpf[lz + 1]);
+            temp_z++;
+        }
+        z = temp_z;
+        std::cout << "Given Text has " << z << " LZ-factors"<< std::endl;
+    }
+    void calculate_padding(int64_t &padding, int64_t text_length) {
+        int64_t tmp_padding = s_ * tau_;
+        int64_t h = 1;
+        while (tmp_padding < text_length) {
+            tmp_padding *= tau_;
+            h++;
+        }
+        padding = tmp_padding - text_length;
+        std::cout << "Padding: " << padding << " h: " << h << "SIZE: " << tmp_padding <<  std::endl;
     }
 };
 #endif //BLOCK_TREE_BV_BLOCKTREE_LPF_H

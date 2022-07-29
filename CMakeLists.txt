@@ -11,9 +11,9 @@ set(LIBSAIS64 ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais/libsais64.a)
 # create a custom target called build_libsais that is part of ALL
 # and will run each time you type make
 add_custom_target(build_libsais ALL
-        COMMAND ${CMAKE_MAKE_PROGRAM}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais/
-        COMMENT "Original libsais makefile target")
+COMMAND ${CMAKE_MAKE_PROGRAM}
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais/
+COMMENT "Original libsais makefile target")
 # now create an imported static target
 add_library(libsais STATIC IMPORTED)
 add_library(libsais64 STATIC IMPORTED)
