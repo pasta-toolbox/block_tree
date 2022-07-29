@@ -1,6 +1,4 @@
-//
-// Created by Daniel Meyer on 27.07.22.
-//
+
 #include <pasta/bit_vector/bit_vector.hpp>
 #include <pasta/bit_vector/support/find_l2_flat_with.hpp>
 #include <pasta/bit_vector/support/flat_rank.hpp>
@@ -10,6 +8,7 @@
 #include <pasta/bit_vector/support/rank_select.hpp>
 #include <pasta/bit_vector/support/wide_rank.hpp>
 #include <pasta/bit_vector/support/wide_rank_select.hpp>
+#include <chrono>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_LPF_H
 #define BLOCK_TREE_BV_BLOCKTREE_LPF_H
 class BVBlockTree {
@@ -32,6 +31,12 @@ public:
         std::vector<int64_t> lpf(text.size());
         std::vector<int64_t> lpf_ptr(text.size());
         lpf_array64(text, lpf, lpf_ptr);
+        int64_t max_factor = 0;
+        for (auto a: lpf) {
+            if (max_factor <= a) {
+                max_factor = a;
+            }
+        }
         int blocks = s_;
         int block_size = text.size() / blocks;
         std::vector<int64_t> block_text_inx(blocks);
@@ -39,6 +44,7 @@ public:
             block_text_inx[i] = (i * block_size);
         }
         while (block_size > max_leaf_length_) {
+            std::cout << block_size << " " << block_text_inx.size()<< " " << max_factor <<  std::endl;
             block_size_lvl_.push_back(block_size);
             pasta::BitVector* bv = new pasta::BitVector(block_text_inx.size(),0);
             std::vector<int64_t>* pointers = new std::vector<int64_t>();
@@ -55,6 +61,7 @@ public:
                 // we look until we find leftmost occ of [ind..ind+blocksize]
                 while (lpf[ind] >= block_size) {
                     if (block_size + lpf_ptr[ind] - 1 >= ind) {
+//                        std::cout << ind << " I" << text[ind] << " ?" << std::endl;
                         // our found occs overlapps with the block
                         // we will try if we find another one
                         ind = lpf_ptr[ind];

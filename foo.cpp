@@ -7,9 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <bv_blocktree_lpf.hpp>
-//
-// Created by Daniel Meyer on 23.07.22.
-//
+#include "malloc_count/malloc_count.h"
+#include <chrono>
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
     // add a byte size argument which the user can enter like '1gi'
@@ -21,28 +20,29 @@ int main(int argc, char* argv[]) {
     if (!cp.process(argc, argv))
         return -1; // some error occurred and help was always written to user.
 
-    std::cout << "Command line parsed okay." << std::endl;
-    std::cout << "HI" << std::endl;
+//    std::cout << "Command line parsed okay." << std::endl;
+    std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
     std::vector<uint8_t> vec(test.begin(), test.end());
     std::vector<int64_t> lpf(test.size());
     std::vector<int64_t> lpf_ptr(test.size());
-    lpf_array64(vec, lpf, lpf_ptr);
-    BVBlockTree bt(vec, 2, 1,15);
-    std::cout << bt.access(7) << " " << test[7] << std::endl;
-    std::cout << "LIBSAIS DONE" << std::endl;
-    std::vector<int64_t> lz;
-    int64_t k = 0;
-//    lz.push_back(0);
-//    while (lz[k] < test.size()) {
-//        lz.push_back(lz[k] + std::max(1LL, lpf[lz[k] + 1]));
+//    int64_t lz = 0;
+//    int64_t k = 0;
+//    while (lz < test.size()) {
+//        lz = lz + std::max(1LL, lpf[lz + 1]);
 //        k++;
 //    }
-    std::cout << "lz " << lz.size() << std::endl;
+//    std::cout << "lz " << lz.size() << std::endl;
+    auto t01 = std::chrono::high_resolution_clock::now();
+    BVBlockTree bt(vec, 2, 32,1);
+    auto t02 = std::chrono::high_resolution_clock::now();
+    auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
+    std::cout << "time " <<  ms_int.count() << std::endl;
+
 //    int childs = 1;
 //    int blocks = 1;
 //    int child_size = test.size()/childs;
@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
 //        child_size = child_size/2;
 //        std::cout << child_size << std::endl;
 //    }
-    std::cout << "lvl _sizes" << std::endl;
+//    std::cout << "lvl _sizes" << std::endl;
 //    for (auto a: block_types) {
 //        std::cout << a->size() << std::endl;
 //    }

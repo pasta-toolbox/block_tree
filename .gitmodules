@@ -7,3 +7,9 @@
 [submodule "extlib/tlx"]
 	path = extlib/tlx
 	url = git@github.com:tlx/tlx.git
+[submodule "malloc_count"]
+	path = malloc_count
+	url = git@github.com:bingmann/malloc_count.git
+[submodule "extlib/malloc_count"]
+	path = extlib/malloc_count
+	url = git@github.com:bingmann/malloc_count.git

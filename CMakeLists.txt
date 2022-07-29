@@ -32,6 +32,10 @@ add_executable(foo foo.cpp)
 add_subdirectory(includes)
 target_link_libraries(foo libsais)
 target_link_libraries(foo libsais64)
+target_link_libraries(
+        foo
+        ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count/malloc_count.o
+)
 add_subdirectory(extlib/tlx)
 add_subdirectory(extlib/bit_vector)
 target_link_libraries(foo pasta_bit_vector)
@@ -42,3 +46,4 @@ target_include_directories(foo PUBLIC extlib/bit_vector/include/pasta/bit_vector
 target_include_directories(foo PUBLIC includes/utils)
 target_include_directories(foo PUBLIC includes/bv_block_tree)
 target_include_directories(foo PUBLIC extlib/libsais/src)
+target_include_directories(foo PUBLIC extlib/malloc_count)

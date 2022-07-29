@@ -3,15 +3,29 @@
 #include "libsais64.h"
 #include <iostream>
 #include <vector>
+#include <chrono>
 #ifndef BLOCK_TREE_LPFARRAY_H
 #define BLOCK_TREE_LPFARRAY_H
 int32_t lpf_array64(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &lpf_ptr) {
+
+
+
     std::vector<int64_t> sa(text.size());
     std::vector<int64_t> plcp(text.size());
     std::vector<int64_t> lcp(text.size());
+    auto t01 = std::chrono::high_resolution_clock::now();
     libsais64(text.data(), sa.data() , text.size(), 0, NULL);
+    auto t02 = std::chrono::high_resolution_clock::now();
+    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
+    std::cout << "SA TIME " << ms_int2.count() << std::endl;
     libsais64_plcp(text.data(), sa.data(), plcp.data(), text.size());
+    auto t03 = std::chrono::high_resolution_clock::now();
+    auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t02);
+    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
     libsais64_lcp(plcp.data(), sa.data(), lcp.data(), text.size());
+    auto t04 = std::chrono::high_resolution_clock::now();
+    auto ms_int4 = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
+    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
     std::vector<int64_t> isu(text.size());
     std::vector<int64_t> prev(text.size());
     std::vector<int64_t> next(text.size());
@@ -41,6 +55,9 @@ int32_t lpf_array64(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::
             prev[next[r]] = prev[r];
         }
     }
+    auto t05 = std::chrono::high_resolution_clock::now();
+    auto ms_int5 = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
+    std::cout << "LPF TIME " << ms_int5.count() << std::endl;
     return 0;
 }
 
