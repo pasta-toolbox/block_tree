@@ -11,7 +11,7 @@
 #include <chrono>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_LPF_H
 #define BLOCK_TREE_BV_BLOCKTREE_LPF_H
-class BVBlockTree {
+class BV_BlockTree_lpf_64 {
 public:
     int64_t tau_;
     int64_t max_leaf_length_;
@@ -23,8 +23,8 @@ public:
     std::vector<int64_t> block_size_lvl_;
     std::vector<int64_t> leaf_pointer_;
     std::vector<u_int8_t> leaves_;
-    BVBlockTree(std::vector<uint8_t>& text, int32_t tau, int32_t max_leaf_length, int64_t s) {
-        s_ = 0;
+    BV_BlockTree_lpf_64(std::vector<uint8_t>& text, int32_t tau, int32_t max_leaf_length, int64_t s) {
+        s_ = s;
         tau_ = tau;
         max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpfptr arrays;
@@ -32,71 +32,115 @@ public:
         std::vector<int64_t> lpf_ptr(text.size());
         lpf_array64(text, lpf, lpf_ptr);
         int64_t z = 0;
-        int64_t padding = 0;
+        int64_t added_padding = 0;
         calculate_lz_factor(s_,lpf);
-        calculate_padding(padding, text.size());
-        std::vector<int64_t> lpf_padding(padding);
-        lpf_padding[0] = 0;
-        for (int64_t i = 1; i < lpf_padding.size(); i++) {
-            lpf_padding[i] = lpf_padding.size() - i;
-        }
-        lpf.insert(lpf.end(), lpf_padding.begin(), lpf_padding.end());
-        std::cout << lpf.size() << std::endl;
-        int64_t max_factor = 0;
-        for (auto a: lpf) {
-            if (max_factor <= a) {
-                max_factor = a;
+        s_ += 2;
+        calculate_padding(added_padding, text.size());
+        if (added_padding > 0) {
+            int64_t init_block_size = (added_padding + text.size()) / s_;
+            s_ = std::ceil(text.size() / init_block_size);
+            int64_t padding = init_block_size - (text.size() % s_);
+            std::vector<int64_t> lpf_padding(padding);
+            std::vector<int64_t> lpf_ptr_padding(padding);
+            lpf_padding[0] = 0;
+            lpf_ptr_padding[0] = 0;
+            for (int64_t i = 1; i < lpf_padding.size(); i++) {
+                lpf_padding[i] = lpf_padding.size() - i;
             }
+            for (int64_t i = 1; i < lpf_ptr_padding.size(); i++) {
+                lpf_ptr_padding[i] = lpf.size() + i - 1;
+            }
+            lpf.insert(lpf.end(), lpf_padding.begin(), lpf_padding.end());
+            lpf_ptr.insert(lpf_ptr.end(), lpf_ptr_padding.begin(), lpf_ptr_padding.end());
         }
+        std::cout << "after Padding: " <<  lpf.size() << std::endl;
         int blocks = s_;
         int block_size = lpf.size() / blocks;
         std::vector<int64_t> block_text_inx(blocks);
         for (int i = 0; i < blocks; i++) {
             block_text_inx[i] = (i * block_size);
         }
+        //manipulate lpf_ptr
+        for(int64_t i = 0; i < lpf_ptr.size(); i++) {
+            if (lpf[i] <= lpf[lpf_ptr[i]]) {
+                lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
+            }
+        }
+        auto t01 = std::chrono::high_resolution_clock::now();
+        int64_t total_chains = 0;
+        int64_t total_cmprs = 0;
+        int64_t total_blocks = 0;
+        int64_t hits = 0;
+        int64_t misses = 0;
         while (block_size > max_leaf_length_) {
-            std::cout << block_size << " " << block_text_inx.size() <<  std::endl;
+            std::cout << "Blockssize: " << block_size << " #Blocks: " << block_text_inx.size();
             block_size_lvl_.push_back(block_size);
             pasta::BitVector* bv = new pasta::BitVector(block_text_inx.size(),0);
             std::vector<int64_t>* pointers = new std::vector<int64_t>();
             std::vector<int64_t>* offsets = new std::vector<int64_t>();
             std::vector<int64_t> block_text_inx_new;
             for(int i = block_text_inx.size() - 1; i >=  0; i--) {
+                total_blocks++;
                 // if block is already marked we don't have to check for replacements
                 if ((*bv)[i] == 1) {
                     continue;
                 }
                 // ind is initially block i's starting pos in the text
-                int ind = block_text_inx[i];
+                int64_t ind = block_text_inx[i];
+                int64_t ur_ind = ind;
                 bool has_ptr = false;
                 // we look until we find leftmost occ of [ind..ind+blocksize]
                 while (lpf[ind] >= block_size) {
-                    if (block_size + lpf_ptr[ind] - 1 >= ind) {
+                    if (lpf[lpf_ptr[ind]] >= block_size) {
+                        lpf_ptr[ind] = lpf_ptr[lpf_ptr[ind]];
+//                        lpf_ptr[ur_ind] = lpf_ptr[lpf_ptr[ind]];
+                    }
+                    if (block_size + lpf_ptr[ind] - 1 >= ur_ind || lpf[lpf_ptr[ind]] >= block_size) {
 //                        std::cout << ind << " I" << text[ind] << " ?" << std::endl;
                         // our found occs overlapps with the block
                         // we will try if we find another one
+
                         ind = lpf_ptr[ind];
-                    } else if (lpf[lpf_ptr[ind]] < block_size) {
+                        total_chains++;
+                    } else {
                         // we found the leftmost occ
                         has_ptr = true;
                         // determine which block(s) it points at
-                        int ptr = lpf_ptr[ind];
-                        for (int j = 1; j < block_text_inx.size(); j++) {
-                            if (ptr < block_text_inx[j]) {
-                                //std::cout << "found a block " << i << " pointing to Block " << j-1 <<  std::endl;
-                                (*bv)[j-1] = 1;
-                                if (ptr % block_size != 0) {
-                                    (*bv)[j] = 1;
-                                }
-                                int64_t p = j - 1;
-                                pointers->push_back(p);
-                                offsets->push_back(ptr % block_size);
-                                break;
+                        int64_t ptr = lpf_ptr[ind];
+                        lpf_ptr[ur_ind] = ptr;
+                        int64_t block_in_lvl = ptr / block_size_lvl_[0];
+                        int64_t off_in_lvl = off_in_lvl % block_size_lvl_[0];
+                        int64_t child = off_in_lvl / (block_size_lvl_[0]/tau_);
+                        for (int j  = 1; j < block_size_lvl_.size() - 1; j++) {
+                            block_in_lvl = (int64_t)(*block_tree_types_rs_[j]).rank1(block_in_lvl ) ;
+                            block_in_lvl += child;
+                            off_in_lvl = off_in_lvl % block_size_lvl_[j];
+                            child = off_in_lvl / block_size_lvl_[j+1];
+                        }
+                        int64_t l = 0;
+                        int64_t r = i;
+                        while (l < r) {
+                            total_cmprs++;
+                            int64_t m = std::floor((l+r)/2);
+                            if (ptr < block_text_inx[m]) {
+                                r = m;
+                            } else {
+                                l = m + 1;
                             }
                         }
+                        if (block_in_lvl + child == r-1) {
+                            hits++;
+                        } else {
+                            misses++;
+                        }
+                        (*bv)[r - 1] = 1;
+                        if (ptr % block_size != 0) {
+                            (*bv)[r] = 1;
+                        }
+                        int64_t p = r - 1;
+                        pointers->push_back(p);
+                        offsets->push_back(ptr % block_size);
                         break;
-                    } else {
-                        ind = lpf_ptr[ind];
                     }
                 }
                 // if there is no block its pointing at it is its leftmost occ
@@ -109,14 +153,22 @@ public:
                 if ((*bv)[i] == 1) {
                     for (int j = 0; j < tau_; j++) {
                         block_text_inx_new.push_back(block_text_inx[i] + j * block_size);
+
                     }
                 }
             }
             block_tree_types_.push_back(bv);
+            block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
             block_tree_pointers_.push_back(pointers);
             block_tree_offsets_.push_back(offsets);
             block_text_inx = block_text_inx_new;
+
+            auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t01);
+            t01 = std::chrono::high_resolution_clock::now();
+            std::cout << " Time: " << ms_int.count() << std::endl;
         }
+        std::cout << "Total chains: " << total_chains << " Total cmprs: " << total_cmprs <<  " by total blocks: " << total_blocks << std::endl;
+        std::cout << "hits " << hits << " misses " << misses << std::endl;
         leaf_pointer_ = block_text_inx;
         for (auto ptr: leaf_pointer_) {
             for (int i = 0; i < block_size; i++) {
@@ -127,9 +179,6 @@ public:
                 }
 
             }
-        }
-        for (auto bv : block_tree_types_) {
-            block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
         }
     };
     uint8_t access(int64_t index) {
@@ -175,7 +224,7 @@ private:
         int64_t temp_z = 0;
         int64_t lz = 0;
         while (lz < lpf.size()) {
-            lz = lz + std::max(1LL, lpf[lz + 1]);
+            lz = lz + std::max(1L, lpf[lz + 1]);
             temp_z++;
         }
         z = temp_z;
@@ -189,7 +238,26 @@ private:
             h++;
         }
         padding = tmp_padding - text_length;
-        std::cout << "Padding: " << padding << " h: " << h << "SIZE: " << tmp_padding <<  std::endl;
+        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding <<  std::endl;
     }
 };
+//                        for (int j = 1; j < block_text_inx.size(); j++) {
+//                            total_cmprs++;
+//                            if (ptr < block_text_inx[j]) {
+//                                if (r== j) {
+//                                    hits++;
+//                                } else {
+//                                    misses++;
+//                                }
+//                                //std::cout << "found a block " << i << " pointing to Block " << j-1 <<  std::endl;
+//                                (*bv)[j - 1] = 1;
+//                                if (ptr % block_size != 0) {
+//                                    (*bv)[j] = 1;
+//                                }
+//                                int64_t p = j - 1;
+//                                pointers->push_back(p);
+//                                offsets->push_back(ptr % block_size);
+//                                break;
+//                            }
+//                        }
 #endif //BLOCK_TREE_BV_BLOCKTREE_LPF_H

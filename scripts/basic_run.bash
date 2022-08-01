@@ -1,2 +1,2 @@
 #! /bin/bash
-./out/build/foo -s "4MiB"
+./out/build/foo -s "128MiB"

@@ -6,8 +6,11 @@
 #include <tlx/cmdline_parser.hpp>
 #include <fstream>
 #include <sstream>
-#include <bv_blocktree_lpf.hpp>
+#include <bv_blocktree_lpf_64.hpp>
 #include <chrono>
+#include <type_traits>
+#include <iostream>
+
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
     // add a byte size argument which the user can enter like '1gi'
@@ -22,8 +25,8 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
-    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
+//    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
 //    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
@@ -38,7 +41,7 @@ int main(int argc, char* argv[]) {
 //    }
 //    std::cout << "lz " << lz.size() << std::endl;
     auto t01 = std::chrono::high_resolution_clock::now();
-    BVBlockTree bt(vec, 2, 1,15);
+    BV_BlockTree_lpf_64 bt(vec, 2, 1, 1);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     std::cout << "time " <<  ms_int.count() << std::endl;
