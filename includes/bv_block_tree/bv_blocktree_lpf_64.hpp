@@ -1,4 +1,3 @@
-
 #include <pasta/bit_vector/bit_vector.hpp>
 #include <pasta/bit_vector/support/find_l2_flat_with.hpp>
 #include <pasta/bit_vector/support/flat_rank.hpp>
@@ -223,8 +222,13 @@ private:
     void calculate_lz_factor(int64_t &z, std::vector<int64_t> &lpf) {
         int64_t temp_z = 0;
         int64_t lz = 0;
-        while (lz < lpf.size()) {
-            lz = lz + std::max(1LL, lpf[lz + 1]);
+        while (lz < lpf.size()) 
+	{
+	    if (lpf[lz +1] > 1) {
+		    lz = lz + lpf[lz + 1];
+		} else {
+			lz++;
+		}
             temp_z++;
         }
         z = temp_z;
