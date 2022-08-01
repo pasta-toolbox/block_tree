@@ -224,7 +224,7 @@ private:
         int64_t temp_z = 0;
         int64_t lz = 0;
         while (lz < lpf.size()) {
-            lz = lz + std::max(1L, lpf[lz + 1]);
+            lz = lz + std::max(1LL, lpf[lz + 1]);
             temp_z++;
         }
         z = temp_z;
