@@ -72,8 +72,10 @@ public:
         int64_t hits = 0;
         int64_t misses = 0;
         while (block_size > max_leaf_length_) {
-            std::cout << "Blockssize: " << block_size << " #Blocks: " << block_text_inx.size();
             block_size_lvl_.push_back(block_size);
+
+            std::cout << "Blockssize: " << block_size << " #Blocks: " << block_text_inx.size();
+
             pasta::BitVector* bv = new pasta::BitVector(block_text_inx.size(),0);
             std::vector<int64_t>* pointers = new std::vector<int64_t>();
             std::vector<int64_t>* offsets = new std::vector<int64_t>();
@@ -107,17 +109,23 @@ public:
                         // determine which block(s) it points at
                         int64_t ptr = lpf_ptr[ind];
                         lpf_ptr[ur_ind] = ptr;
-                        int64_t block_in_lvl = ptr / block_size_lvl_[0];
-                        int64_t off_in_lvl = off_in_lvl % block_size_lvl_[0];
-                        int64_t child = off_in_lvl / (block_size_lvl_[0]/tau_);
-                        for (int j  = 1; j < block_size_lvl_.size() - 1; j++) {
-                            block_in_lvl = (int64_t)(*block_tree_types_rs_[j]).rank1(block_in_lvl ) ;
-                            block_in_lvl += child;
-                            off_in_lvl = off_in_lvl % block_size_lvl_[j];
-                            child = off_in_lvl / block_size_lvl_[j+1];
-                        }
                         int64_t l = 0;
                         int64_t r = i;
+
+                            int id = ptr;
+                            int bs = block_size_lvl_[0];
+                            int block = id/bs;
+                            int off = id % bs;
+                            for (int j = 1; j < block_size_lvl_.size(); j++) {
+                                block = block_tree_types_rs_[j - 1]->rank1(block) * tau_ + off/block_size_lvl_[j];
+//                                if ((*block_tree_types_[j])[block] != 1) {
+//                                    std::cout << 123 << std::endl;
+//                                }
+                                off %= block_size_lvl_[j];
+                            }
+//                            if (i != block) {
+//                                std::cout << "Map path for " << i << " " << block << std::endl;
+//                            }
                         while (l < r) {
                             total_cmprs++;
                             int64_t m = std::floor((l+r)/2);
@@ -127,11 +135,19 @@ public:
                                 l = m + 1;
                             }
                         }
-                        if (block_in_lvl + child == r-1) {
-                            hits++;
-                        } else {
-                            misses++;
+                        int k = 0;
+                        while (block_text_inx[k] < ptr) {
+                            k++;
                         }
+
+                            if (r != k ) {
+                                std::cout << block  << " " << r << " " << k << std::endl;
+                            }
+                            if (block == r - 1) {
+                                hits++;
+                            } else {
+                                misses++;
+                            }
                         (*bv)[r - 1] = 1;
                         if (ptr % block_size != 0) {
                             (*bv)[r] = 1;
@@ -164,7 +180,7 @@ public:
 
             auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t01);
             t01 = std::chrono::high_resolution_clock::now();
-            std::cout << " Time: " << ms_int.count() << std::endl;
+            std::cout << " Time: " << ms_int.count() << " H/M: "<< hits << " " << misses << std::endl;
         }
         std::cout << "Total chains: " << total_chains << " Total cmprs: " << total_cmprs <<  " by total blocks: " << total_blocks << std::endl;
         std::cout << "hits " << hits << " misses " << misses << std::endl;
@@ -179,6 +195,7 @@ public:
 
             }
         }
+
     };
     uint8_t access(int64_t index) {
 
