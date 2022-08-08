@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 ")
 
-add_executable(foo foo.cpp)
+add_executable(foo foo.cpp includes/utils/print_util.h)
 add_subdirectory(includes)
 target_link_libraries(
         foo

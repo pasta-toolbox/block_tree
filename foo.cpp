@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 //    }
 //    std::cout << "lz " << lz.size() << std::endl;
     auto t01 = std::chrono::high_resolution_clock::now();
-    BV_BlockTree_lpf_64 bt(vec, 2, 1, 1);
+    BV_BlockTree_lpf_64 bt(vec, 2, 1, 15);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     std::cout << "time " <<  ms_int.count() << std::endl;
@@ -134,5 +134,27 @@ int main(int argc, char* argv[]) {
 //        }
 //        std::cout << std::endl;
 //    }
+//        int i = 0;
+//        while (bt.access(i) == test[i]) {
+//            i++;
+//        }
+//        int i = 0;
+//        while (bt.access(i) == test[i]) {
+//            i++;
+//        }
+//    int i= 0;
+//    while (bt.access(i) == test[i]) {
+//        i++;
+//    }
+for (int i = 3896; i < 3903+1; i++) {
+        if (bt.access(i) != test[i]) {
+            std::cout << i << " " << bt.access(i) <<" " <<  test[i] << std::endl;
+        }
+}
+
+
+
+//  std::cout <<i << std::endl;
+
     return 0;
 }
