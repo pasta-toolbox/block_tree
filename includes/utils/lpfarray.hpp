@@ -50,6 +50,7 @@ int32_t lpf_array64(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::
             lcp[next_r] = lcp_r;
         } else {
             lpf[i] = lcp_r;
+            lcp[next_r] = lcp_nr;
             lpf_ptr[i] = sa[prev_r];
         }
         if (prev_r >= 0) {
