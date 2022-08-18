@@ -10,6 +10,7 @@
 #include <chrono>
 #include <type_traits>
 #include <iostream>
+#include "malloc_count.h"
 
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
@@ -25,11 +26,11 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
-    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
+//    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
     std::vector<int64_t> lpf(test.size());
@@ -42,25 +43,25 @@ int main(int argc, char* argv[]) {
 //    }
 //    std::cout << "lz " << lz.size() << std::endl;
     auto t01 = std::chrono::high_resolution_clock::now();
-    BV_BlockTree_lpf_64 bt(vec, 2, 1, 15);
+    BV_BlockTree_lpf_64*  bt = new BV_BlockTree_lpf_64(vec, 2, 1, 15);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     std::cout << "time " <<  ms_int.count() << std::endl;
-    std::vector<uint8_t> access_vec(0);
     int j = 0;
+    auto sum = 0;
+    auto t03 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < test.size(); i++) {
-        auto x= bt.access(i);
-        access_vec.push_back(x);
-        if (static_cast<int>(x) != static_cast<int>(vec[i])) {
-            std::cout <<i << " " <<  static_cast<int>(x) << " " << static_cast<int>(vec[i]) << std::endl;
-            j++;
-        }
+        std::cout << "time " <<  ms_int.count() << std::endl;
+        sum += bt->rank('N',i);
     }
-        std::cout << j << std::endl;
-//    std::cout << bt.access(6910) << " " << test[6910] << std::endl;
-//    std::cout << bt.access(6911) << " " << test[6911] << std::endl;
-////    std::cout << bt.access(412) << " " << test[412] << std::endl;
-////    std::cout << bt.access(784) << " " << test[784] << std::endl;
-////    std::cout << bt.access(785) << " " << test[785] << std::endl;
+
+    auto t04 = std::chrono::high_resolution_clock::now();
+    auto ns_int2 = std::chrono::duration_cast<std::chrono::nanoseconds>(t04 - t03);
+    auto x = malloc_count_current();
+    std::cout << "Errors: " <<  j << " avg time: " << (double) (ns_int2.count()/test.size()) << std::endl;
+
+    delete bt;
+    std::cout << (double )8 * (x - malloc_count_current())/test.size() << " Bits/S" << std::endl;
+
     return 0;
 }
