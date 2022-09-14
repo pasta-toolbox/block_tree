@@ -22,12 +22,12 @@ public:
         size_type max_blk_size = 0;
 
         this->calculate_padding(added_padding, text.size(), tree_max_height, max_blk_size);
+        auto is_padded = added_padding > 0 ? 1 : 0;
         size_type block_size = max_blk_size;
         std::vector<size_type> block_text_inx;
         for (int i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-        std::cout << "Hallo " << block_text_inx.size() << std::endl;
         for(size_type i = 0; i < lpf_ptr.size(); i++) {
             if (lpf[i] <= lpf[lpf_ptr[i]] && lpf_ptr[i] == i-1) {
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
@@ -43,6 +43,9 @@ public:
             generate_next_level(block_text_inx,block_text_inx_new, bv, text.size(), block_size);
             block_text_inx = block_text_inx_new;
             bv_pass_1.push_back(bv);
+//            if (block_size <= this->max_leaf_length_ ) {
+//                std::cout << *bv << std::endl << std::endl;
+//            }
         }
         this->leaf_size = block_size;
         block_size *= this->tau_;
@@ -80,6 +83,9 @@ public:
                         ind = lpf_ptr[ind];
                     } else {
                         size_type b = this->find_next_smallest_index_binary_search(ptr, blk_lvl[i]);
+//                        if (b == 340) {
+//                            std::cout<< i << " marks 340: " << j << std::endl;
+//                        }
                         size_type current_offset = ptr % block_size;
                         (*bv)[b] = 1;
                         if (current_offset != 0) {
@@ -100,10 +106,16 @@ public:
                 if (!has_ptr) {
                     (*bv)[j] =1;
                 }
+//                if (j == 340) {
+//                    std::cout<< i << " " << (*bv)[j] << std::endl;
+//                }
             }
 
             block_size *= this->tau_;
             bv_pass_2.push_back(bv);
+//            if (i == bv_pass_1.size() -1) {
+//                std::cout << *bv << std::endl;
+//            }
             size_type ones_per_pass2 = 0;
             for (size_type j = 0; j < bv->size(); j++) {
                 ones_per_pass2 += (*bv)[j];
@@ -129,8 +141,24 @@ public:
         this->block_tree_pointers_.push_back(p1);
         this->block_tree_offsets_.push_back(o1);
         for (size_type i = bv_pass_2.size() - 2; i >= 0; i--) {
-            auto rev_i = bv_pass_2.size() - 1 - i;
-            auto* bit_vector = new pasta::BitVector(this->tau_ * pass2_ones[i + 1],0);
+            auto pass1_i = bv_pass_2.size() - 1 - i;
+            auto pass1_parent = pass1_i - 1;
+            auto new_size = this->tau_ * (pass2_ones[i + 1] - is_padded);
+            // the last block only spawns block that contain text
+            auto last_block_parent = blk_lvl[pass1_parent][blk_lvl[pass1_parent].size() - 1];
+            auto lvl_block_size = this->block_size_lvl_[pass1_i];
+//            std::cout << "block size revi " << this->block_size_lvl_[pass1_i] << " " << this->block_size_lvl_[pass1_i + 1] << std::endl;
+//            std::cout << "new size " << new_size << " " << is_padded << " " << last_block_parent << std::endl;
+            if (is_padded) {
+                for (size_type j = 0; j < this->tau_; j++) {
+//                    std::cout << last_block_parent + j * lvl_block_size << " " << text.size() << std::endl;
+                    if (last_block_parent + j * lvl_block_size < text.size()) {
+                        new_size++;
+                    }
+                }
+            }
+//            std::cout << "new size " << new_size << " " << is_padded << " " << last_block_parent << std::endl;
+            auto* bit_vector = new pasta::BitVector(new_size,0);
             auto pointer = std::vector<size_type>();
             auto offset = std::vector<size_type>();
             size_type pointer_saved = 0;
@@ -138,11 +166,10 @@ public:
             std::unordered_map<size_type, size_type> blocks_skipped;
             size_type skip = 0;
             size_type replace = 0;
-            for (size_type j = 0; j < bv_pass_1[rev_i - 1]->size(); j++) {
-
-                if ((*bv_pass_1[rev_i - 1])[j] == 1) {
+            for (size_type j = 0; j < bv_pass_1[pass1_i - 1]->size(); j++) {
+                if ((*bv_pass_1[pass1_i - 1])[j] == 1) {
                     if ((*bv_pass_2[i + 1])[j] == 1) {
-                        for (size_type k = 0; k < this->tau_; k++) {
+                        for (size_type k = 0; k < this->tau_ && replace * this->tau_ + k < new_size; k++) {
                             bool x = (*bv_pass_2[i])[(j - skip) * this->tau_ + k];
                             auto skipper = pointer_skipped + pointer_saved;
                             (*bit_vector)[replace * this->tau_ + k] = x;
@@ -164,6 +191,7 @@ public:
                     skip++;
                 }
             }
+//            std::cout << i << " skipped " << skip << " pointer skipped " << pointer_skipped << " pointer saved " << pointer_saved << " rep " << replace << std::endl;
 //            for (size_type j = 0; j < bv_pass_2[i + 1]->size(); j++) {
 //                if ((*bv_pass_2[i + 1])[j] == 1) {
 //                    for (size_type k = 0; k < this->tau_; k++) {
@@ -269,7 +297,7 @@ public:
     };
 private:
     size_type generate_next_level(std::vector<size_type> &old_level, std::vector<size_type> &new_level, pasta::BitVector* bv, size_type N, size_type block_size) {
-        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
+//        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
         for (size_type i = 0; i < bv->size(); i++) {
             if ((*bv)[i] == 1) {
                 for (size_type j = 0; j < this->tau_ ; j++) {

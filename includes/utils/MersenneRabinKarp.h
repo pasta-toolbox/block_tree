@@ -61,6 +61,7 @@ public:
         if (text_.size() == init_+1) {
             return;
         }
+
         uint128_t fp = hash_;
         T out_char = text_[init_];
         T in_char = text_[init_ + length_];
@@ -76,6 +77,7 @@ public:
         fp = mersenneModulo(fp);
         hash_ = static_cast<uint64_t>(fp);
         init_ ++;
+
     };
     uint64_t hash() {
         return hash_;

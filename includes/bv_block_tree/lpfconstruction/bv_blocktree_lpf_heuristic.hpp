@@ -80,19 +80,19 @@ public:
     };
     uint64_t rank(uint8_t c, int64_t index) {
         auto c_id = this->chars_index_[c];
-        std::cout << this->chars_index_[c] << std::endl;
+//        std::cout << this->chars_index_[c] << std::endl;
         int64_t block_size = this->block_size_lvl_[0];
         int64_t blk_pointer = index / block_size;
         int64_t off = index % block_size;
         uint64_t rank = (*this->top_level_c_ranks_[c_id])[blk_pointer];
-        std::cout << "Zeichen " << index << " steht im " << blk_pointer << " Block an Stelle " << off << " vor dem Block stehen " << rank << " cahrs"<< std::endl;
+//        std::cout << "Zeichen " << index << " steht im " << blk_pointer << " Block an Stelle " << off << " vor dem Block stehen " << rank << " cahrs"<< std::endl;
         int64_t child = 0;
         for (int i = 0; i < this->block_tree_types_.size(); i++) {
-            if ((*this->block_tree_types_[i])[blk_pointer] == 0) {
-                std::cout << "Im " << i << "-ten Level steht es in einem BackBlock ";
-            } else {
-                std::cout << "Im " << i << "-ten Level steht es in einem Internen Block" << std::endl;
-            }
+//            if ((*this->block_tree_types_[i])[blk_pointer] == 0) {
+//                std::cout << "Im " << i << "-ten Level steht es in einem BackBlock ";
+//            } else {
+//                std::cout << "Im " << i << "-ten Level steht es in einem Internen Block" << std::endl;
+//            }
             if ((*this->block_tree_types_[i])[blk_pointer] == 0) {
                 int64_t blk = this->block_tree_types_rs_[i]->rank0(blk_pointer);
 
@@ -147,7 +147,7 @@ private:
         while (block_size > this->max_leaf_length_) {
             size_type max_pointer = 0;
             size_type max_offset = 0;
-            std::cout << "Blocksize: " << block_size << " Blocks in Level: " << block_text_inx.size();
+//            std::cout << "Blocksize: " << block_size << " Blocks in Level: " << block_text_inx.size();
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
             pasta::BitVector* bv = new pasta::BitVector(block_text_inx.size(),0);
@@ -162,13 +162,13 @@ private:
                 size_type current_pointer = 0;
                 size_type current_offset = 0;
                 bool has_ptr = false;
-                if (initial_index == 410) {
-                    std::cout << std::endl << lpf[initial_index] <<  " " << lpf_ptr[initial_index] << std::endl;
-                }
+//                if (initial_index == 410) {
+//                    std::cout << std::endl << lpf[initial_index] <<  " " << lpf_ptr[initial_index] << std::endl;
+//                }
                 while (lpf[ind] >= block_size) {
-                    if (initial_index == 410) {
-                        std::cout << std::endl << static_cast<int>(text[initial_index]) << " " << static_cast<int>(text[lpf_ptr[ind]]) << std::endl;
-                    }
+//                    if (initial_index == 410) {
+//                        std::cout << std::endl << static_cast<int>(text[initial_index]) << " " << static_cast<int>(text[lpf_ptr[ind]]) << std::endl;
+//                    }
                     size_type ptr = lpf_ptr[ind];
                     if (block_size + lpf_ptr[ind] - 1 >= initial_index) {
                         ind = lpf_ptr[ind];
@@ -321,10 +321,10 @@ private:
             block_text_inx = block_text_inx_new;
             auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t01);
             t01 = std::chrono::high_resolution_clock::now();
-            std::cout << " Time: " << ms_int.count() << " H/M: "<< hits << " " << misses << std::endl;
+//            std::cout << " Time: " << ms_int.count() << " H/M: "<< hits << " " << misses << std::endl;
         }
-        std::cout << "Total chains: " << total_chains << " Total cmprs: " << total_cmprs <<  " by total blocks: " << total_blocks << std::endl;
-        std::cout << "hits " << hits << " misses " << misses << std::endl;
+//        std::cout << "Total chains: " << total_chains << " Total cmprs: " << total_cmprs <<  " by total blocks: " << total_blocks << std::endl;
+//        std::cout << "hits " << hits << " misses " << misses << std::endl;
         this->leaf_size = block_size;
         for (size_type ptr: block_text_inx) {
             for (int i = 0; i < block_size; i++) {
@@ -345,7 +345,7 @@ private:
 //            std::cout << std::endl;
 //        }
 //        print_leafs();
-        std::cout << this->leaves_.size() << " so much space" << std::endl;
+//        std::cout << this->leaves_.size() << " so much space" << std::endl;
         return 0;
     }
     int32_t print_bv(int i) {

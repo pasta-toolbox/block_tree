@@ -159,7 +159,7 @@ public:
     };
 private:
     size_type generate_next_level(std::vector<size_type> &old_level, std::vector<size_type> &new_level, pasta::BitVector* bv, size_type N, size_type block_size) {
-        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
+//        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
         for (size_type i = 0; i < bv->size(); i++) {
             if ((*bv)[i] == 1) {
                 for (size_type j = 0; j < this->tau_ ; j++) {

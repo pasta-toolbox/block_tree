@@ -22,7 +22,7 @@ public:
             block_text_inx.push_back(i);
         }
         while (block_size > this->max_leaf_length_) {
-            std::cout << block_size << " " << block_text_inx.size() << std::endl;
+//            std::cout << block_size << " " << block_text_inx.size() << std::endl;
 
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
@@ -59,7 +59,7 @@ public:
                     pairs[mh_pair].push_back(i);
                 }
             }
-            std::cout << "pairs size " <<pairs.size() << std::endl;
+//            std::cout << "pairs size " <<pairs.size() << std::endl;
             // find pairs
             MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, 256, 0, pair_size);
             for (size_type i = 0; i < text.size() - pair_size; i++) {
@@ -75,7 +75,7 @@ public:
                 }
                 rk_pair_sw.next();
             }
-            std::cout << "pairs size " <<pairs.size() << std::endl;
+//            std::cout << "pairs size " <<pairs.size() << std::endl;
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
             std::vector<size_type> new_blocks(0);
@@ -105,11 +105,11 @@ public:
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, 256, index, block_size);
                     MersenneHash<input_type> mh_block = MersenneHash<input_type>(text, rk_block.hash_, index,block_size);
-                    pairs[mh_block].push_back(i);
+                    blocks[mh_block].push_back(i);
                 }
             }
-            std::cout << "hallo " << pairs.size() << std::endl;
-            if (pairs.empty()) {
+//            std::cout << "hallo " << blocks.size() << std::endl;
+            if (blocks.empty()) {
                 block_size /= this->tau_;
                 block_text_inx = new_blocks;
                 this->block_tree_types_.push_back(bv);
@@ -143,37 +143,40 @@ public:
                     if (followed) {
                         for (size_type j = 0; j < block_size && block_text_inx[i] + j < text.size(); j++) {
                             MersenneHash<input_type> mh_first_occ = MersenneHash<input_type>(text, rk_first_occ.hash_, block_text_inx[i] + j,block_size);
-                            if (pairs.find(mh_first_occ) != pairs.end()) {
-                                for (auto b: pairs[mh_first_occ]) {
+                            if (blocks.find(mh_first_occ) != blocks.end()) {
+                                for (auto b: blocks[mh_first_occ]) {
                                     pointer[b] = i;
                                     if (i > max_pointer) {
                                         max_pointer = i;
                                     }
                                     offset[b] = j;
                                 }
-                                pairs.erase(mh_first_occ);
+                                blocks.erase(mh_first_occ);
                             }
                             rk_first_occ.next();
 
                         }
                     } else {
                         MersenneHash<input_type> mh_first_occ = MersenneHash<input_type>(text, rk_first_occ.hash_, block_text_inx[i], block_size);
-                        if (pairs.find(mh_first_occ) != pairs.end()) {
-                            for (auto b: pairs[mh_first_occ]) {
+                        if (blocks.find(mh_first_occ) != blocks.end()) {
+                            for (auto b: blocks[mh_first_occ]) {
+//                                if (b == i) {
+//                                    std::cout << b << " " << i << std::endl;
+//                                }
                                 pointer[b] = i;
                                 if (i > max_pointer) {
                                     max_pointer = i;
                                 }
                                 offset[b] = 0;
                             }
-                            pairs.erase(mh_first_occ);
+                            blocks.erase(mh_first_occ);
                         }
                     }
                 }
             }
 
             auto pointer_width = 8 * sizeof(max_pointer) - this->leading_zeros(max_pointer);
-            std::cout << pointer_width << " so much space "  << max_pointer << std::endl;
+//            std::cout << pointer_width << " so much space "  << max_pointer << std::endl;
             auto offset_width = 8 * sizeof(block_size) - this->leading_zeros(block_size - 1);
             auto *pointers = new  sdsl::int_vector(pointer.size(),0, pointer_width);
             auto *offsets = new sdsl::int_vector(offset.size(),0, offset_width);

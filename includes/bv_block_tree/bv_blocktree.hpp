@@ -94,7 +94,7 @@ public:
 //                space_usage += iv->size() * sizeof(size_type);
 //            }
 //        }
-        std::cout << "we use " << space_usage << "Bytes" << std::endl;
+//        std::cout << "we use " << space_usage << "Bytes" << std::endl;
         return space_usage;
     };
 
@@ -116,7 +116,7 @@ protected:
         }
         height = h;
         padding = tmp_padding - text_length;
-        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding << " BLK_SIZE: " <<  blk_size <<   std::endl;
+//        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding << " BLK_SIZE: " <<  blk_size <<   std::endl;
     }
     size_type map_unique_charas(std::vector<input_type> &text) {
         this->chars_index_ = std::vector<size_type>(256, -1);
