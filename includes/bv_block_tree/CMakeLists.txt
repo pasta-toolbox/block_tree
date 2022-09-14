@@ -1,2 +1,4 @@
 add_subdirectory(heuristics)
 add_subdirectory(lpfconstruction)
+add_subdirectory(fppconstruction)
+add_library(block_tree INTERFACE)
