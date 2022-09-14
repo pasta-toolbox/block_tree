@@ -1,16 +1,15 @@
 
 #include <iostream>
 #include <vector>
-#include "bit_vector.hpp"
-#include "support/find_l2_flat_with.hpp"
-#include "support/flat_rank.hpp"
-#include "support/flat_rank_select.hpp"
-#include "support/optimized_for.hpp"
-#include "support/rank.hpp"
-#include "support/rank_select.hpp"
-#include "support/wide_rank.hpp"
-#include "support/wide_rank_select.hpp"
-#include "int_vector.hpp"
+#include <bit_vector.hpp>
+#include <support/find_l2_flat_with.hpp>
+#include <support/flat_rank.hpp>
+#include <support/flat_rank_select.hpp>
+#include <support/optimized_for.hpp>
+#include <support/rank.hpp>
+#include <support/rank_select.hpp>
+#include <support/wide_rank.hpp>
+#include <support/wide_rank_select.hpp>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_HPP
 #define BLOCK_TREE_BV_BLOCKTREE_HPP
 

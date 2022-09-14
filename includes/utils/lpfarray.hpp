@@ -1,6 +1,6 @@
 
-#include "libsais.h"
-#include "libsais64.h"
+#include <libsais.h>
+#include <libsais64.h>
 #include <iostream>
 #include <vector>
 #include <chrono>
