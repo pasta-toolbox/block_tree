@@ -1,7 +1,9 @@
 //
 // Created by daniel on 07.09.22.
 //
-#include "bv_blocktree.hpp"
+#include <bv_blocktree.hpp>
+#include <MersenneRabinKarp.h>
+#include <MersenneHash.h>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 #define BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 

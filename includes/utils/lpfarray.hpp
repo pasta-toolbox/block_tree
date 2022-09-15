@@ -17,7 +17,7 @@ int32_t calculate_lz_factor(size_type &z, std::vector<size_type> &lpf, std::vect
         i++;
     }
     z = i;
-    std::cout << "Given Text has " << z << " LZ-factors"<< std::endl;
+//    std::cout << "Given Text has " << z << " LZ-factors"<< std::endl;
     return 0;
 
 };
@@ -30,15 +30,15 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::ve
     libsais64(text.data(), sa.data() , text.size(), 0, NULL);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    std::cout << "SA TIME " << ms_int2.count() << std::endl;
+//    std::cout << "SA TIME " << ms_int2.count() << std::endl;
     libsais64_plcp(text.data(), sa.data(), plcp.data(), text.size());
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t02);
-    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
+//    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
     libsais64_lcp(plcp.data(), sa.data(), lcp.data(), text.size());
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int4 = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
-    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
+//    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
     std::vector<int64_t> isu(text.size());
     std::vector<int64_t> prev(text.size());
     std::vector<int64_t> next(text.size());
@@ -51,7 +51,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::ve
     }
     auto t05 = std::chrono::high_resolution_clock::now();
     auto ms_int5 = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
-    std::cout << "ALLOCATION TIME " << ms_int5.count() << std::endl;
+//    std::cout << "ALLOCATION TIME " << ms_int5.count() << std::endl;
     for (int64_t i = text.size() - 1; i >= 0; i--) {
         int64_t r = isu[i];
         int64_t next_r = next[r];
@@ -76,7 +76,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::ve
     }
     auto t06 = std::chrono::high_resolution_clock::now();
     auto ms_int6 = std::chrono::duration_cast<std::chrono::milliseconds>(t06 - t05);
-    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
+//    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
     return 0;
 }
 
@@ -88,15 +88,15 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
     libsais(text.data(), sa.data() , text.size(), 0, NULL);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    std::cout << "SA TIME " << ms_int2.count() << std::endl;
+//    std::cout << "SA TIME " << ms_int2.count() << std::endl;
     libsais_plcp(text.data(), sa.data(), plcp.data(), text.size());
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t02);
-    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
+//    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
     libsais_lcp(plcp.data(), sa.data(), lcp.data(), text.size());
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int4 = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
-    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
+//    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
     std::vector<int32_t> isu(text.size());
     std::vector<int32_t> prev(text.size());
     std::vector<int32_t> next(text.size());
@@ -109,7 +109,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
     }
     auto t05 = std::chrono::high_resolution_clock::now();
     auto ms_int5 = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
-    std::cout << "ALLOCATION TIME " << ms_int5.count() << std::endl;
+//    std::cout << "ALLOCATION TIME " << ms_int5.count() << std::endl;
     for (int32_t i = text.size() - 1; i >= 0; i--) {
         int32_t r = isu[i];
         int32_t next_r = next[r];
@@ -134,7 +134,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
     }
     auto t06 = std::chrono::high_resolution_clock::now();
     auto ms_int6 = std::chrono::duration_cast<std::chrono::milliseconds>(t06 - t05);
-    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
+//    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
     return 0;
 }
 int32_t lpf_array(std::string &text, std::vector<int32_t> &lpf, std::vector<int32_t> &lpf_ptr) {
