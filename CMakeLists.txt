@@ -12,7 +12,7 @@ target_include_directories(block_tree INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 add_subdirectory(includes)
-
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/tlx)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
@@ -30,4 +30,4 @@ target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extl
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/utils)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/bv_block_tree)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake/src)
-target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count)
+target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)

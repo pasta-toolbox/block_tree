@@ -99,30 +99,38 @@ public:
     };
     int32_t add_rank_support() {
         std::vector<std::vector<size_type>> leaf_ranks;
-        leaf_ranks.resize(u_chars_, std::vector<size_type>(amount_of_leaves,0));
+//        c_ranks_.resize(u_chars_, )
         for (auto c: chars_) {
-            for (int64_t i = 0; i < amount_of_leaves; i++) {
-                leaf_ranks[chars_index_[c]][i]  = rank_leaf(c,i, leaf_size);
-            }
-        }
-        std::vector<std::vector<std::vector<size_type>>> ranks;
-        std::vector<std::vector<std::vector<size_type>>> pointer_ranks;
-        for (int i = block_tree_types_.size() - 1; i >= 0; i++) {
-            for (int j = 0; j < block_tree_types_[i]->size(); j++) {
-                size_type child = j % tau_;
-                std::vector<size_type> accumulator = std::vector<size_type>(u_chars_, 0);
-                for (int k = 0; k < tau_; k++) {
-//                    for (auto c: chars_) {
-//                        ranks[i][j][chars_index_[c]]
-//                    }
-                }
+            for (size_type i = 0; i < block_tree_types_.size(); i++) {
 
-                // ranks as child
-                if (!(*block_tree_types_[i])[j]) {
-                    // ranks internal
-                }
             }
+            size_type rank_c = 0;
+            for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
+                rank_c += rank_block(c,0,i);
+            }
+            std::cout << c << ": " << rank_c << std::endl;
         }
+//        for (int64_t i = 0; i < amount_of_leaves; i++) {
+//            leaf_ranks[chars_index_[c]][i]  = rank_leaf(c,i, leaf_size);
+//        }
+//        std::vector<std::vector<std::vector<size_type>>> ranks;
+//        std::vector<std::vector<std::vector<size_type>>> pointer_ranks;
+//        for (int i = block_tree_types_.size() - 1; i >= 0; i++) {
+//            for (int j = 0; j < block_tree_types_[i]->size(); j++) {
+//                size_type child = j % tau_;
+//                std::vector<size_type> accumulator = std::vector<size_type>(u_chars_, 0);
+//                for (int k = 0; k < tau_; k++) {
+////                    for (auto c: chars_) {
+////                        ranks[i][j][chars_index_[c]]
+////                    }
+//                }
+//
+//                // ranks as child
+//                if (!(*block_tree_types_[i])[j]) {
+//                    // ranks internal
+//                }
+//            }
+//        }
 
         return 0;
     }
@@ -147,7 +155,25 @@ protected:
         padding = tmp_padding - text_length;
 //        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding << " BLK_SIZE: " <<  blk_size <<   std::endl;
     }
-
+    size_type rank_block(input_type c, size_type i, size_type j) {
+        size_type rank_c = 0;
+        if (i != block_tree_types_.size() - 1) {
+            if ((*block_tree_types_[i])[j] == 1) {
+                size_type rank_blk = block_tree_types_rs_[i]->rank1(j);
+                for (size_type k = 0; k < tau_; k++) {
+                    rank_c += rank_block(c, i + 1, rank_blk * tau_ + k);
+                }
+            }
+        } else {
+            if ((*block_tree_types_[i])[j] == 1) {
+                size_type rank_blk = block_tree_types_rs_[i]->rank1(j);
+                for (size_type k = 0; k < tau_; k++) {
+                    rank_c += rank_leaf(c, rank_blk * tau_ + k, leaf_size);
+                }
+            }
+        }
+        return rank_c;
+    }
     size_type rank_leaf(input_type c, size_type leaf_index,size_type i) {
         if (leaf_index * leaf_size >= leaves_.size()) {
             return 0;

@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     int32_t lzn = 0;
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 16, 8, 1, lpf, lpf_ptr, lz);
+    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1, 15, lpf, lpf_ptr, lz);
     std::cout << "lpf" << std::endl;
     lpf_bt->add_rank_support();
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
