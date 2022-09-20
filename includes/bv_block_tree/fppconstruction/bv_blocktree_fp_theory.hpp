@@ -12,15 +12,16 @@ class BV_BlockTree_fp_theory: public BV_Block_Tree<input_type,size_type> {
 public:
     int32_t init(std::vector<input_type>& text) {
         static constexpr uint128_t kPrime = 2305843009213693951ULL;
-        size_type added_padding = 0;
-        size_type tree_max_height = 0;
-        size_type max_blk_size = 0;
+        int64_t added_padding = 0;
+        int64_t tree_max_height = 0;
+        int64_t max_blk_size = 0;
         this->calculate_padding(added_padding, text.size(),tree_max_height, max_blk_size);
-        size_type block_size = max_blk_size;
-        std::vector<size_type> block_text_inx;
-        for (int i = 0; i < text.size(); i+= block_size) {
+        int64_t block_size = max_blk_size;
+        std::vector<int64_t> block_text_inx;
+        for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
+        std::cout << "Hi" << std::endl;
         while (block_size > this->max_leaf_length_) {
 //            std::cout << block_size << " " << block_text_inx.size() << std::endl;
 
@@ -51,6 +52,7 @@ public:
                 this->block_tree_offsets_.push_back(offsets);
                 continue;
             }
+            std::cout << "b4 pointer" << std::endl;
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 if (block_text_inx[i] + block_size == block_text_inx[i+1] && block_text_inx[i] + pair_size <= text.size()) {
                     auto index = block_text_inx[i];
@@ -79,6 +81,7 @@ public:
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
             std::vector<size_type> new_blocks(0);
+            std::cout << "mark" << std::endl;
             for (size_type i = 0; i < block_text_inx.size(); i++) {
                 bool surrounded = (i > 0 && i < block_text_inx.size() - 1) && block_text_inx[i] + old_block_size == block_text_inx[i+1] && block_text_inx[i - 1] + old_block_size == block_text_inx[i];
                 bool marked = false;
@@ -135,7 +138,7 @@ public:
 //                }
 //                rk_first_occ.next();
 //            }
-
+            std::cout << "right pointers" << std::endl;
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(text, 256, block_text_inx[i], block_size);
                 bool followed = (i < block_text_inx.size() - 1) && block_text_inx[i] + old_block_size == block_text_inx[i+1] && (*bv)[i+1]==1;
@@ -199,6 +202,7 @@ public:
 //            mark_blocks(bv, text, block_text_inx, block_size);
         }
         this->leaf_size = block_size;
+        this->amount_of_leaves = block_text_inx.size();
         for (size_type ptr: block_text_inx) {
             for (int i = 0; i < block_size; i++) {
                 if (ptr + i < text.size()) {
@@ -239,7 +243,7 @@ public:
 
     };
     BV_BlockTree_fp_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = s;

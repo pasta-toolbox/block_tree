@@ -20,22 +20,23 @@ public:
     size_type max_leaf_length_;
     size_type s_ = 1;
     size_type leaf_size = 0;
+    size_type amount_of_leaves = 0;
     std::vector<pasta::BitVector*> block_tree_types_;
     std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>*> block_tree_types_rs_;
     std::vector<sdsl::int_vector<>*> block_tree_pointers_;
     std::vector<sdsl::int_vector<>*> block_tree_offsets_;
     std::vector<sdsl::int_vector<>*> first_lvl_ranks;
-    std::vector<size_type> block_size_lvl_;
-    std::vector<size_type> block_per_lvl_;
+    std::vector<int64_t> block_size_lvl_;
+    std::vector<int64_t> block_per_lvl_;
     std::vector<input_type> leaves_;
-    std::vector<size_type> chars_index_;
+    std::unordered_map<input_type, size_type> chars_index_;
+    std::vector<input_type> chars_;
     size_type u_chars_;
     std::vector<std::vector<size_type>*> top_level_c_ranks_;
     std::vector<std::vector<std::vector<size_type>*>*> c_ranks_;
     std::vector<std::vector<std::vector<size_type>*>*> g_ranks_;
 
     input_type access(size_type index) {
-
         size_type block_size = block_size_lvl_[0];
         size_type blk_pointer = index / block_size;
         size_type off = index % block_size;
@@ -96,7 +97,35 @@ public:
 //        std::cout << "we use " << space_usage << "Bytes" << std::endl;
         return space_usage;
     };
+    int32_t add_rank_support() {
+        std::vector<std::vector<size_type>> leaf_ranks;
+        leaf_ranks.resize(u_chars_, std::vector<size_type>(amount_of_leaves,0));
+        for (auto c: chars_) {
+            for (int64_t i = 0; i < amount_of_leaves; i++) {
+                leaf_ranks[chars_index_[c]][i]  = rank_leaf(c,i, leaf_size);
+            }
+        }
+        std::vector<std::vector<std::vector<size_type>>> ranks;
+        std::vector<std::vector<std::vector<size_type>>> pointer_ranks;
+        for (int i = block_tree_types_.size() - 1; i >= 0; i++) {
+            for (int j = 0; j < block_tree_types_[i]->size(); j++) {
+                size_type child = j % tau_;
+                std::vector<size_type> accumulator = std::vector<size_type>(u_chars_, 0);
+                for (int k = 0; k < tau_; k++) {
+//                    for (auto c: chars_) {
+//                        ranks[i][j][chars_index_[c]]
+//                    }
+                }
 
+                // ranks as child
+                if (!(*block_tree_types_[i])[j]) {
+                    // ranks internal
+                }
+            }
+        }
+
+        return 0;
+    }
 protected:
     inline size_type leading_zeros(int32_t val) {
         return __builtin_clz(static_cast<unsigned int>(val) | 1);
@@ -104,11 +133,12 @@ protected:
     inline size_type leading_zeros(int64_t val) {
         return __builtin_clzll(static_cast<unsigned long long>(val) | 1);
     }
-    void calculate_padding(size_type &padding, size_type text_length, size_type &height, size_type &blk_size) {
-        size_type tmp_padding = this->s_ * this->tau_;
-        size_type h = 1;
+    void calculate_padding(int64_t &padding, int64_t text_length, int64_t &height, int64_t &blk_size) {
+        int64_t tmp_padding = this->s_ * this->tau_;
+        int64_t h = 1;
         blk_size = tau_;
         while (tmp_padding < text_length) {
+            std::cout << tmp_padding << std::endl;
             tmp_padding *= this->tau_;
             blk_size *= this->tau_;
             h++;
@@ -117,24 +147,40 @@ protected:
         padding = tmp_padding - text_length;
 //        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding << " BLK_SIZE: " <<  blk_size <<   std::endl;
     }
-    size_type map_unique_charas(std::vector<input_type> &text) {
-        this->chars_index_ = std::vector<size_type>(256, -1);
+
+    size_type rank_leaf(input_type c, size_type leaf_index,size_type i) {
+        if (leaf_index * leaf_size >= leaves_.size()) {
+            return 0;
+        }
+//        size_type x = leaves_.size() - leaf_index * this->tau_;
+//        i = std::min(i, x);
+        size_type result = 0;
+        for (size_type ind = 0; ind < i; ind++) {
+            if (leaves_[leaf_index * leaf_size + ind] == c) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    size_type map_unique_chars(std::vector<input_type> &text) {
         this->u_chars_ = 0;
         input_type i = 0;
         for (auto a: text) {
-            if (this->chars_index_[a] == -1 ) {
-                this->chars_index_[a] = i;
+            if (chars_index_.find(a) == chars_index_.end()) {
+                chars_index_[a] = i;
                 i++;
+                chars_.push_back(a);
             }
         }
         this->u_chars_ = i;
         return 0;
     };
-    size_type find_next_smallest_index_binary_search(size_type i, std::vector<size_type>& pVector) {
-        size_type l = 0;
-        size_type r = pVector.size();
+    size_type find_next_smallest_index_binary_search(size_type i, std::vector<int64_t>& pVector) {
+        int64_t l = 0;
+        int64_t r = pVector.size();
         while (l < r) {
-            size_type m = std::floor((l+r)/2);
+            int64_t m = std::floor((l+r)/2);
             if (i < pVector[m]) {
                 r = m;
             } else {

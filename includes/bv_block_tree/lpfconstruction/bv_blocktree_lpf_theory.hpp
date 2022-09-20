@@ -9,13 +9,13 @@ template<typename input_type, typename size_type>
 class BV_BlockTree_lpf_theory: public BV_Block_Tree<input_type,size_type> {
 public:
     int32_t init(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
-        size_type added_padding = 0;
-        size_type tree_max_height = 0;
-        size_type max_blk_size = 0;
+        int64_t added_padding = 0;
+        int64_t tree_max_height = 0;
+        int64_t max_blk_size = 0;
         this->calculate_padding(added_padding, text.size(), tree_max_height, max_blk_size);
-        size_type block_size = max_blk_size;
-        std::vector<size_type> block_text_inx;
-        for (int i = 0; i < text.size(); i+= block_size) {
+        int64_t block_size = max_blk_size;
+        std::vector<int64_t> block_text_inx;
+        for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
         for(size_type i = 0; i < lpf_ptr.size(); i++) {
@@ -62,7 +62,7 @@ public:
                 }
             }
             block_size /= this->tau_;
-            std::vector<size_type> block_text_inx_new;
+            std::vector<int64_t> block_text_inx_new;
             for (size_type i = 0; i < bv->size(); i++) {
                 if ((*bv)[i] == 1) {
                     for (size_type j = 0; j < this->tau_ ; j++) {
@@ -90,6 +90,7 @@ public:
 
         }
         this->leaf_size = block_size;
+        this->amount_of_leaves = block_text_inx.size();
         for (size_type ptr: block_text_inx) {
             for (int i = 0; i < block_size; i++) {
                 if (ptr + i < text.size()) {
@@ -100,7 +101,7 @@ public:
         return 0;
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpf_ptr arrays;
@@ -112,7 +113,7 @@ public:
         init(text, lpf, lpf_ptr, lz);
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpf_ptr arrays;
@@ -120,7 +121,7 @@ public:
         init(text, lpf, lpf_ptr, lz);
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpf_ptr arrays;
@@ -172,7 +173,7 @@ private:
         return 0;
     }
 
-    size_type mark_blocks(pasta::BitVector* bv, std::vector<size_type>& lz, std::vector<size_type>& block_text_inx, size_type block_size) {
+    size_type mark_blocks(pasta::BitVector* bv, std::vector<size_type>& lz, std::vector<int64_t>& block_text_inx, int64_t block_size) {
         int blocks_marked = 0;
         size_type j = 0;
         for (size_type i = 0; i < lz.size(); i++) {

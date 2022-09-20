@@ -6,17 +6,18 @@
 #include <MersenneHash.h>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 #define BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
-
+__extension__ typedef unsigned __int128 uint128_t;
 #endif //BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 template<typename input_type, typename size_type>
 class BV_BlockTree_fp_pruned: public BV_Block_Tree<input_type,size_type> {
 public:
     int32_t init(std::vector<input_type>& text) {
+        std::cout << "HI" << std::endl;
         static constexpr uint128_t kPrime = 2305843009213693951ULL;
-        size_type added_padding = 0;
-        size_type tree_max_height = 0;
-        size_type max_blk_size = 0;
-        std::vector<std::vector<size_type>> blk_lvl;
+        int64_t added_padding = 0;
+        int64_t tree_max_height = 0;
+        int64_t max_blk_size = 0;
+        std::vector<std::vector<int64_t>> blk_lvl;
         std::vector<std::vector<size_type>> pass1_pointer;
         std::vector<std::vector<size_type>> pass1_offset;
         std::vector<pasta::BitVector*> bv_pass_1;
@@ -26,19 +27,26 @@ public:
         std::vector<size_type> pass2_max_pointer;
         std::vector<size_type> pass2_max_offset;
         std::vector<size_type> pass2_ones;
+        std::cout << "HI1" << std::endl;
         this->calculate_padding(added_padding, text.size(),tree_max_height, max_blk_size);
+        std::cout << "HI2" << std::endl;
         auto is_padded = added_padding > 0 ? 1 : 0;
-        size_type block_size = max_blk_size;
-        std::vector<size_type> block_text_inx;
-        for (int i = 0; i < text.size(); i+= block_size) {
+        std::cout << "HI3" << std::endl;
+        int64_t block_size = max_blk_size;
+        std::cout << "HI4" << std::endl;
+        std::vector<int64_t> block_text_inx;
+        std::cout << "HI5 " << block_size << std::endl;
+        for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
+        std::cout << "HI6" << std::endl;
         while (block_size > this->max_leaf_length_) {
+            std::cout << block_size << std::endl;
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
-            auto* bv = new pasta::BitVector(block_text_inx.size(),0);
-            auto left = pasta::BitVector(block_text_inx.size(),0);
-            auto right = pasta::BitVector(block_text_inx.size(),0);
+            auto* bv = new pasta::BitVector(block_text_inx.size(),false);
+            auto left = pasta::BitVector(block_text_inx.size(),false);
+            auto right = pasta::BitVector(block_text_inx.size(),false);
             auto pair_size = 2 * block_size;
             auto last_block_padded = block_text_inx[block_text_inx.size() - 1] + block_size != text.size() ? 1 : 0;
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> pairs(0);
@@ -53,7 +61,7 @@ public:
             std::vector<size_type> offsets(block_text_inx.size(),0);
             if (pair_size > text.size()) {
                 block_size /= this->tau_;
-                std::vector<size_type> new_blocks(0);
+                std::vector<int64_t> new_blocks(0);
                 for (size_type i = 0; i < block_text_inx.size(); i++) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_ ; j++) {
@@ -96,7 +104,7 @@ public:
             }
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
-            std::vector<size_type> new_blocks(0);
+            std::vector<int64_t> new_blocks(0);
             for (size_type i = 0; i < block_text_inx.size(); i++) {
                 bool surrounded = (i > 0 && i < block_text_inx.size() - 1) && block_text_inx[i] + old_block_size == block_text_inx[i+1] && block_text_inx[i - 1] + old_block_size == block_text_inx[i];
                 bool marked = false;
@@ -163,6 +171,7 @@ public:
 
         this->leaf_size = block_size;
         block_size *= this->tau_;
+        std::cout << "step 1 done" << std::endl;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
             auto* bv = new pasta::BitVector(blk_lvl[i].size(),0);
             size_type marked_counter = 0;
@@ -233,6 +242,7 @@ public:
             pass2_offset.push_back(offsets);
             pass2_max_pointer.push_back(max_pointer);
         }
+        std::cout << "step 2 done" << std::endl;
         this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
         this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv_pass_2[bv_pass_2.size() - 1]));
         auto size = pass2_pointer[pass2_pointer.size() -1].size();
@@ -319,9 +329,11 @@ public:
             this->block_tree_types_.push_back(bit_vector);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
-
+        std::cout << "step 2 done" << std::endl;
+        int64_t leaf_count = 0;
         for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
+                leaf_count += this->tau_;
                 for (int j = 0; j < this->leaf_size * this->tau_; j++) {
                     if (blk_lvl[blk_lvl.size() -1][i] + j < text.size()) {
                         this->leaves_.push_back(text[blk_lvl[blk_lvl.size() -1][i] + j]);
@@ -329,6 +341,8 @@ public:
                 }
             }
         }
+        this->amount_of_leaves = leaf_count;
+        std::cout << "leaf done" << std::endl;
         for (auto bv : bv_pass_1) {
             delete bv;
         }
@@ -338,10 +352,11 @@ public:
         return 0;
     };
     BV_BlockTree_fp_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s) {
-    this->map_unique_charas(text);
+        this->map_unique_chars(text);
     this->tau_ = tau;
     this->max_leaf_length_ = max_leaf_length;
-    this->s_ = s;;
+    this->s_ = s;
+    std::cout << this->tau_ << " " << this->s_ << std::endl;
     init(text);
     };
     ~BV_BlockTree_fp_pruned() {

@@ -15,19 +15,21 @@ public:
         std::vector<size_type> pass2_max_pointer;
         std::vector<size_type> pass2_max_offset;
         std::vector<size_type> pass2_ones;
-        std::vector<std::vector<size_type>> blk_lvl;
+        std::vector<std::vector<int64_t>> blk_lvl;
 
-        size_type added_padding = 0;
-        size_type tree_max_height = 0;
-        size_type max_blk_size = 0;
-
+        int64_t added_padding = 0;
+        int64_t tree_max_height = 0;
+        int64_t max_blk_size = 0;
+        std::cout << "this is fine" << std::endl;
         this->calculate_padding(added_padding, text.size(), tree_max_height, max_blk_size);
         auto is_padded = added_padding > 0 ? 1 : 0;
-        size_type block_size = max_blk_size;
-        std::vector<size_type> block_text_inx;
-        for (int i = 0; i < text.size(); i+= block_size) {
+        int64_t block_size = max_blk_size;
+        std::vector<int64_t> block_text_inx;
+
+        for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
+        std::cout << "survivded padding" << std::endl;
         for(size_type i = 0; i < lpf_ptr.size(); i++) {
             if (lpf[i] <= lpf[lpf_ptr[i]] && lpf_ptr[i] == i-1) {
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
@@ -39,7 +41,7 @@ public:
             this->block_size_lvl_.push_back(block_size);
             blk_lvl.push_back(block_text_inx);
             block_size = block_size/ this->tau_;
-            std::vector<size_type> block_text_inx_new;
+            std::vector<int64_t> block_text_inx_new;
             generate_next_level(block_text_inx,block_text_inx_new, bv, text.size(), block_size);
             block_text_inx = block_text_inx_new;
             bv_pass_1.push_back(bv);
@@ -47,8 +49,10 @@ public:
 //                std::cout << *bv << std::endl << std::endl;
 //            }
         }
+        std::cout << "step 1 done" << std::endl;
         this->leaf_size = block_size;
         block_size *= this->tau_;
+        std::cout << this->leaf_size << " " << block_size << std::endl;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
             auto* bv = new pasta::BitVector(blk_lvl[i].size(),0);
             size_type marked_counter = 0;
@@ -128,7 +132,7 @@ public:
         }
         //determine lvl final size
         // prepare first level;
-
+        std::cout << "step 3 done" << std::endl;
         this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
         this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv_pass_2[bv_pass_2.size() - 1]));
         auto size = pass2_pointer[pass2_pointer.size() -1].size();
@@ -215,8 +219,11 @@ public:
             this->block_tree_types_.push_back(bit_vector);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
+        std::cout << "step 3 done" << std::endl;
+        int64_t leaf_count = 0;
         for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
+                leaf_count += this->tau_;
                 for (int j = 0; j < this->leaf_size * this->tau_; j++) {
                     if (blk_lvl[blk_lvl.size() -1][i] + j < text.size()) {
                         this->leaves_.push_back(text[blk_lvl[blk_lvl.size() -1][i] + j]);
@@ -224,6 +231,8 @@ public:
                 }
             }
         }
+        this->amount_of_leaves = leaf_count;
+        std::cout << "step 4 done" << std::endl;
         // final pass
 //        for (auto a: bv_pass_1) {
 //            std::cout << *a << std::endl << std::endl;
@@ -241,7 +250,7 @@ public:
         return 0;
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         std::vector<size_type> lpf(text.size());
@@ -252,14 +261,14 @@ public:
         init(text, lpf, lpf_ptr, lz);
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = lz.size();
         init(text, lpf, lpf_ptr, lz);
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
-        this->map_unique_charas(text);
+        this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = s;
@@ -296,7 +305,7 @@ public:
 
     };
 private:
-    size_type generate_next_level(std::vector<size_type> &old_level, std::vector<size_type> &new_level, pasta::BitVector* bv, size_type N, size_type block_size) {
+    size_type generate_next_level(std::vector<int64_t> &old_level, std::vector<int64_t> &new_level, pasta::BitVector* bv, int64_t N, int64_t block_size) {
 //        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
         for (size_type i = 0; i < bv->size(); i++) {
             if ((*bv)[i] == 1) {
@@ -310,7 +319,7 @@ private:
         return 0;
     }
 
-    size_type mark_blocks(pasta::BitVector* bv, std::vector<size_type>& lz, std::vector<size_type>& block_text_inx, size_type block_size) {
+    size_type mark_blocks(pasta::BitVector* bv, std::vector<size_type>& lz, std::vector<int64_t>& block_text_inx, int64_t block_size) {
         int blocks_marked = 0;
         size_type j = 0;
         for (size_type i = 0; i < lz.size(); i++) {
