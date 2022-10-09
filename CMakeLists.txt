@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.4.1 FATAL_ERROR)
 
 project(block_tree LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fsanitize=address")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 ")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wno-deprecated")
 set(CMAKE_WARN_DEPRECATED "FALSE")
 #-fsanitize=address
 #add_executable(foo benchmark/foo.cpp includes/utils/print_util.h)
@@ -11,6 +11,14 @@ add_library(block_tree INTERFACE)
 target_include_directories(block_tree INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.12.1
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 add_subdirectory(includes)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake)
@@ -31,3 +39,7 @@ target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/incl
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/bv_block_tree)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake/src)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
+enable_testing()
+add_subdirectory(tests)
+include(GoogleTest)
+

@@ -12,6 +12,7 @@
 #include <fppconstruction/bv_blocktree_fp_theory.hpp>
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <chrono>
+#include <malloc_count.h>
 #include <type_traits>
 #include <iostream>
 #include "malloc_count.h"
@@ -117,8 +118,16 @@ int main(int argc, char* argv[]) {
 //        }
 //    }
     std::cout << j << " Errors " << std::endl;
+    for (int i = 0; i < test.size(); i++) {
+        std::cout << i << " " << lpf_bt->rank('N', i) << std::endl;
+    }
 
-
+    for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][0].size(); i++) {
+        std::cout << lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][0][i] << std::endl;
+    }
+    for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][1].size(); i++) {
+        std::cout << lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][1][i] << std::endl;
+    }
 //    for (auto bv: lpf_bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
 //    }

@@ -5,3 +5,6 @@
 */.DS_Store
 .ccls-cache/*
 compile_commands.json
+/Testing/*
+valgrind-out.txt
+tests/Testing/*
