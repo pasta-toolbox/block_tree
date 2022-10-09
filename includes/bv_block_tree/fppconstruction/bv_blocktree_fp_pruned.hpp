@@ -372,16 +372,13 @@ public:
         for (auto a: this->block_tree_offsets_) {
             delete a;
         }
-        for (auto a: this->top_level_c_ranks_) {
-            delete a;
-        }
         for (auto a: this->c_ranks_) {
             for (auto b: *a) {
                 delete b;
             }
             delete a;
         }
-        for (auto a: this->g_ranks_) {
+        for (auto a: this->pointer_c_ranks_) {
             for (auto b: *a) {
                 delete b;
             }
