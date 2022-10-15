@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -55,7 +55,17 @@ int main(int argc, char* argv[]) {
     int32_t lzn = 0;
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1, 15, lpf, lpf_ptr, lz);
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 1,lpf, lpf_ptr, lz);
+    int  j = 0;
+    for (int i = 0; i < vec.size(); i++) {
+        auto x = lpf_bt->access(i);
+        if (x != vec[i]) {
+
+            j++;
+        }
+
+    }
+    std::cout << "Errors " << j << std::endl;
     std::cout << "lpf" << std::endl;
     lpf_bt->add_rank_support();
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
@@ -95,7 +105,48 @@ int main(int argc, char* argv[]) {
 //    for (auto bv: fp_bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
 //    }
-    int  j = 0;
+
+    j = 0;
+    auto c = 't';
+//    for (auto c: lpf_bt->chars_) {
+        int count = 0;
+        for (int i = 0; i < vec.size(); i++) {
+            if (vec[i] == c) {
+                count++;
+            }
+            auto x = lpf_bt->rank(c, i);
+            if (x != count) {
+                if (c == 't') {
+                    std::cout << c << ":" << i << " " << x << " " << count << std::endl;
+                }
+                j++;
+            }
+
+        }
+        std::cout << c << " Errors " << j << std::endl;
+//    }
+    std::cout << "Errors " << j << std::endl;
+    for (int i = 0; i < (*lpf_bt->block_tree_pointers_[1]).size(); i++) {
+        if ((*lpf_bt->block_tree_pointers_[1])[i] % lpf_bt->tau_ == lpf_bt->tau_ - 1) {
+            std::cout << "warum " << i << (*lpf_bt->block_tree_pointers_[1])[i] <<  std::endl;
+        }
+    }
+    for (auto c: lpf_bt->chars_) {
+        auto d = lpf_bt->chars_index_[c];
+        for (int i = 0; i < lpf_bt->c_ranks_[d][1].size(); i++) {
+            if (i % 2 == 1) {
+                if (lpf_bt->c_ranks_[d][1][i - 1] > lpf_bt->c_ranks_[d][1][i]) {
+                    std::cout << "help" << std::endl;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < lpf_bt->block_tree_pointers_.size(); i++) {
+        for (int j = 0; j < lpf_bt->block_tree_pointers_[i]->size(); j++) {
+            std::cout << (*lpf_bt->block_tree_pointers_[i])[j] << " ";
+        }
+        std::cout << std::endl;
+    }
 //    for (int i = 0; i < vec.size(); i++) {
 //        if (fp_bt->access(i) != vec[i]) {
 //            j++;
@@ -117,17 +168,9 @@ int main(int argc, char* argv[]) {
 //            }
 //        }
 //    }
-    std::cout << j << " Errors " << std::endl;
-    for (int i = 0; i < test.size(); i++) {
-        std::cout << i << " " << lpf_bt->rank('N', i) << std::endl;
-    }
 
-    for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][0].size(); i++) {
-        std::cout << lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][0][i] << std::endl;
-    }
-    for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][1].size(); i++) {
-        std::cout << lpf_bt->c_ranks_[lpf_bt->chars_index_['N']][1][i] << std::endl;
-    }
+
+
 //    for (auto bv: lpf_bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
 //    }
@@ -142,6 +185,24 @@ int main(int argc, char* argv[]) {
 //    std::cout << "lz " << lz.size() << std::endl;
 //    delete lpf_bt;
 //    delete fp_bt;
+
+    for (int i = 0; i < lpf_bt->block_size_lvl_.size(); i++) {
+        std::cout << i << ":" << lpf_bt->block_size_lvl_[i] << std::endl;
+    }
+    auto d = lpf_bt->chars_index_['t'];
+    for (int i = 0;i < lpf_bt->c_ranks_[d].size(); i++) {
+        for (int j = 0;j < lpf_bt->c_ranks_[d][i].size(); j++) {
+            std::cout << lpf_bt->c_ranks_[d][i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    for (int i = 0;i < lpf_bt->pointer_c_ranks_[d].size(); i++) {
+        for (int j = 0;j < lpf_bt->pointer_c_ranks_[d][i].size(); j++) {
+            std::cout << lpf_bt->pointer_c_ranks_[d][i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << test << std::endl;
     delete lpf_bt;
 return 0;
 }
