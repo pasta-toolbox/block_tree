@@ -15,6 +15,7 @@
 #include <malloc_count.h>
 #include <type_traits>
 #include <iostream>
+#include <unordered_set>
 #include "malloc_count.h"
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
@@ -31,7 +32,7 @@ int main(int argc, char* argv[]) {
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/english.1024MB");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
     std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
@@ -55,7 +56,8 @@ int main(int argc, char* argv[]) {
     int32_t lzn = 0;
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 1,lpf, lpf_ptr, lz);
+    BV_BlockTree_lpf_theory<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 8, lpf, lpf_ptr, lz);
+    std::cout << "Errors " << std::endl;
     int  j = 0;
     for (int i = 0; i < vec.size(); i++) {
         auto x = lpf_bt->access(i);
@@ -83,6 +85,10 @@ int main(int argc, char* argv[]) {
         std::cout << "(" << lpf_bt->block_tree_pointers_[i]->size() << "," << (int) lpf_bt->block_tree_pointers_[i]->width() << "," << lpf_bt->block_tree_pointers_[i]->bit_size() << ")/";
         std::cout << "(" << lpf_bt->block_tree_offsets_[i]->size() << "," << (int) lpf_bt->block_tree_offsets_[i]->width() << "," << lpf_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
     }
+//    std::cout << *lpf_bt->block_tree_types_[7] << std::endl;
+//    std::cout << *lpf_bt->block_tree_types_[8] << std::endl;
+//    std::cout << *lpf_bt->block_tree_types_[9] << std::endl;
+//    std::cout << *lpf_bt->block_tree_types_[10] << std::endl;
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
 //        for (int j = 0; j < lpf_bt->block_tree_pointers_[i]->size() && j < fp_bt->block_tree_pointers_[i]->size(); j++)
 //        {
@@ -107,46 +113,54 @@ int main(int argc, char* argv[]) {
 //    }
 
     j = 0;
-    auto c = 't';
-//    for (auto c: lpf_bt->chars_) {
-        int count = 0;
-        for (int i = 0; i < vec.size(); i++) {
-            if (vec[i] == c) {
-                count++;
-            }
-            auto x = lpf_bt->rank(c, i);
-            if (x != count) {
-                if (c == 't') {
-                    std::cout << c << ":" << i << " " << x << " " << count << std::endl;
-                }
-                j++;
-            }
 
-        }
-        std::cout << c << " Errors " << j << std::endl;
+//    for (auto c: lpf_bt->chars_) {
+//        int count = 0;
+//        for (int i = 0; i < vec.size(); i++) {
+//            if (vec[i] == c) {
+//                count++;
+//            }
+//            auto x = lpf_bt->rank(c, i);
+//            if (x != count) {
+//                std::cout << c << ":" << i << " " << x << " " << count << std::endl;
+//                j++;
+//            }
+//
+//
+//        }
+//        if (c=='e') std::cout << count <<" e's" << std::endl;
+//        std::cout << c << " Errors " << j << std::endl;
 //    }
     std::cout << "Errors " << j << std::endl;
-    for (int i = 0; i < (*lpf_bt->block_tree_pointers_[1]).size(); i++) {
-        if ((*lpf_bt->block_tree_pointers_[1])[i] % lpf_bt->tau_ == lpf_bt->tau_ - 1) {
-            std::cout << "warum " << i << (*lpf_bt->block_tree_pointers_[1])[i] <<  std::endl;
-        }
-    }
-    for (auto c: lpf_bt->chars_) {
-        auto d = lpf_bt->chars_index_[c];
-        for (int i = 0; i < lpf_bt->c_ranks_[d][1].size(); i++) {
-            if (i % 2 == 1) {
-                if (lpf_bt->c_ranks_[d][1][i - 1] > lpf_bt->c_ranks_[d][1][i]) {
-                    std::cout << "help" << std::endl;
-                }
-            }
-        }
-    }
-    for (int i = 0; i < lpf_bt->block_tree_pointers_.size(); i++) {
-        for (int j = 0; j < lpf_bt->block_tree_pointers_[i]->size(); j++) {
-            std::cout << (*lpf_bt->block_tree_pointers_[i])[j] << " ";
-        }
-        std::cout << std::endl;
-    }
+//    for (int i = 0; i < (*lpf_bt->block_tree_pointers_[1]).size(); i++) {
+//        if ((*lpf_bt->block_tree_pointers_[1])[i] % lpf_bt->tau_ == lpf_bt->tau_ - 1) {
+//            std::cout << "warum " << i << (*lpf_bt->block_tree_pointers_[1])[i] <<  std::endl;
+//        }
+//    }
+//    for (auto c: lpf_bt->chars_) {
+//        auto d = lpf_bt->chars_index_[c];
+//        for (int i = 0; i < lpf_bt->c_ranks_[d][1].size(); i++) {
+//            if (i % 2 == 1) {
+//                if (lpf_bt->c_ranks_[d][1][i - 1] > lpf_bt->c_ranks_[d][1][i]) {
+//                    std::cout << "help" << std::endl;
+//                }
+//            }
+//        }
+//    }
+//    std::cout << "Pointers " << std::endl;
+//    for (int i = 0; i < lpf_bt->block_tree_pointers_.size(); i++) {
+//        for (int j = 0; j < lpf_bt->block_tree_pointers_[i]->size(); j++) {
+//            std::cout << (*lpf_bt->block_tree_pointers_[i])[j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+//    std::cout << "Offsets " << std::endl;
+//    for (int i = 0; i < lpf_bt->block_tree_offsets_.size(); i++) {
+//        for (int j = 0; j < lpf_bt->block_tree_offsets_[i]->size(); j++) {
+//            std::cout << (*lpf_bt->block_tree_offsets_[i])[j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
 //    for (int i = 0; i < vec.size(); i++) {
 //        if (fp_bt->access(i) != vec[i]) {
 //            j++;
@@ -185,24 +199,73 @@ int main(int argc, char* argv[]) {
 //    std::cout << "lz " << lz.size() << std::endl;
 //    delete lpf_bt;
 //    delete fp_bt;
-
-    for (int i = 0; i < lpf_bt->block_size_lvl_.size(); i++) {
-        std::cout << i << ":" << lpf_bt->block_size_lvl_[i] << std::endl;
+//
+//    for (int i = 0; i < lpf_bt->block_size_lvl_.size(); i++) {
+//        std::cout << i << ":" << lpf_bt->block_size_lvl_[i] << std::endl;
+//    }
+//    auto d = lpf_bt->chars_index_['e'];
+//    std::cout << "char_ranks "  << 'e' << std::endl;
+//    for (int i = 0;i < lpf_bt->c_ranks_[d].size(); i++) {
+//        for (int j = 0;j < lpf_bt->c_ranks_[d][i].size(); j++) {
+//            std::cout << lpf_bt->c_ranks_[d][i][j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+//    std::cout << "pointer_ranks "  << 'e' << std::endl;
+//    for (int i = 0;i < lpf_bt->pointer_c_ranks_[d].size(); i++) {
+//        for (int j = 0;j < lpf_bt->pointer_c_ranks_[d][i].size(); j++) {
+//            std::cout << lpf_bt->pointer_c_ranks_[d][i][j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+//    std::cout << test << std::endl;
+//    for (auto c: lpf_bt->leaves_) std::cout << c;
+//    std::cout << std::endl;
+//    std::cout << test[1743] << std::endl;
+//    std::cout << test[1744] << std::endl;
+    std::unordered_map<char, int64_t> hist;
+    std::unordered_set<int> characters;
+    std::random_device rnd_device;
+    std::mt19937 mersenne_engine(rnd_device());
+    std::vector<int> access_queries_;
+    std::vector<int> select_queries_;
+    std::vector<uint8_t> select_c_;
+    std::uniform_int_distribution<uint64_t> dist(0, test.size() - 1);
+    for (int i =  0; i < test.size(); i++) {
+        hist[test[i]] = hist[test[i]] + 1;
     }
-    auto d = lpf_bt->chars_index_['t'];
-    for (int i = 0;i < lpf_bt->c_ranks_[d].size(); i++) {
-        for (int j = 0;j < lpf_bt->c_ranks_[d][i].size(); j++) {
-            std::cout << lpf_bt->c_ranks_[d][i][j] << " ";
+    for (size_t i = 0; i < 1000000; ++i) {
+        access_queries_.push_back(dist(mersenne_engine));
+    }
+    for (size_t i = 0; i < 1000000; ++i) {
+        uint8_t x = 0;
+        int xsum = 0;
+        while (xsum + hist[x] < access_queries_[i]) {
+            xsum += hist[x];
+            x++;
         }
-        std::cout << std::endl;
+        select_c_.push_back(x);
+        select_queries_.push_back(access_queries_[i] - xsum);
     }
-    for (int i = 0;i < lpf_bt->pointer_c_ranks_[d].size(); i++) {
-        for (int j = 0;j < lpf_bt->pointer_c_ranks_[d][i].size(); j++) {
-            std::cout << lpf_bt->pointer_c_ranks_[d][i][j] << " ";
-        }
-        std::cout << std::endl;
+    std::cout << "Starting Queries" << "\n";
+    size_t result = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+    for (auto const& query : access_queries_) {
+        result += lpf_bt->access(query);
     }
-    std::cout << test << std::endl;
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+    std::cout << "Starting Rank Queries" << "\n";
+    auto start2 = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < select_c_.size(); i++) {
+        result += lpf_bt->rank(select_c_[i], access_queries_[i]);
+    }
+    auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
+    double nanosec_per_access = elapsed / static_cast<double>(access_queries_.size());
+    double nanosec_per_rank = elapsed2 / static_cast<double>(access_queries_.size());
+    std::cout << "#access queries " << access_queries_.size() << std::endl;
+    std::cout << nanosec_per_access << " ns per query\n";
+    std::cout << "#rank queries " << access_queries_.size() << std::endl;
+    std::cout << nanosec_per_rank << " ns per query\n";
     delete lpf_bt;
 return 0;
 }

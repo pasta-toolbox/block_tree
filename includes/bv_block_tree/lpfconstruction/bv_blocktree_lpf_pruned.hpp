@@ -20,7 +20,6 @@ public:
         int64_t added_padding = 0;
         int64_t tree_max_height = 0;
         int64_t max_blk_size = 0;
-        std::cout << "this is fine" << std::endl;
         this->calculate_padding(added_padding, text.size(), tree_max_height, max_blk_size);
         auto is_padded = added_padding > 0 ? 1 : 0;
         int64_t block_size = max_blk_size;
@@ -29,7 +28,6 @@ public:
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-        std::cout << "survivded padding" << std::endl;
         for(size_type i = 0; i < lpf_ptr.size(); i++) {
             if (lpf[i] <= lpf[lpf_ptr[i]] && lpf_ptr[i] == i-1) {
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
@@ -49,10 +47,8 @@ public:
 //                std::cout << *bv << std::endl << std::endl;
 //            }
         }
-        std::cout << "step 1 done" << std::endl;
         this->leaf_size = block_size;
         block_size *= this->tau_;
-        std::cout << this->leaf_size << " " << block_size << std::endl;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
             auto* bv = new pasta::BitVector(blk_lvl[i].size(),0);
             size_type marked_counter = 0;
@@ -132,7 +128,6 @@ public:
         }
         //determine lvl final size
         // prepare first level;
-        std::cout << "step 3 done" << std::endl;
         this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
         this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv_pass_2[bv_pass_2.size() - 1]));
         auto size = pass2_pointer[pass2_pointer.size() -1].size();
@@ -219,7 +214,6 @@ public:
             this->block_tree_types_.push_back(bit_vector);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
-        std::cout << "step 3 done" << std::endl;
         int64_t leaf_count = 0;
         for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
@@ -232,7 +226,6 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
-        std::cout << "step 4 done" << std::endl;
         // final pass
 //        for (auto a: bv_pass_1) {
 //            std::cout << *a << std::endl << std::endl;

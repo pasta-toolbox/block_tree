@@ -344,13 +344,6 @@ TEST(BlockTreeTest, paper_example_test_rank) {
     auto*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1, 15, lpf, lpf_ptr, lz);
     lpf_bt->add_rank_support();
     std::vector<uint8_t> chars = {'N', 'B', 'O', 'T', 'W' , 'I', 'S', 'H', 'F', 'E'};
-//    for (auto c: chars) {
-//        for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][0].size(); i++) {
-//            std::cout << c << " " << lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][0][i] << " " <<  ranks_first_lvl[c][i] << std::endl;
-//            ASSERT_EQ(lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][0][i], ranks_first_lvl[c][i]);
-//        }
-//    }
-
     // test rank
     for (auto c: chars) {
         int count = 0;

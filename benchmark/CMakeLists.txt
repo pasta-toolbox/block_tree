@@ -3,6 +3,7 @@ set(benches
         bench_lz
         bench_fp
         test_int_vector
+        select_test
         )
 foreach(bench ${benches})
     add_executable(${bench} ${bench}.cpp)

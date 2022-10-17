@@ -12,7 +12,6 @@ template<typename input_type, typename size_type>
 class BV_BlockTree_fp_pruned: public BV_Block_Tree<input_type,size_type> {
 public:
     int32_t init(std::vector<input_type>& text) {
-        std::cout << "HI" << std::endl;
         static constexpr uint128_t kPrime = 2305843009213693951ULL;
         int64_t added_padding = 0;
         int64_t tree_max_height = 0;
@@ -27,21 +26,15 @@ public:
         std::vector<size_type> pass2_max_pointer;
         std::vector<size_type> pass2_max_offset;
         std::vector<size_type> pass2_ones;
-        std::cout << "HI1" << std::endl;
         this->calculate_padding(added_padding, text.size(),tree_max_height, max_blk_size);
-        std::cout << "HI2" << std::endl;
         auto is_padded = added_padding > 0 ? 1 : 0;
-        std::cout << "HI3" << std::endl;
         int64_t block_size = max_blk_size;
-        std::cout << "HI4" << std::endl;
         std::vector<int64_t> block_text_inx;
-        std::cout << "HI5 " << block_size << std::endl;
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-        std::cout << "HI6" << std::endl;
+
         while (block_size > this->max_leaf_length_) {
-            std::cout << block_size << std::endl;
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
             auto* bv = new pasta::BitVector(block_text_inx.size(),false);
@@ -131,9 +124,6 @@ public:
                             MersenneHash<input_type> mh_first_occ = MersenneHash<input_type>(text, rk_first_occ.hash_, block_text_inx[i] + j,block_size);
                             if (blocks.find(mh_first_occ) != blocks.end()) {
                                 for (auto b: blocks[mh_first_occ]) {
-//                                    if (i == 340) {
-//                                        std::cout << block_size << " " << b << std::endl;
-//                                    }
                                     if (b != i) {
                                         pointers[b] = i;
                                         offsets[b] = j;
@@ -163,15 +153,10 @@ public:
             block_text_inx = new_blocks;
             block_size = new_block_size;
             bv_pass_1.push_back(bv);
-//            if (block_size <= this->max_leaf_length_ ) {
-//                std::cout << *bv << std::endl << std::endl;
-//            }
-
         }
 
         this->leaf_size = block_size;
         block_size *= this->tau_;
-        std::cout << "step 1 done" << std::endl;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
             auto* bv = new pasta::BitVector(blk_lvl[i].size(),0);
             size_type marked_counter = 0;
@@ -198,12 +183,6 @@ public:
                 bool has_ptr = false;
                 auto ptr = pass1_pointer[i][j];
                 auto off = pass1_offset[i][j];
-//                if (ptr == 340) {
-//                    std::cout<< i << " " << (*bv)[j]  << " marks 340: " << j << " " << off << std::endl;
-//                }
-//                if (j == 2318) {
-//                    std::cout<< i << " " << (*bv)[j]  << " marks 340: " << j << " " << ptr << std::endl;
-//                }
                 if (ptr == -1 || ptr + std::min(off, 1) >= j ) {
                     (*bv)[j] = 1;
                 } else {
@@ -223,16 +202,12 @@ public:
                 if (!has_ptr) {
                     (*bv)[j] = 1;
                 }
-//                if (j == 340) {
-//                    std::cout<< i << " " << (*bv)[j]  << std::endl;
-//                }
+
             }
             pass2_max_offset.push_back(block_size);
             block_size *= this->tau_;
             bv_pass_2.push_back(bv);
-//            if (i == bv_pass_1.size() - 1) {
-//                std::cout << *bv << std::endl;
-//            }
+
             size_type ones_per_pass2 = 0;
             for (size_type j = 0; j < bv->size(); j++) {
                 ones_per_pass2 += (*bv)[j];
@@ -242,7 +217,6 @@ public:
             pass2_offset.push_back(offsets);
             pass2_max_pointer.push_back(max_pointer);
         }
-        std::cout << "step 2 done" << std::endl;
         this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
         this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv_pass_2[bv_pass_2.size() - 1]));
         auto size = pass2_pointer[pass2_pointer.size() -1].size();
@@ -261,17 +235,14 @@ public:
             // the last block only spawns block that contain text
             auto last_block_parent = blk_lvl[pass1_parent][blk_lvl[pass1_parent].size() - 1];
             auto lvl_block_size = this->block_size_lvl_[pass1_i];
-//            std::cout << "block size revi " << this->block_size_lvl_[pass1_i] << " " << this->block_size_lvl_[pass1_i + 1] << std::endl;
-//            std::cout << "new size " << new_size << " " << is_padded << " " << last_block_parent << std::endl;
             if (is_padded) {
                 for (size_type j = 0; j < this->tau_; j++) {
-//                    std::cout << last_block_parent + j * lvl_block_size << " " << text.size() << std::endl;
+
                     if (last_block_parent + j * lvl_block_size < text.size()) {
                         new_size++;
                     }
                 }
             }
-//            std::cout << "new size " << new_size << " " << is_padded << " " << last_block_parent << std::endl;
             auto* bit_vector = new pasta::BitVector(new_size,0);
             auto pointer = std::vector<size_type>();
             auto offset = std::vector<size_type>();
@@ -305,18 +276,6 @@ public:
                     skip++;
                 }
             }
-//            std::cout << i << " skipped " << skip << " pointer skipped " << pointer_skipped << " pointer saved " << pointer_saved << " rep " << replace << std::endl;
-//            for (size_type j = 0; j < bv_pass_2[i + 1]->size(); j++) {
-//                if ((*bv_pass_2[i + 1])[j] == 1) {
-//                    for (size_type k = 0; k < this->tau_; k++) {
-//                        bool x = (*bv_pass_2[i])[higher_lvl_ones * this->tau_ + k];
-////                        std::cout << j * this->tau_ + k << " "<< parent * this->tau_ + k << " " << (*bv_pass_2[i]).size() << std::endl;
-//                        (*bit_vector)[higher_lvl_ones * this->tau_ + k] = x;
-//                    }
-//                    higher_lvl_ones++;
-//                }
-//            }
-//            std::cout << *bit_vector << std::endl;
             auto p = new sdsl::int_vector<>(pointer.size(),0,(8 * sizeof(size_type)) -  this->leading_zeros(pass2_max_pointer[i]));
             auto o = new sdsl::int_vector<>(pointer.size(),0,(8 * sizeof(size_type)) -  this->leading_zeros(pass2_max_offset[i]));
             for(size_type j = 0; j < pointer.size(); j++) {
@@ -329,7 +288,6 @@ public:
             this->block_tree_types_.push_back(bit_vector);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
-        std::cout << "step 2 done" << std::endl;
         int64_t leaf_count = 0;
         for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
@@ -342,7 +300,6 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
-        std::cout << "leaf done" << std::endl;
         for (auto bv : bv_pass_1) {
             delete bv;
         }
@@ -356,7 +313,6 @@ public:
     this->tau_ = tau;
     this->max_leaf_length_ = max_leaf_length;
     this->s_ = s;
-    std::cout << this->tau_ << " " << this->s_ << std::endl;
     init(text);
     };
     ~BV_BlockTree_fp_pruned() {
@@ -370,18 +326,6 @@ public:
             delete a;
         }
         for (auto a: this->block_tree_offsets_) {
-            delete a;
-        }
-        for (auto a: this->c_ranks_) {
-            for (auto b: *a) {
-                delete b;
-            }
-            delete a;
-        }
-        for (auto a: this->pointer_c_ranks_) {
-            for (auto b: *a) {
-                delete b;
-            }
             delete a;
         }
 

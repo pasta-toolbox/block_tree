@@ -21,7 +21,6 @@ public:
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-        std::cout << "Hi" << std::endl;
         while (block_size > this->max_leaf_length_) {
 //            std::cout << block_size << " " << block_text_inx.size() << std::endl;
 
@@ -34,7 +33,7 @@ public:
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> pairs(0);
             if (pair_size > text.size()) {
                 block_size /= this->tau_;
-                std::vector<size_type> new_blocks(0);
+                std::vector<int64_t> new_blocks(0);
                 for (size_type i = 0; i < block_text_inx.size(); i++) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_ ; j++) {
@@ -52,7 +51,6 @@ public:
                 this->block_tree_offsets_.push_back(offsets);
                 continue;
             }
-            std::cout << "b4 pointer" << std::endl;
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 if (block_text_inx[i] + block_size == block_text_inx[i+1] && block_text_inx[i] + pair_size <= text.size()) {
                     auto index = block_text_inx[i];
@@ -80,9 +78,8 @@ public:
 //            std::cout << "pairs size " <<pairs.size() << std::endl;
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
-            std::vector<size_type> new_blocks(0);
-            std::cout << "mark" << std::endl;
-            for (size_type i = 0; i < block_text_inx.size(); i++) {
+            std::vector<int64_t> new_blocks(0);
+            for (int64_t i = 0; i < block_text_inx.size(); i++) {
                 bool surrounded = (i > 0 && i < block_text_inx.size() - 1) && block_text_inx[i] + old_block_size == block_text_inx[i+1] && block_text_inx[i - 1] + old_block_size == block_text_inx[i];
                 bool marked = false;
                 if (surrounded) {
@@ -138,7 +135,6 @@ public:
 //                }
 //                rk_first_occ.next();
 //            }
-            std::cout << "right pointers" << std::endl;
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(text, 256, block_text_inx[i], block_size);
                 bool followed = (i < block_text_inx.size() - 1) && block_text_inx[i] + old_block_size == block_text_inx[i+1] && (*bv)[i+1]==1;
@@ -223,18 +219,6 @@ public:
             delete a;
         }
         for (auto a: this->block_tree_offsets_) {
-            delete a;
-        }
-        for (auto a: this->c_ranks_) {
-            for (auto b: *a) {
-                delete b;
-            }
-            delete a;
-        }
-        for (auto a: this->pointer_c_ranks_) {
-            for (auto b: *a) {
-                delete b;
-            }
             delete a;
         }
 
