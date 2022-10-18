@@ -21,6 +21,7 @@ public:
     size_type s_ = 1;
     size_type leaf_size = 0;
     size_type amount_of_leaves = 0;
+    bool rank_support = false;
     std::vector<pasta::BitVector*> block_tree_types_;
     std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>*> block_tree_types_rs_;
     std::vector<sdsl::int_vector<>*> block_tree_pointers_;
@@ -184,8 +185,8 @@ public:
         }
         return rank;
     };
-    size_type print_space_usage() {
-        size_type space_usage = sizeof(tau_) + sizeof(max_leaf_length_) + sizeof(s_) + sizeof(leaf_size);
+    int64_t print_space_usage() {
+        int64_t space_usage = sizeof(tau_) + sizeof(max_leaf_length_) + sizeof(s_) + sizeof(leaf_size);
         for (auto bv: block_tree_types_) {
             space_usage += bv->size()/8;
         }
@@ -193,11 +194,27 @@ public:
             space_usage += rs->space_usage();
         }
         for (auto iv: block_tree_pointers_) {
-            space_usage += (iv->size() * iv->width())/8;
+            space_usage += sdsl::size_in_bytes(*iv);
         }
         for (auto iv: block_tree_offsets_) {
-            space_usage += (iv->size() * iv->width())/8;
+            space_usage += sdsl::size_in_bytes(*iv);
         }
+
+        if (rank_support) {
+            for (auto c: chars_) {
+                int64_t sum= 0;
+                for (auto lvl: pointer_c_ranks_[chars_index_[c]]) {
+                    sum += sdsl::size_in_bytes(lvl);
+                }
+                for (auto lvl: c_ranks_[chars_index_[c]]) {
+                    sum += sdsl::size_in_bytes(lvl);
+                }
+                space_usage += sum;
+            }
+        }
+
+        std::cout << chars_.size() << std::endl;
+        std::cout << pointer_c_ranks_.size() << std::endl;
         for (auto v: block_size_lvl_) {
             space_usage += sizeof(v);
         }
@@ -222,6 +239,7 @@ public:
         return space_usage;
     };
     int32_t add_rank_support() {
+        rank_support = true;
         c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
         pointer_c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
         for (int i = 0; i < c_ranks_.size(); i++) {
@@ -289,16 +307,12 @@ public:
 //                    j++;
 //                }
             }
-            for (auto c_lvl: pointer_c_ranks_) {
-                for (auto lvl: c_lvl) {
-                    sdsl::util::bit_compress(lvl);
+                for (size_type i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
+                    sdsl::util::bit_compress(pointer_c_ranks_[chars_index_[c]][i]);
                 }
-            }
-            for (auto c_lvl: c_ranks_) {
-                for (auto lvl: c_lvl) {
-                    sdsl::util::bit_compress(lvl);
+                for (size_type i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
+                    sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
-            }
         }
 //        c_ranks_.resize(u_chars_, )
 //        for (auto c: chars_) {

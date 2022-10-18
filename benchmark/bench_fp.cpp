@@ -56,8 +56,8 @@ int main(int argc, char* argv[]) {
     int32_t lzn = 0;
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_lpf_theory<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 8, lpf, lpf_ptr, lz);
-    std::cout << "Errors " << std::endl;
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 8, lpf, lpf_ptr, lz);
+    std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
     int  j = 0;
     for (int i = 0; i < vec.size(); i++) {
         auto x = lpf_bt->access(i);
@@ -70,6 +70,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Errors " << j << std::endl;
     std::cout << "lpf" << std::endl;
     lpf_bt->add_rank_support();
+    std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
 //        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
 //        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
