@@ -13,7 +13,6 @@
 #include <chrono>
 #include <type_traits>
 #include <iostream>
-#include "malloc_count.h"
 
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
@@ -213,13 +212,13 @@ int main(int argc, char* argv[]) {
         sizer2 += (int) pv->width() * pv->size();
     }
     std::cout << sizer << " " << sizer2 << " " << sizer2 - sizer << std::endl;
-    auto x = malloc_count_current();
+    auto x =0;
     delete bt;
-    auto y = malloc_count_current();
+    auto y = 0;
     delete bt2;
-    auto z = malloc_count_current();
+    auto z = 0;
     delete bt3;
-    auto a = malloc_count_current();
+    auto a = 0;
     std::cout <<"Pruned: " <<  (double )8 * (x - y)/test.size() << " Bits/S" << std::endl;
     std::cout <<"Appr.: " <<  (double )8 * (y - z)/test.size() << " Bits/S" << std::endl;
     std::cout <<"Theory: " <<  (double )8 * (z - a)/test.size() << " Bits/S" << std::endl;

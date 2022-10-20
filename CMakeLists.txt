@@ -8,22 +8,37 @@ set(CMAKE_WARN_DEPRECATED "FALSE")
 #-fsanitize=address
 #add_executable(foo benchmark/foo.cpp includes/utils/print_util.h)
 add_library(block_tree INTERFACE)
+# Options when compiling pasta::bit_vector
+## Build tests
+option(BLOCK_TREE_BUILD_TESTS
+        "Build blocktree's tests." OFF)
+option(BLOCK_TREE_BUILD_BENCHMARKS
+        "Build blocktree's benchmarks." OFF)
 target_include_directories(block_tree INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG release-1.12.1
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# Optional test
+if(BLOCK_TREE_BUILD_TESTS)
+    include(FetchContent)
+    FetchContent_Declare(
+            googletest
+            GIT_REPOSITORY https://github.com/google/googletest.git
+            GIT_TAG release-1.12.1
+    )
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    enable_testing()
+    add_subdirectory(tests)
+    include(GoogleTest)
+endif()
+#if(BLOCK_TREE_BUILD_BENCHMARKS)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+#endif()
+
 add_subdirectory(includes)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/tlx)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/bit_vector)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/sdsl)
 target_link_libraries(block_tree INTERFACE pasta_bit_vector)
@@ -39,7 +54,4 @@ target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/incl
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/bv_block_tree)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake/src)
 target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
-enable_testing()
-add_subdirectory(tests)
-include(GoogleTest)
 
