@@ -2,6 +2,7 @@
 // Created by daniel on 23.08.22.
 //
 #include "bv_blocktree.hpp"
+#include <lpfarray.hpp>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_LZ_HPP
 #define BLOCK_TREE_BV_BLOCKTREE_LZ_HPP
 template<typename input_type, typename size_type>
