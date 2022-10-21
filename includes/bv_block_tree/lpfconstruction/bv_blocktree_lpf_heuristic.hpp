@@ -59,7 +59,6 @@ public:
             delete a;
         }
 
-        std::cout << "das ist dschon richtig" << std::endl;
     };
 
 private:
