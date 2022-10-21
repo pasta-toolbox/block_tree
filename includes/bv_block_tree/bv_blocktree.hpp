@@ -44,8 +44,6 @@ public:
         for (size_type i = 0; i < block_tree_types_.size(); i++) {
             if ((*block_tree_types_[i])[blk_pointer] == 0) {
                 size_type blk = block_tree_types_rs_[i]->rank0(blk_pointer);
-                if (blk > block_tree_offsets_[i]->size() - 1) std::cout << "wtf off: index" << index << " blk:" << blk << " max: " << block_tree_offsets_[i]->size() - 1 << std::endl;
-                if (blk > block_tree_pointers_[i]->size() - 1) std::cout << "wtf ptr" << std::endl;
                 size_type to = off + (*block_tree_offsets_[i])[blk];
 
                 blk_pointer = (*block_tree_pointers_[i])[blk];
@@ -213,8 +211,6 @@ public:
             }
         }
 
-        std::cout << chars_.size() << std::endl;
-        std::cout << pointer_c_ranks_.size() << std::endl;
         for (auto v: block_size_lvl_) {
             space_usage += sizeof(v);
         }
@@ -222,20 +218,7 @@ public:
             space_usage += sizeof(v);
         }
         space_usage += leaves_.size() * sizeof(input_type);
-//        for (auto v: top_level_c_ranks_) {
-//            space_usage += v->size() * sizeof(size_type);
-//        }
-//        for (auto v: c_ranks_) {
-//            for (auto iv: *v) {
-//                space_usage += iv->size() * sizeof(size_type);
-//            }
-//        }
-//        for (auto v: g_ranks_) {
-//            for (auto iv: *v) {
-//                space_usage += iv->size() * sizeof(size_type);
-//            }
-//        }
-//        std::cout << "we use " << space_usage << "Bytes" << std::endl;
+
         return space_usage;
     };
     int32_t add_rank_support() {
