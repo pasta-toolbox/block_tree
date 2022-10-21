@@ -12,11 +12,9 @@
 #include <fppconstruction/bv_blocktree_fp_theory.hpp>
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <chrono>
-#include <malloc_count.h>
 #include <type_traits>
 #include <iostream>
 #include <unordered_set>
-#include "malloc_count.h"
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
     // add a byte size argument which the user can enter like '1gi'

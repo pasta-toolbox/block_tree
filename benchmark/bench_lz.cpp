@@ -15,7 +15,6 @@
 #include <chrono>
 #include <type_traits>
 #include <iostream>
-#include "malloc_count.h"
 
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
