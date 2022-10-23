@@ -11,6 +11,7 @@ __extension__ typedef unsigned __int128 uint128_t;
 template<typename input_type, typename size_type>
 class BV_BlockTree_fp_pruned: public BV_Block_Tree<input_type,size_type> {
 public:
+    size_type const_size = 0;
     int32_t init(std::vector<input_type>& text) {
         static constexpr uint128_t kPrime = 2305843009213693951ULL;
         int64_t added_padding = 0;
@@ -149,6 +150,7 @@ public:
             }
             pass1_pointer.push_back(pointers);
             pass1_offset.push_back(offsets);
+            const_size += pointers.size() * sizeof(size_type) * 2;
             blk_lvl.push_back(block_text_inx);
             block_text_inx = new_blocks;
             block_size = new_block_size;
@@ -313,6 +315,7 @@ public:
     this->tau_ = tau;
     this->max_leaf_length_ = max_leaf_length;
     this->s_ = s;
+
     init(text);
     };
     ~BV_BlockTree_fp_pruned() {
