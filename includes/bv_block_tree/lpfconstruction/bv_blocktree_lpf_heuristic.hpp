@@ -78,7 +78,8 @@ private:
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
             }
         }
-        while (block_size > this->max_leaf_length_) {
+        do {
+
             size_type max_pointer = 0;
             size_type max_offset = 0;
 //            std::cout << "Blocksize: " << block_size << " Blocks in Level: " << block_text_inx.size();
@@ -157,7 +158,7 @@ private:
             this->block_tree_pointers_.push_back(p);
             this->block_tree_offsets_.push_back(o);
             block_text_inx = block_text_inx_new;
-        }
+        } while (block_size > this->max_leaf_length_);
         this->leaf_size = block_size;
         this->amount_of_leaves = block_text_inx.size();
         for (size_type ptr: block_text_inx) {

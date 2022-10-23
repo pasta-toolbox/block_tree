@@ -34,7 +34,7 @@ public:
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
             }
         }
-        while (block_size > this->max_leaf_length_) {
+        do {
             auto* bv = new pasta::BitVector(block_text_inx.size(),0);
             mark_blocks(bv, lz, block_text_inx, block_size);
             this->block_size_lvl_.push_back(block_size);
@@ -47,7 +47,7 @@ public:
 //            if (block_size <= this->max_leaf_length_ ) {
 //                std::cout << *bv << std::endl << std::endl;
 //            }
-        }
+        } while (block_size > this->max_leaf_length_);
         this->leaf_size = block_size;
         block_size *= this->tau_;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {

@@ -29,10 +29,10 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  fp_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 2, 8,1);
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 8,lpf, lpf_ptr, lz);
+    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 16,lpf, lpf_ptr, lz);
     std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
     int  j = 0;
     for (int i = 0; i < vec.size(); i++) {
