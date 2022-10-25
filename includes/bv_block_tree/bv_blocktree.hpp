@@ -37,10 +37,10 @@ public:
     std::vector<std::vector<sdsl::int_vector<>>> pointer_c_ranks_;
 
     int64_t access(size_type index) {
-        size_type block_size = block_size_lvl_[0];
-        size_type blk_pointer = index / block_size;
-        size_type off = index % block_size;
-        size_type child = 0;
+        int64_t block_size = block_size_lvl_[0];
+        int64_t blk_pointer = index / block_size;
+        int64_t off = index % block_size;
+        int64_t child = 0;
         for (size_type i = 0; i < block_tree_types_.size(); i++) {
             if ((*block_tree_types_[i])[blk_pointer] == 0) {
                 size_type blk = block_tree_types_rs_[i]->rank0(blk_pointer);
@@ -90,11 +90,11 @@ public:
     }
     int64_t rank(input_type c, size_type index) {
         int64_t c_index = chars_index_[c];
-        size_type block_size = block_size_lvl_[0];
-        size_type blk_pointer = index / block_size;
-        size_type off = index % block_size;
+        int64_t block_size = block_size_lvl_[0];
+        int64_t blk_pointer = index / block_size;
+        int64_t off = index % block_size;
         int64_t rank = (blk_pointer == 0) ? 0 : c_ranks_[c_index][0][blk_pointer - 1];
-        size_type child = 0;
+        int64_t child = 0;
         if ((*block_tree_types_[0])[blk_pointer]) {
             block_size /= tau_;
             child = off / block_size;

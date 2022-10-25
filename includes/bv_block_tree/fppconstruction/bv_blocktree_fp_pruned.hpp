@@ -27,15 +27,18 @@ public:
         std::vector<size_type> pass2_max_pointer;
         std::vector<size_type> pass2_max_offset;
         std::vector<size_type> pass2_ones;
+        std::cout << 1 << std::endl;
         this->calculate_padding(added_padding, text.size(),tree_max_height, max_blk_size);
         auto is_padded = added_padding > 0 ? 1 : 0;
         int64_t block_size = max_blk_size;
         std::vector<int64_t> block_text_inx;
+        std::cout << 1 << std::endl;
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-
+        std::cout << 2 << std::endl;
         while (block_size > this->max_leaf_length_) {
+            std::cout << block_size << std::endl;
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
             auto* bv = new pasta::BitVector(block_text_inx.size(),false);
@@ -156,7 +159,7 @@ public:
             block_size = new_block_size;
             bv_pass_1.push_back(bv);
         }
-
+        std::cout << 123 << std::endl;
         this->leaf_size = block_size;
         block_size *= this->tau_;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
@@ -219,6 +222,7 @@ public:
             pass2_offset.push_back(offsets);
             pass2_max_pointer.push_back(max_pointer);
         }
+        std::cout << 123 << std::endl;
         this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
         this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv_pass_2[bv_pass_2.size() - 1]));
         auto size = pass2_pointer[pass2_pointer.size() -1].size();
@@ -231,6 +235,7 @@ public:
         this->block_tree_pointers_.push_back(p1);
         this->block_tree_offsets_.push_back(o1);
         for (size_type i = bv_pass_2.size() - 2; i >= 0; i--) {
+            std::cout << i << std::endl;
             auto pass1_i = bv_pass_2.size() - 1 - i;
             auto pass1_parent = pass1_i - 1;
             auto new_size = this->tau_ * (pass2_ones[i + 1] - is_padded);
@@ -291,6 +296,7 @@ public:
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
         int64_t leaf_count = 0;
+        std::cout << 123 << std::endl;
         for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
                 leaf_count += this->tau_;
@@ -301,6 +307,7 @@ public:
                 }
             }
         }
+        std::cout << 123 << std::endl;
         this->amount_of_leaves = leaf_count;
         for (auto bv : bv_pass_1) {
             delete bv;
@@ -308,15 +315,17 @@ public:
         for (size_type i = 0; i < bv_pass_2.size() - 1; i++) {
             delete bv_pass_2[i];
         }
+        
         return 0;
     };
     BV_BlockTree_fp_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s) {
         this->map_unique_chars(text);
-    this->tau_ = tau;
-    this->max_leaf_length_ = max_leaf_length;
-    this->s_ = s;
+        this->tau_ = tau;
+        this->max_leaf_length_ = max_leaf_length;
+        this->s_ = s;
 
-    init(text);
+        init(text);
+        std::cout << "done" << std::endl;
     };
     ~BV_BlockTree_fp_pruned() {
         for (auto a : this->block_tree_types_) {
