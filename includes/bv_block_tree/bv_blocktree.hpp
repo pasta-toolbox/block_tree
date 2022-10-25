@@ -89,13 +89,11 @@ public:
 //        return 2;
     }
     int64_t rank(input_type c, size_type index) {
-        bool debug = false;
         int64_t c_index = chars_index_[c];
         size_type block_size = block_size_lvl_[0];
         size_type blk_pointer = index / block_size;
         size_type off = index % block_size;
         int64_t rank = (blk_pointer == 0) ? 0 : c_ranks_[c_index][0][blk_pointer - 1];
-        if (debug) std::cout << "prefix first lvl " << rank << std::endl;
         size_type child = 0;
         if ((*block_tree_types_[0])[blk_pointer]) {
             block_size /= tau_;
@@ -107,12 +105,10 @@ public:
             rank -= pointer_c_ranks_[c_index][0][blk];
             size_type to = off + (*block_tree_offsets_[0])[blk];
             off = off + (*block_tree_offsets_[0])[blk];
-            if (debug) std::cout << (*block_tree_pointers_[0])[blk] << " " << (*block_tree_offsets_[0])[blk] << " " << to << " ptr/off ptrrank: " << pointer_c_ranks_[c_index][0][blk] <<  std::endl;
             blk_pointer = (*block_tree_pointers_[0])[blk];
             child = blk_pointer;
             if (to >= block_size) {
                 auto adder = (child == 0) ? c_ranks_[c_index][0][blk_pointer] : c_ranks_[c_index][0][blk_pointer] - c_ranks_[c_index][0][blk_pointer - 1];
-                if (debug) std::cout << "test 1 " << to << " " << block_size << " adder " << adder << " child " << child << std::endl;
                 rank += adder;
                 blk_pointer++;
                 off = to - block_size;
@@ -123,62 +119,42 @@ public:
             blk_pointer = block_tree_types_rs_[0]->rank1(blk_pointer) * tau_ + child;;
 
         }
-        if (debug) std::cout << index << ":" << rank << std::endl;
         // we first calculate the 
         size_type i = 1;
         while (i < block_tree_types_.size()) {
-            if (debug) {
-                std::cout << "bi:" << i << " r:" << rank << " b:" << blk_pointer << " off:" << off << " child:" << child << " blzsize:" << block_size << std::endl;
-            }
+            rank += (child == 0) ? 0 : c_ranks_[c_index][i][blk_pointer - 1];
             if ((*block_tree_types_[i])[blk_pointer]) {
-                rank += (child == 0) ? 0 :c_ranks_[c_index][i][blk_pointer - 1];
                 size_type rank_blk = block_tree_types_rs_[i]->rank1(blk_pointer);
-                blk_pointer = rank_blk * tau_;
                 block_size /= tau_;
                 child = off / block_size;
                 off = off % block_size;
-                blk_pointer += child;
+                blk_pointer = rank_blk * tau_ + child;
                 i++;
             } else {
-                rank += (child == 0) ? 0 : c_ranks_[c_index][i][blk_pointer - 1];
                 size_type blk = block_tree_types_rs_[i]->rank0(blk_pointer);
-                if (debug) std::cout << "pointer#:" << blk << " pointer_c_ranks_:" << pointer_c_ranks_[c_index][i][blk];
                 rank -= pointer_c_ranks_[c_index][i][blk];
-                size_type to = off + (*block_tree_offsets_[i])[blk];
-                off = off + (*block_tree_offsets_[i])[blk];
-                if (debug) std::cout << " new_block:" << (*block_tree_pointers_[i])[blk] << " off:" << (*block_tree_offsets_[i])[blk] << " to:" << to <<  std::endl;
+                size_type ptr_off = (*block_tree_offsets_[i])[blk];
+                size_type to = off + ptr_off;
+                off = off + ptr_off;
                 blk_pointer = (*block_tree_pointers_[i])[blk];
                 child = blk_pointer % tau_;
-                if (debug) std::cout << "new_block is child:" << child << std::endl;
+
                 if (to >= block_size) {
                     auto adder = (child == 0) ? c_ranks_[c_index][i][blk_pointer] : c_ranks_[c_index][i][blk_pointer] - c_ranks_[c_index][i][blk_pointer - 1];
-                    if (debug) std::cout << "on i+1: " << to << " " << block_size << " adder:" << adder << std::endl;
                     rank += adder;
                     blk_pointer++;
                     child = blk_pointer % tau_;
                     off = to - block_size;
                 }
-
                 auto remove_prefix = (child == 0) ? 0 : c_ranks_[c_index][i][blk_pointer - 1];
-                if (debug) std::cout << "we remove a prefix: child:" << child << " prefix_to_remove:" << remove_prefix << " rank:" << rank << std::endl;
                 rank -= remove_prefix;
             }
-            if (debug) {
-                std::cout << "ei:" << i << " r:" << rank << " b:" << blk_pointer << " off:" << off << " child:" << child << std::endl;
-            }
         }
-        if (debug) {
-            std::cout <<  "after loop " << rank << std::endl;
-        }
-        if (debug) std::cout << "blk " << blk_pointer << " off " << off << " child " << child<< std::endl;
         size_type prefix_leaves = blk_pointer - child;
         for (int j = 0; j < child * leaf_size; j++) {
-            if (debug) std::cout << (leaves_)[prefix_leaves + j] << " 1 " << rank << " " << prefix_leaves << std::endl;
             if ((leaves_)[prefix_leaves * leaf_size + j] == c) rank++;
         }
-        if (debug) std::cout << off << " " << blk_pointer << std::endl;
         for (int j = 0; j <= off; j++) {
-            if (debug) std::cout << (leaves_)[blk_pointer + j] << " 2 " << rank << std::endl;
             if ((leaves_)[blk_pointer * leaf_size + j] == c) rank++;
         }
         return rank;

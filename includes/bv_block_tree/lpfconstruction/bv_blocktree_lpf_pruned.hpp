@@ -52,6 +52,7 @@ public:
         block_size *= this->tau_;
         for (size_type i = bv_pass_1.size() - 1; i >= 0; i--) {
             auto* bv = new pasta::BitVector(blk_lvl[i].size(),0);
+            // mark nodes that have children
             size_type marked_counter = 0;
             if (i != bv_pass_1.size() - 1) {
                 for (size_type j = 0; j < bv->size(); j++) {
@@ -105,7 +106,7 @@ public:
                     }
                 }
                 if (!has_ptr) {
-                    (*bv)[j] =1;
+                    (*bv)[j] = 1;
                 }
 //                if (j == 340) {
 //                    std::cout<< i << " " << (*bv)[j] << std::endl;
@@ -190,6 +191,7 @@ public:
                 } else {
                     skip++;
                 }
+
             }
 //            std::cout << i << " skipped " << skip << " pointer skipped " << pointer_skipped << " pointer saved " << pointer_saved << " rep " << replace << std::endl;
 //            for (size_type j = 0; j < bv_pass_2[i + 1]->size(); j++) {
@@ -213,6 +215,9 @@ public:
             this->block_tree_pointers_.push_back(p);
             this->block_tree_offsets_.push_back(o);
             this->block_tree_types_.push_back(bit_vector);
+//            std::cout << (*bv_pass_1[pass1_i - 1]) << std::endl;
+//            std::cout << (*bv_pass_2[i + 1]) << std::endl;
+//            std::cout << *bit_vector << std::endl;
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
         }
         int64_t leaf_count = 0;

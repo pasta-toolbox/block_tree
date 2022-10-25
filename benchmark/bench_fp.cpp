@@ -29,10 +29,10 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
     int32_t lzn = 0;
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_fp_pruned<uint8_t, int32_t>*  fp_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 2, 8,1);
-    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 16,lpf, lpf_ptr, lz);
+//    BV_BlockTree_fp_pruned<uint8_t, int32_t>* fp_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 15, 16, 1);
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 4,lpf, lpf_ptr, lz);
     std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
     int  j = 0;
     for (int i = 0; i < vec.size(); i++) {
@@ -69,21 +69,13 @@ int main(int argc, char* argv[]) {
     std::cout << "Errors " << j << std::endl;
     std::cout << "lpf" << std::endl;
     lpf_bt->add_rank_support();
-    fp_bt->add_rank_support();
-    for (auto c: lpf_bt->chars_) {
-        std::cout << c << ":";
-        for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_[c]].size(); i++) {
-            std::cout << (int) lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][i].width() << "/" << (int) lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][i].size() << " ";
-        }
-        std::cout << std::endl;
-    }
-    for (auto c: fp_bt->chars_) {
-        std::cout << c << ":";
-        for (int i = 0; i < fp_bt->c_ranks_[fp_bt->chars_index_[c]].size(); i++) {
-            std::cout << (int) fp_bt->c_ranks_[fp_bt->chars_index_[c]][i].width() << "/" << (int) fp_bt->c_ranks_[fp_bt->chars_index_[c]][i].size() << " ";
-        }
-        std::cout << std::endl;
-    }
+//    for (auto c: lpf_bt->chars_) {
+//        std::cout << c << ":";
+//        for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_[c]].size(); i++) {
+//            std::cout << (int) lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][i].width() << "/" << (int) lpf_bt->c_ranks_[lpf_bt->chars_index_[c]][i].size() << " ";
+//        }
+//        std::cout << std::endl;
+//    }
     std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
 //        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
@@ -92,7 +84,6 @@ int main(int argc, char* argv[]) {
 //        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
 //        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
 //    }
-
     for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
         std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
         std::cout << lpf_bt->block_tree_types_[i]->size() << "/";
@@ -100,59 +91,59 @@ int main(int argc, char* argv[]) {
         std::cout << "(" << lpf_bt->block_tree_pointers_[i]->size() << "," << (int) lpf_bt->block_tree_pointers_[i]->width() << "," << lpf_bt->block_tree_pointers_[i]->bit_size() << ")/";
         std::cout << "(" << lpf_bt->block_tree_offsets_[i]->size() << "," << (int) lpf_bt->block_tree_offsets_[i]->width() << "," << lpf_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
     }
-    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
-        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
-        std::cout << fp_bt->block_tree_types_rs_[i]->space_usage() << "/";
-        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
-        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
-    }
-    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
-        std::vector<int> state = std::vector<int>(lpf_bt->block_tree_types_[i]->size(), 2);
-        for (int k = 0; k < lpf_bt->block_tree_types_[i]->size(); k++) {
-            if ((*lpf_bt->block_tree_types_[i])[k] == 0) {
-                state[k] = 0;
-            }
-        }
-        auto result = std::vector<int>(4,0);
-        for (auto s: state) {
-            result[s]++;
-        }
-        std::cout << "result " << i << ":";
-        for (auto r: result) {
-            std::cout << r << " ";
-        }
-        std::cout << std::endl;
-        for (int k = 0; k < lpf_bt->block_tree_pointers_[i]->size(); k++) {
-            int ptr = (*lpf_bt->block_tree_pointers_[i])[k];
-            int off = (*lpf_bt->block_tree_offsets_[i])[k];
-            if (state[ptr] == 2) {
-                state[ptr] = 1;
-            }
-            if (state[ptr] == 0) {
-                state[ptr] = 3;
-            }
-            if (off > 0) {
-                if (state[ptr + 1] == 2) {
-                    state[ptr + 1] = 1;
-                }
-                if (state[ptr + 1] == 0) {
-                    state[ptr + 1] = 3;
-                }
-            }
-
-
-        }
-        result = std::vector<int>(4,0);
-        for (auto s: state) {
-            result[s]++;
-        }
-        std::cout << "result " << i << ":";
-        for (auto r: result) {
-            std::cout << r << " ";
-        }
-        std::cout << std::endl;
-    }
+//    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
+//        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+//        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
+//        std::cout << fp_bt->block_tree_types_rs_[i]->space_usage() << "/";
+//        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
+//        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
+//    }
+//    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
+//        std::vector<int> state = std::vector<int>(lpf_bt->block_tree_types_[i]->size(), 2);
+//        for (int k = 0; k < lpf_bt->block_tree_types_[i]->size(); k++) {
+//            if ((*lpf_bt->block_tree_types_[i])[k] == 0) {
+//                state[k] = 0;
+//            }
+//        }
+//        auto result = std::vector<int>(4,0);
+//        for (auto s: state) {
+//            result[s]++;
+//        }
+//        std::cout << "result " << i << ":";
+//        for (auto r: result) {
+//            std::cout << r << " ";
+//        }
+//        std::cout << std::endl;
+//        for (int k = 0; k < lpf_bt->block_tree_pointers_[i]->size(); k++) {
+//            int ptr = (*lpf_bt->block_tree_pointers_[i])[k];
+//            int off = (*lpf_bt->block_tree_offsets_[i])[k];
+//            if (state[ptr] == 2) {
+//                state[ptr] = 1;
+//            }
+//            if (state[ptr] == 0) {
+//                state[ptr] = 3;
+//            }
+//            if (off > 0) {
+//                if (state[ptr + 1] == 2) {
+//                    state[ptr + 1] = 1;
+//                }
+//                if (state[ptr + 1] == 0) {
+//                    state[ptr + 1] = 3;
+//                }
+//            }
+//
+//
+//        }
+//        result = std::vector<int>(4,0);
+//        for (auto s: state) {
+//            result[s]++;
+//        }
+//        std::cout << "result " << i << ":";
+//        for (auto r: result) {
+//            std::cout << r << " ";
+//        }
+//        std::cout << std::endl;
+//    }
 //    std::cout << *lpf_bt->block_tree_types_[7] << std::endl;
 //    std::cout << *lpf_bt->block_tree_types_[8] << std::endl;
 //    std::cout << *lpf_bt->block_tree_types_[9] << std::endl;
@@ -334,6 +325,13 @@ int main(int argc, char* argv[]) {
     std::cout << nanosec_per_access << " ns per query\n";
     std::cout << "#rank queries " << access_queries_.size() << std::endl;
     std::cout << nanosec_per_rank << " ns per query\n";
+//    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
+//        for (int j = 0; j < (*lpf_bt->block_tree_types_[i]).size(); j++) {
+//            if ((bool)((*lpf_bt->block_tree_types_[i])[j]) != (bool)((*fp_bt->block_tree_types_[i])[j])) {
+//                std::cout << i << " " << j << " " << (*lpf_bt->block_tree_types_[i])[j] << " " << (*fp_bt->block_tree_types_[i])[j] << std::endl;
+//            }
+//        }
+//    }
     delete lpf_bt;
 return 0;
 }
