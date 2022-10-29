@@ -30,12 +30,13 @@ public:
             size_type max_offset = 0;
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
-            auto* bv = new pasta::BitVector(block_text_inx.size(),0);
+            auto bit_vector = new pasta::BitVector(block_text_inx.size(),0);
+            auto& bv = *bit_vector;
             auto pointers = std::vector<size_type>();
             auto offsets = std::vector<size_type>();
             mark_blocks(bv, lz, block_text_inx, block_size);
             for (size_type i = 0; i < block_text_inx.size(); i++) {
-                if ((*bv)[i] == 1) {
+                if (bv[i] == 1) {
                     continue;
                 }
                 size_type first_ind = block_text_inx[i];
@@ -63,8 +64,8 @@ public:
             }
             block_size /= this->tau_;
             std::vector<int64_t> block_text_inx_new;
-            for (size_type i = 0; i < bv->size(); i++) {
-                if ((*bv)[i] == 1) {
+            for (size_type i = 0; i < bv.size(); i++) {
+                if (bv[i] == 1) {
                     for (size_type j = 0; j < this->tau_ ; j++) {
                         if (block_text_inx[i] + (j * block_size) < text.size()) {
                             block_text_inx_new.push_back(block_text_inx[i] + (j * block_size));
@@ -72,17 +73,19 @@ public:
                     }
                 }
             }
-            this->block_tree_types_.push_back(bv);
-            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            this->block_tree_types_.push_back(bit_vector);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv));
             size_type ptr_size = (8 * sizeof(max_pointer)) - this->leading_zeros(max_pointer);
             size_type off_size = (8 * sizeof(max_offset)) - this->leading_zeros(max_offset);
-            sdsl::int_vector<>*p = new sdsl::int_vector(pointers.size(), 0,ptr_size);
-            sdsl::int_vector<>*o = new sdsl::int_vector(offsets.size(),0,off_size);
+            auto p = new sdsl::int_vector(pointers.size(), 0,ptr_size);
+            auto o = new sdsl::int_vector(offsets.size(),0,off_size);
+            auto& ptr = *p;
+            auto& off = *o;
             for(int j = 0; j < pointers.size(); j++) {
                 auto pointer = pointers[j];
                 auto offset = offsets[j];
-                (*p)[j] = pointer;
-                (*o)[j] = offset;
+                ptr[j] = pointer;
+                off[j] = offset;
             }
             this->block_tree_pointers_.push_back(p);
             this->block_tree_offsets_.push_back(o);
@@ -129,18 +132,6 @@ public:
         init(text, lpf, lpf_ptr, lz);
     };
     ~BV_BlockTree_lpf_theory() {
-        for (auto a : this->block_tree_types_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_types_rs_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_pointers_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_offsets_) {
-            delete a;
-        }
 
     };
 private:
@@ -158,7 +149,7 @@ private:
         return 0;
     }
 
-    size_type mark_blocks(pasta::BitVector* bv, std::vector<size_type>& lz, std::vector<int64_t>& block_text_inx, int64_t block_size) {
+    size_type mark_blocks(pasta::BitVector& bv, std::vector<size_type>& lz, std::vector<int64_t>& block_text_inx, int64_t block_size) {
         int blocks_marked = 0;
         size_type j = 0;
         for (size_type i = 0; i < lz.size(); i++) {
@@ -168,16 +159,16 @@ private:
             while (j < block_text_inx.size() -1 && block_text_inx[j + 1] <= f) {
                 j++;
             }
-            (*bv)[j] = 1;
+            bv[j] = 1;
 //            if (j > 0) {
 //                std::cout << block_text_inx[j-1] << " " << block_text_inx[j] << " " << block_size << std::endl;
 //            }
             if (j > 0 && block_text_inx[j-1] + block_size == block_text_inx[j]) {
-                (*bv)[j - 1] = 1;
+                bv[j - 1] = 1;
             }
 
-            if (j + 1< bv->size() && block_text_inx[j] + block_size == block_text_inx[j + 1]) {
-                (*bv)[j + 1] = 1;
+            if (j + 1< bv.size() && block_text_inx[j] + block_size == block_text_inx[j + 1]) {
+                bv[j + 1] = 1;
             }
         }
         return 0;

@@ -46,19 +46,6 @@ public:
         init(text, lpf, lpf_ptr, lz);
     };
     ~BV_BlockTree_lpf_heuristic() {
-        for (auto a : this->block_tree_types_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_types_rs_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_pointers_) {
-            delete a;
-        }
-        for (auto a: this->block_tree_offsets_) {
-            delete a;
-        }
-
     };
 
 private:
@@ -85,11 +72,12 @@ private:
 //            std::cout << "Blocksize: " << block_size << " Blocks in Level: " << block_text_inx.size();
             this->block_size_lvl_.push_back(block_size);
             this->block_per_lvl_.push_back(block_text_inx.size());
-            auto* bv = new pasta::BitVector(block_text_inx.size(),false);
+            auto bit_vector = new pasta::BitVector(block_text_inx.size(),false);
+            auto& bv = *bit_vector;
             std::vector<size_type> pointers = std::vector<size_type>();
             std::vector<size_type> offsets = std::vector<size_type>();
             for(int64_t block_in_lvl =(int64_t)block_text_inx.size() - 1; block_in_lvl >= 0; block_in_lvl--) {
-                if ((*bv)[block_in_lvl] == 1) {
+                if (bv[block_in_lvl] == 1) {
                     continue;
                 }
                 int64_t initial_index = block_text_inx[block_in_lvl];
@@ -112,9 +100,9 @@ private:
                             has_ptr = true;
                         }
                         if (has_ptr) {
-                            (*bv)[current_pointer] = true;
+                            bv[current_pointer] = true;
                             if (ptr != block_text_inx[b]) {
-                                (*bv)[current_pointer + 1] = true;
+                                bv[current_pointer + 1] = true;
                             }
                             pointers.push_back(current_pointer);
                             offsets.push_back(current_offset);
@@ -129,13 +117,13 @@ private:
                     }
                 }
                 if (!has_ptr) {
-                    (*bv)[block_in_lvl] = true;
+                    bv[block_in_lvl] = true;
                 }
             }
             std::vector<int64_t> block_text_inx_new(0,0);
             block_size = block_size / this->tau_;
-            for (size_type i = 0; i < bv->size(); i++) {
-                if ((*bv)[i] == 1) {
+            for (size_type i = 0; i < bv.size(); i++) {
+                if (bv[i] == 1) {
                     for (size_type j = 0; j < this->tau_ ; j++) {
                         if (block_text_inx[i] + (j * block_size) < text.size()) {
                             block_text_inx_new.push_back(block_text_inx[i] + (j * block_size));
@@ -143,17 +131,19 @@ private:
                     }
                 }
             }
-            this->block_tree_types_.push_back(bv);
-            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            this->block_tree_types_.push_back(bit_vector);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv));
             int64_t ptr_size = (8 * sizeof(max_pointer)) - this->leading_zeros(max_pointer);
             int64_t off_size = (8 * sizeof(max_offset)) - this->leading_zeros(max_offset);
-            sdsl::int_vector<>*p = new sdsl::int_vector(pointers.size(), 0,ptr_size);
-            sdsl::int_vector<>*o = new sdsl::int_vector(offsets.size(),0,off_size);
+            auto p = new sdsl::int_vector(pointers.size(), 0,ptr_size);
+            auto o = new sdsl::int_vector(offsets.size(),0,off_size);
+            auto& ptr = *p;
+            auto& off = *o;
             for(int64_t j = 0; j < pointers.size(); j++) {
                 auto pointer = pointers[pointers.size() - 1 - j];
                 auto offset = offsets[pointers.size() - 1 - j];
-                (*p)[j] = pointer;
-                (*o)[j] = offset;
+                ptr[j] = pointer;
+                off[j] = offset;
             }
             this->block_tree_pointers_.push_back(p);
             this->block_tree_offsets_.push_back(o);

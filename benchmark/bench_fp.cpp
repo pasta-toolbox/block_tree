@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -52,24 +52,66 @@ int main(int argc, char* argv[]) {
     std::vector<int32_t> lpf_ptr(vec.size());
     std::vector<int32_t> lz;
     int32_t lzn = 0;
-
-    calculate_lz_factor(lzn,lpf, lz);
-    BV_BlockTree_fp_pruned<uint8_t, int32_t>* fp_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 16, 16, 1);
     lpf_array(vec, lpf, lpf_ptr);
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 4,lpf, lpf_ptr, lz);
-    std::cout << "Errors space " << fp_bt->print_space_usage() << std::endl;
+    calculate_lz_factor(lzn,lpf, lz);
+    std::cout << "time " << ms_int.count() << std::endl;
+    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 4);
+    std::cout << "time " << ms_int.count() << std::endl;
+    std::cout << "Errors space " << fp_bt->print_space_usage() << " " <<  std::endl;
+//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt2 = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpf, lpf_ptr, lz, false);
+    std::cout << "lpf" << std::endl;
+//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpf, lpf_ptr, lz, true);
+
+
+
+//    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
+//        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+//        std::cout << lpf_bt->block_tree_types_[i]->size() << "/";
+//        std::cout << lpf_bt->block_tree_types_rs_[i]->space_usage() << "/";
+//        std::cout << "(" << lpf_bt->block_tree_pointers_[i]->size() << "," << (int) lpf_bt->block_tree_pointers_[i]->width() << "," << lpf_bt->block_tree_pointers_[i]->bit_size() << ")/";
+//        std::cout << "(" << lpf_bt->block_tree_offsets_[i]->size() << "," << (int) lpf_bt->block_tree_offsets_[i]->width() << "," << lpf_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
+//    }
+//    for (int i = 0; i < lpf_bt2->block_tree_types_.size(); i++) {
+//        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+//        std::cout << lpf_bt2->block_tr ee_types_[i]->size() << "/";
+//        std::cout << lpf_bt2->block_tree_types_rs_[i]->space_usage() << "/";
+//        std::cout << "(" << lpf_bt2->block_tree_pointers_[i]->size() << "," << (int) lpf_bt2->block_tree_pointers_[i]->width() << "," << lpf_bt2->block_tree_pointers_[i]->bit_size() << ")/";
+//        std::cout << "(" << lpf_bt2->block_tree_offsets_[i]->size() << "," << (int) lpf_bt2->block_tree_offsets_[i]->width() << "," << lpf_bt2->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
+//    }
+//
+//    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
+//        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+//        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
+//        std::cout << fp_bt->block_tree_types_rs_[i]->space_usage() << "/";
+//        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
+//        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
+//    }
     int  j = 0;
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpf_bt->access(i);
+        auto x = fp_bt->access(i);
         if (x != vec[i]) {
-
+            std::cout << i << std::endl;
             j++;
         }
 
     }
     std::cout << "Errors " << j << std::endl;
-    std::cout << "lpf" << std::endl;
-    lpf_bt->add_rank_support();
+    bool error_mode = false;
+
+    for (int i = 0; i < vec.size(); i++) {
+        auto x = fp_bt->access(i);
+        if (!error_mode) {
+            std::cout << i << std::endl;
+            error_mode = true;
+        }
+        if (x != vec[i]) {
+            j++;
+        }
+
+    }
+    std::cout << "Errors " << j << std::endl;
+
+    fp_bt->add_rank_support();
 //    for (auto c: lpf_bt->chars_) {
 //        std::cout << c << ":";
 //        for (int i = 0; i < lpf_bt->c_ranks_[lpf_bt->chars_index_[c]].size(); i++) {
@@ -77,7 +119,7 @@ int main(int argc, char* argv[]) {
 //        }
 //        std::cout << std::endl;
 //    }
-    std::cout << "Errors space " << lpf_bt->print_space_usage() << std::endl;
+    std::cout << "Errors space " << fp_bt->print_space_usage() << std::endl;
 //    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
 //        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
 //        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
@@ -85,20 +127,7 @@ int main(int argc, char* argv[]) {
 //        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
 //        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
 //    }
-    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
-        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-        std::cout << lpf_bt->block_tree_types_[i]->size() << "/";
-        std::cout << lpf_bt->block_tree_types_rs_[i]->space_usage() << "/";
-        std::cout << "(" << lpf_bt->block_tree_pointers_[i]->size() << "," << (int) lpf_bt->block_tree_pointers_[i]->width() << "," << lpf_bt->block_tree_pointers_[i]->bit_size() << ")/";
-        std::cout << "(" << lpf_bt->block_tree_offsets_[i]->size() << "," << (int) lpf_bt->block_tree_offsets_[i]->width() << "," << lpf_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
-    }
-//    for (int i = 0; i < fp_bt->block_tree_types_.size(); i++) {
-//        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-//        std::cout << fp_bt->block_tree_types_[i]->size() << "/";
-//        std::cout << fp_bt->block_tree_types_rs_[i]->space_usage() << "/";
-//        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
-//        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
-//    }
+
 //    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
 //        std::vector<int> state = std::vector<int>(lpf_bt->block_tree_types_[i]->size(), 2);
 //        for (int k = 0; k < lpf_bt->block_tree_types_[i]->size(); k++) {
@@ -311,13 +340,13 @@ int main(int argc, char* argv[]) {
     size_t result = 0;
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
-        result += lpf_bt->access(query);
+        result += fp_bt->access(query);
     }
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     std::cout << "Starting Rank Queries" << "\n";
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_c_.size(); i++) {
-        result += lpf_bt->rank(select_c_[i], access_queries_[i]);
+        result += fp_bt->rank(select_c_[i], access_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
     double nanosec_per_access = elapsed / static_cast<double>(access_queries_.size());
@@ -333,6 +362,6 @@ int main(int argc, char* argv[]) {
 //            }
 //        }
 //    }
-    delete lpf_bt;
+    delete fp_bt;
 return 0;
 }

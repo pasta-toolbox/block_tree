@@ -42,17 +42,20 @@ public:
         int64_t off = index % block_size;
         int64_t child = 0;
         for (size_type i = 0; i < block_tree_types_.size(); i++) {
-            if ((*block_tree_types_[i])[blk_pointer] == 0) {
-                size_type blk = block_tree_types_rs_[i]->rank0(blk_pointer);
-                size_type to = off + (*block_tree_offsets_[i])[blk];
-
-                blk_pointer = (*block_tree_pointers_[i])[blk];
+            auto& lvl = *block_tree_types_[i];
+            auto& lvl_rs = *block_tree_types_rs_[i];
+            auto& lvl_ptr = *block_tree_pointers_[i];
+            auto& lvl_off = *block_tree_offsets_[i];
+            if (lvl[blk_pointer] == 0) {
+                size_type blk = lvl_rs.rank0(blk_pointer);
+                size_type to = off + lvl_off[blk];
+                blk_pointer = lvl_ptr[blk];
                 if (to >= block_size) {
                     blk_pointer++;
                 }
                 off = to % block_size;
             }
-            size_type rank_blk = block_tree_types_rs_[i]->rank1(blk_pointer);
+            size_type rank_blk = lvl_rs.rank1(blk_pointer);
             blk_pointer = rank_blk * tau_;
             block_size /= tau_;
             child = off / block_size;
@@ -89,23 +92,27 @@ public:
 //        return 2;
     }
     int64_t rank(input_type c, size_type index) {
+        pasta::BitVector& top_level = *block_tree_types_[0];
+        auto& top_level_rs = *block_tree_types_rs_[0];
+        auto& top_level_ptr = *block_tree_pointers_[0];
+        auto& top_level_off = *block_tree_pointers_[0];
         int64_t c_index = chars_index_[c];
         int64_t block_size = block_size_lvl_[0];
         int64_t blk_pointer = index / block_size;
         int64_t off = index % block_size;
         int64_t rank = (blk_pointer == 0) ? 0 : c_ranks_[c_index][0][blk_pointer - 1];
         int64_t child = 0;
-        if ((*block_tree_types_[0])[blk_pointer]) {
+        if (top_level[blk_pointer]) {
             block_size /= tau_;
             child = off / block_size;
             off = off % block_size;
-            blk_pointer = block_tree_types_rs_[0]->rank1(blk_pointer) * tau_ + child;
+            blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;
         } else {
-            size_type blk = block_tree_types_rs_[0]->rank0(blk_pointer);
+            size_type blk = top_level_rs.rank0(blk_pointer);
             rank -= pointer_c_ranks_[c_index][0][blk];
-            size_type to = off + (*block_tree_offsets_[0])[blk];
-            off = off + (*block_tree_offsets_[0])[blk];
-            blk_pointer = (*block_tree_pointers_[0])[blk];
+            size_type to = off + top_level_off[blk];
+            off = off + top_level_off[blk];
+            blk_pointer = top_level_ptr[blk];
             child = blk_pointer;
             if (to >= block_size) {
                 auto adder = (child == 0) ? c_ranks_[c_index][0][blk_pointer] : c_ranks_[c_index][0][blk_pointer] - c_ranks_[c_index][0][blk_pointer - 1];
@@ -116,7 +123,7 @@ public:
             block_size = block_size/tau_;
             child = off / block_size;
             off = off % block_size;
-            blk_pointer = block_tree_types_rs_[0]->rank1(blk_pointer) * tau_ + child;;
+            blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;;
 
         }
         // we first calculate the 
@@ -167,13 +174,12 @@ public:
         for (auto rs: block_tree_types_rs_) {
             space_usage += rs->space_usage();
         }
-        for (auto iv: block_tree_pointers_) {
-            space_usage += sdsl::size_in_bytes(*iv);
+        for (const auto iv: block_tree_pointers_) {
+            space_usage += (int64_t) sdsl::size_in_bytes(*iv);
         }
-        for (auto iv: block_tree_offsets_) {
-            space_usage += sdsl::size_in_bytes(*iv);
+        for (const auto iv: block_tree_offsets_) {
+            space_usage +=  (int64_t) sdsl::size_in_bytes(*iv);
         }
-
         if (rank_support) {
             for (auto c: chars_) {
                 int64_t sum= 0;
