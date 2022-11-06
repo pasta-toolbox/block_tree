@@ -104,31 +104,29 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
         isu[sa[i]] = i;
     }
     for (int32_t r = 0; r < text.size() - 1; r++) {
-        prev[r] = r-1;
-        next[r] = r+1;
+        prev[r] = r - 1;
+        next[r] = r + 1;
     }
+    lcp[lcp.size() - 1] = 0;
     auto t05 = std::chrono::high_resolution_clock::now();
     auto ms_int5 = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
 //    std::cout << "ALLOCATION TIME " << ms_int5.count() << std::endl;
-    for (int32_t i = text.size() - 1; i >= 0; i--) {
+    for (int32_t i = text.size(); i >= 0; i--) {
         int32_t r = isu[i];
-        int32_t next_r = next[r];
-        int32_t prev_r = prev[r];
-        int32_t lcp_r = lcp[r];
-        int32_t lcp_nr = lcp[next_r];
-        if (lcp_r <= lcp_nr) {
-            lpf[i] = lcp_nr;
-            lpf_ptr[i] = sa[next_r];
-            lcp[next_r] = lcp_r;
+        if (lcp[r] <= lcp[next[r]]) {
+            lpf[i] = lcp[next[r]];
+            lpf_ptr[i] = sa[next[r]];
+            lcp[next[r]] = lcp[r];
         } else {
-            lpf[i] = lcp_r;
-            lcp[next_r] = lcp_nr;
-            lpf_ptr[i] = sa[prev_r];
+            lpf[i] = lcp[r];
+            lpf_ptr[i] = sa[prev[r]];
+            lcp[next[r]] = lcp[next[r]];
+
         }
-        if (prev_r >= 0) {
+        if (prev[r] >= 0) {
             next[prev[r]] = next[r];
         }
-        if (next_r < text.size()) {
+        if (next[r] < text.size()) {
             prev[next[r]] = prev[r];
         }
     }

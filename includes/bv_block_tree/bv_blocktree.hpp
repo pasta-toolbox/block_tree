@@ -42,6 +42,7 @@ public:
         int64_t off = index % block_size;
         int64_t child = 0;
         for (size_type i = 0; i < block_tree_types_.size(); i++) {
+
             auto& lvl = *block_tree_types_[i];
             auto& lvl_rs = *block_tree_types_rs_[i];
             auto& lvl_ptr = *block_tree_pointers_[i];
@@ -95,7 +96,7 @@ public:
         pasta::BitVector& top_level = *block_tree_types_[0];
         auto& top_level_rs = *block_tree_types_rs_[0];
         auto& top_level_ptr = *block_tree_pointers_[0];
-        auto& top_level_off = *block_tree_pointers_[0];
+        auto& top_level_off = *block_tree_offsets_[0];
         int64_t c_index = chars_index_[c];
         int64_t block_size = block_size_lvl_[0];
         int64_t blk_pointer = index / block_size;
@@ -123,8 +124,7 @@ public:
             block_size = block_size/tau_;
             child = off / block_size;
             off = off % block_size;
-            blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;;
-
+            blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;
         }
         // we first calculate the 
         size_type i = 1;

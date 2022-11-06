@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
     t.read(&test[0], a_size);
-    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+//    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -55,7 +55,9 @@ int main(int argc, char* argv[]) {
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
     std::cout << "time " << ms_int.count() << std::endl;
-    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 4);
+//    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1);
+//    BV_BlockTree_lpf_theory<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz);
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, true);
     std::cout << "time " << ms_int.count() << std::endl;
     std::cout << "Errors space " << fp_bt->print_space_usage() << " " <<  std::endl;
 //    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt2 = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpf, lpf_ptr, lz, false);
@@ -87,23 +89,25 @@ int main(int argc, char* argv[]) {
 //        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
 //    }
     int  j = 0;
+    bool error_mode = false;
     for (int i = 0; i < vec.size(); i++) {
         auto x = fp_bt->access(i);
         if (x != vec[i]) {
+            if (!error_mode) {
             std::cout << i << std::endl;
+                error_mode = true;
+            }
+//            std::cout << i << std::endl;
             j++;
         }
 
     }
     std::cout << "Errors " << j << std::endl;
-    bool error_mode = false;
+
 
     for (int i = 0; i < vec.size(); i++) {
         auto x = fp_bt->access(i);
-        if (!error_mode) {
-            std::cout << i << std::endl;
-            error_mode = true;
-        }
+
         if (x != vec[i]) {
             j++;
         }
