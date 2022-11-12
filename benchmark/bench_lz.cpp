@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     lpf_array(vec, lpf, lpf_ptr);
     calculate_lz_factor(lzn,lpf, lz);
     auto t01 = std::chrono::high_resolution_clock::now();
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz, true);
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz, true,true);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
 

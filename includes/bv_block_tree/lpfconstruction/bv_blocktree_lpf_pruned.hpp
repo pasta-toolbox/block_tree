@@ -8,78 +8,127 @@
 template<typename input_type, typename size_type>
 class BV_BlockTree_lpf_pruned: public BV_Block_Tree<input_type,size_type> {
 public:
+    bool prune_block(std::vector<std::vector<size_type>>& counter, std::vector<std::vector<size_type>>& pointer, std::vector<std::vector<size_type>>& offset, std::vector<pasta::BitVector*>& marked_tree, std::vector<pasta::BitVector*>& pruned_tree, size_type i, size_type j, std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>>& ranks) {
+        // string leaf children can always be pruned
+        // fully padded children don't exist and can be ignored/ sanity check
+        // assumes short circuit evaluation as compiler behaviour
+        if ( i >= marked_tree.size() || j >= marked_tree[i]->size()) {
+            return false;
+        }
+
+
+        bool marked_children = false;
+        // we already incremented counters for unmarked blocks during a previous step and now only need to consider marked blocks
+        if ((*marked_tree[i])[j] == 1) {
+            // inverse postorder dfs
+            // prune_block returns true if a marked block stays marked false otherwise
+            size_type rank_blk = ranks[i].rank1(j);
+            for (size_type k = this->tau_ - 1; k >= 0; k--) {
+                marked_children |= prune_block(counter, pointer, offset, marked_tree, pruned_tree, i+1, rank_blk * this->tau_ + k,ranks);
+            }
+            // conditions to be pruned are no marked children, no pointers pointing to me and a former occurrence in S
+            if (!marked_children && counter[i][j] == 0 && pointer[i][j] != NO_FORMER_OCC) {
+
+                (*marked_tree[i])[j] = 0;
+                counter[i][pointer[i][j]]++;
+                if (offset[i][j] > 0) {
+                    counter[i][pointer[i][j] + 1]++;
+                }
+                if (i + 1 < counter.size()) {
+                    // remove all of its children by decrementing counters and marking them as PRUNED
+                    for (size_type k = this->tau_ - 1; k >= 0; k--) {
+                        if (rank_blk * this->tau_ + k < counter[i + 1].size()) {
+                            auto ptr_child = pointer[i + 1][rank_blk * this->tau_ + k];
+                            counter[i + 1][ptr_child]--;
+                            if (offset[i + 1][rank_blk * this->tau_ + k] > 0) {
+                                counter[i + 1][ptr_child + 1]--;
+                            }
+                            pointer[i+1][rank_blk * this->tau_ + k] = PRUNED;
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return marked_children || counter[i][j] > 0 || pointer[i][j] == NO_FORMER_OCC;
+    }
     int32_t pruning_extended(std::vector<std::vector<size_type>>& counter, std::vector<std::vector<size_type>>& pointer, std::vector<std::vector<size_type>>& offset, std::vector<pasta::BitVector*>& marked_tree, std::vector<pasta::BitVector*>& pruned_tree) {
         std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>> ranks;
         for (auto bv: marked_tree) {
             ranks.push_back(pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
         }
-        auto& lowest_lvl = *marked_tree[marked_tree.size() - 1];
-        auto &lowest_lvl_counter = counter[counter.size() - 1];
-        auto &lowest_lvl_pointer = pointer[counter.size() - 1];
-        auto &lowest_lvl_offset = offset[counter.size() - 1];
-        for (size_type i = lowest_lvl.size() - 1; i >= 0; i--) {
-            if (lowest_lvl[i]) {
-                if (lowest_lvl_counter[i] == 0 && lowest_lvl_pointer[i] != -1) {
-                    lowest_lvl_counter[lowest_lvl_pointer[i]]++;
-                    if (lowest_lvl_offset[i] >0) lowest_lvl_counter[lowest_lvl_pointer[i] + 1]++;
-                    lowest_lvl[i] = 0;
-                }
-            }
+        auto& top_lvl = *marked_tree[0];
+        for (size_type j = top_lvl.size() - 1; j >= 0; j--) {
+            prune_block(counter, pointer, offset, marked_tree, pruned_tree, 0, j,ranks);
         }
-        for (size_type i = marked_tree.size() - 2; i >= 0; i--) {
-            auto &current_lvl_bv = *marked_tree[i];
-            auto &current_lvl_counter = counter[i];
-            auto &current_lvl_pointer = pointer[i];
-            auto &current_lvl_offset = offset[i];
-            auto &below_lvl_bv = *marked_tree[i + 1];
-            auto &below_lvl_counter = counter[i + 1];
-            auto &below_lvl_pointer = pointer[i + 1];
-            auto &below_lvl_offset = offset[i + 1];
-            size_type first_child = ((below_lvl_bv.size() - 1)/ this->tau_) * this->tau_;
-            size_type last_child = below_lvl_bv.size() - 1;
-            for (size_type j = current_lvl_bv.size() - 1; j >= 0; j--) {
-                if (current_lvl_bv[j]) {
-                    bool has_marked_children = false;
-                    size_type child = last_child;
-                    while (child >= first_child) {
-                        bool child_not_replaceable = false;
-                        if (i + 2 < marked_tree.size() && below_lvl_bv[child]) {
-                            auto below_rank = pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(below_lvl_bv);
-                            size_type x = below_rank.rank1(child) * this->tau_;
-                            auto &grandchild_lvl_bv = *marked_tree[i + 2];
-                            for (size_type k = 0; k < this->tau_ && x + k < grandchild_lvl_bv.size(); k++) {
-                                child_not_replaceable |= grandchild_lvl_bv[x + k];
-                            }
-                        }
-                        below_lvl_bv[child] = (below_lvl_counter[child] > 0 || below_lvl_pointer[child] == -1) || child_not_replaceable;
-                        has_marked_children = has_marked_children || below_lvl_bv[child];
-                        child--;
-                    }
-                    if (current_lvl_counter[j] == 0 && current_lvl_pointer[j] > -1) {
-                        if (!has_marked_children) {
-                            current_lvl_bv[j] = 0;
-                            current_lvl_counter[current_lvl_pointer[j]]++;
-                            if (current_lvl_offset[j] > 0) {
-                                current_lvl_counter[current_lvl_pointer[j] + 1]++;
-                            }
-                            size_type pointer_child = last_child;
-                            while (pointer_child >= first_child) {
-                                below_lvl_counter[below_lvl_pointer[pointer_child]]--;
-                                if (below_lvl_offset[pointer_child] > 0) {
-                                    below_lvl_counter[below_lvl_pointer[pointer_child] + 1]--;
-                                }
-                                below_lvl_pointer[pointer_child] = -2;
-                                pointer_child--;
-                            }
-
-                            //delete pointer_child pointer
-                        }
-                    }
-                    last_child = first_child - 1;
-                    first_child -= this->tau_;
-                }
-            }
-        }
+//        auto& lowest_lvl = *marked_tree[marked_tree.size() - 1];
+//        auto &lowest_lvl_counter = counter[counter.size() - 1];
+//        auto &lowest_lvl_pointer = pointer[counter.size() - 1];
+//        auto &lowest_lvl_offset = offset[counter.size() - 1];
+//        for (size_type i = lowest_lvl.size() - 1; i >= 0; i--) {
+//            if (lowest_lvl[i]) {
+//                if (lowest_lvl_counter[i] == 0 && lowest_lvl_pointer[i] != -1) {
+//                    lowest_lvl_counter[lowest_lvl_pointer[i]]++;
+//                    if (lowest_lvl_offset[i] >0) lowest_lvl_counter[lowest_lvl_pointer[i] + 1]++;
+//                    lowest_lvl[i] = 0;
+//                }
+//            }
+//        }
+//        for (size_type i = marked_tree.size() - 2; i >= 0; i--) {
+//            auto &current_lvl_bv = *marked_tree[i];
+//            auto &current_lvl_counter = counter[i];
+//            auto &current_lvl_pointer = pointer[i];
+//            auto &current_lvl_offset = offset[i];
+//            auto &below_lvl_bv = *marked_tree[i + 1];
+//            auto &below_lvl_counter = counter[i + 1];
+//            auto &below_lvl_pointer = pointer[i + 1];
+//            auto &below_lvl_offset = offset[i + 1];
+//            size_type first_child = ((below_lvl_bv.size() - 1)/ this->tau_) * this->tau_;
+//            size_type last_child = below_lvl_bv.size() - 1;
+//            for (size_type j = current_lvl_bv.size() - 1; j >= 0; j--) {
+//                if (current_lvl_bv[j]) {
+//                    bool has_marked_children = false;
+//                    size_type child = last_child;
+//                    while (child >= first_child) {
+//                        bool child_not_replaceable = false;
+//                        if (i + 2 < marked_tree.size() && below_lvl_bv[child]) {
+//                            auto below_rank = pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(below_lvl_bv);
+//                            size_type x = below_rank.rank1(child) * this->tau_;
+//                            auto &grandchild_lvl_bv = *marked_tree[i + 2];
+//                            for (size_type k = 0; k < this->tau_ && x + k < grandchild_lvl_bv.size(); k++) {
+//                                child_not_replaceable |= grandchild_lvl_bv[x + k];
+//                            }
+//                        }
+//                        below_lvl_bv[child] = (below_lvl_counter[child] > 0 || below_lvl_pointer[child] == -1) || child_not_replaceable;
+//                        has_marked_children = has_marked_children || below_lvl_bv[child];
+//                        child--;
+//                    }
+//                    if (current_lvl_counter[j] == 0 && current_lvl_pointer[j] > -1) {
+//                        if (!has_marked_children) {
+//                            current_lvl_bv[j] = 0;
+//                            current_lvl_counter[current_lvl_pointer[j]]++;
+//                            if (current_lvl_offset[j] > 0) {
+//                                current_lvl_counter[current_lvl_pointer[j] + 1]++;
+//                            }
+//                            size_type pointer_child = last_child;
+//                            while (pointer_child >= first_child) {
+//                                below_lvl_counter[below_lvl_pointer[pointer_child]]--;
+//                                if (below_lvl_offset[pointer_child] > 0) {
+//                                    below_lvl_counter[below_lvl_pointer[pointer_child] + 1]--;
+//                                }
+//                                below_lvl_pointer[pointer_child] = -2;
+//                                pointer_child--;
+//                            }
+//
+//                            //delete pointer_child pointer
+//                        }
+//                    }
+//                    last_child = first_child - 1;
+//                    first_child -= this->tau_;
+//                }
+//            }
+//        }
 
         return 0;
     }
@@ -94,7 +143,7 @@ public:
         std::vector<size_type> pass2_max_offset;
         std::vector<size_type> pass2_ones;
         std::vector<std::vector<int64_t>> blk_lvl;
-
+        std::vector<int64_t> block_size_lvl_temp;
         int64_t added_padding = 0;
         int64_t tree_max_height = 0;
         int64_t max_blk_size = 0;
@@ -114,11 +163,11 @@ public:
         // Firstly we build the theory structure or even just generate an all internal blocks tree
         auto t01 = std::chrono::high_resolution_clock::now();
         while (block_size > this->max_leaf_length_) {
-            // if marking enabled we initialize everything to 0 and mark else is init to 1
+            // if marking enabled we initialize everything to 0 and mark else is init_simple to 1
             auto lvl_bv = new pasta::BitVector(block_text_inx.size(),!mark);
             auto& bv = *lvl_bv;
             if (mark) {
-                mark_blocks(bv, lz, block_text_inx, block_size);
+                mark_blocks(bv, lpf, block_text_inx, block_size);
             }
             auto pointers = std::vector<size_type>(block_text_inx.size(), -1);
             auto offsets = std::vector<size_type>(block_text_inx.size(), -1);
@@ -151,7 +200,7 @@ public:
                 }
 
             }
-            this->block_size_lvl_.push_back(block_size);
+            block_size_lvl_temp.push_back(block_size);
             blk_lvl.push_back(block_text_inx);
             block_size = block_size/ this->tau_;
             std::vector<int64_t> block_text_inx_new;
@@ -165,10 +214,8 @@ public:
         auto t02 = std::chrono::high_resolution_clock::now();
         this->leaf_size = block_size;
         block_size *= this->tau_;
-        pruning_extended(counter, pass2_pointer, pass2_offset, bv_marked);
+        pruning_extended(counter, pass2_pointer, pass2_offset, bv_marked, bv_marked);
         auto t03 = std::chrono::high_resolution_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01).count() << std::endl;
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t02).count() << std::endl;
         std::vector<size_type> ones_per_lvl(bv_marked.size(), 0);
         // count 1s in each lvl;
         for (size_type i = 0; i < bv_marked.size(); i++) {
@@ -177,53 +224,40 @@ public:
                 if (current_lvl[j]) {
                     ones_per_lvl[i]++;
                 }
-                if (current_lvl[j] && pass2_pointer[i][j] == -2) {
-                    std::cout << i << ":" << j << std::endl;
-                }
+
             }
         }
-        auto neg2c = 0;
-        for (size_type i = 0; i < pass2_pointer.size(); i++) {
-            for (size_type j = 0; j < bv_marked[i]->size(); j++) {
-                neg2c += (-2 == pass2_pointer[i][j]);
-            }
-            std::cout << neg2c << std::endl;
-        }
-        std::cout << "Remove " << neg2c << std::endl;
-        for (auto v: ones_per_lvl) {
-            std::cout << v << std::endl;
-        }
-        std::cout << "done" << std::endl;
-        for (auto v: bv_marked) {
-            std::cout << v->size() << std::endl;
-        }
-        std::cout << "done4" << std::endl;
-//        std::cout << *bv_marked[0] << std::endl;
+
+
 
 
         auto& top_level = *bv_marked[0];
-        this->block_tree_types_.push_back(&top_level);
-        this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(top_level));
-        auto p0 = new sdsl::int_vector<>(top_level.size() - ones_per_lvl[0],0);
-        auto o0 = new sdsl::int_vector<>(top_level.size() - ones_per_lvl[0],0);
-        auto& ptr0 = *p0;
-        auto& off0 = *o0;
-        size_type c = 0;
-        for (size_type j = 0; j < top_level.size(); j++) {
-            if (!top_level[j]) {
-                ptr0[c] = pass2_pointer[0][j];
-                off0[c] = pass2_offset[0][j];
-                c++;
+        bool found_back_block = top_level.size() != ones_per_lvl[0];
+        if (found_back_block || !this->CUT_FIRST_LEVELS) {
+            this->block_tree_types_.push_back(&top_level);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(top_level));
+            auto p0 = new sdsl::int_vector<>(top_level.size() - ones_per_lvl[0], 0);
+            auto o0 = new sdsl::int_vector<>(top_level.size() - ones_per_lvl[0], 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            size_type c = 0;
+            for (size_type j = 0; j < top_level.size(); j++) {
+                if (!top_level[j]) {
+                    ptr0[c] = pass2_pointer[0][j];
+                    off0[c] = pass2_offset[0][j];
+                    c++;
+                }
             }
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size_lvl_temp[0]);
         }
-        sdsl::util::bit_compress(ptr0);
-        sdsl::util::bit_compress(off0);
-        this->block_tree_pointers_.push_back(p0);
-        this->block_tree_offsets_.push_back(o0);
         for(size_type i = 1; i < bv_marked.size(); i++) {
             size_type new_size = (ones_per_lvl[i - 1] - is_padded) * this->tau_;
             auto last_block_parent = blk_lvl[i - 1][blk_lvl[i - 1].size() - 1];
-            auto lvl_block_size = this->block_size_lvl_[i];
+            auto lvl_block_size = block_size_lvl_temp[i];
             if (is_padded) {
                 for (size_type j = 0; j < this->tau_; j++) {
                     if (last_block_parent + j * lvl_block_size < text.size()) {
@@ -231,42 +265,43 @@ public:
                     }
                 }
             }
-
-            auto bit_vector = new pasta::BitVector(new_size,0);
-            auto& bv_ref = *bit_vector;
-            auto p = new sdsl::int_vector<>(bv_ref.size() - ones_per_lvl[i],0);
-            auto o = new sdsl::int_vector<>(bv_ref.size() - ones_per_lvl[i],0);
-            auto& ptr = *p;
-            auto& off = *o;
-            size_type pointer_saved = 0;
-            size_type pointer_skipped = 0;
-            std::unordered_map<size_type, size_type> blocks_skipped;
-            size_type skip = 0;
-            size_type replace = 0;
-            auto& lvl_above_pass1 = *bv_marked[i - 1];
-            auto& lvl_pass1 = *bv_marked[i];
-            size_type c = 0;
-            size_type c_u = 0;
-            std::cout << "Made it til here" << std::endl;
-            for (size_type j = 0; j < lvl_pass1.size(); j++) {
-                blocks_skipped[j] = j - c;
-                if (pass2_pointer[i][j] != -2) {
-                    bv_ref[c] = (bool) lvl_pass1[j];
-                    if (!lvl_pass1[j]) {
-                        ptr[c_u] = pass2_pointer[i][j] - blocks_skipped[pass2_pointer[i][j]];
-                        off[c_u] = pass2_offset[i][j];
-                        c_u++;
+            found_back_block |= new_size != ones_per_lvl[i];
+            if (found_back_block || !this->CUT_FIRST_LEVELS) {
+                auto bit_vector = new pasta::BitVector(new_size, 0);
+                auto &bv_ref = *bit_vector;
+                auto p = new sdsl::int_vector<>(bv_ref.size() - ones_per_lvl[i], 0);
+                auto o = new sdsl::int_vector<>(bv_ref.size() - ones_per_lvl[i], 0);
+                auto &ptr = *p;
+                auto &off = *o;
+                size_type pointer_saved = 0;
+                size_type pointer_skipped = 0;
+                std::unordered_map<size_type, size_type> blocks_skipped;
+                size_type skip = 0;
+                size_type replace = 0;
+                auto &lvl_above_pass1 = *bv_marked[i - 1];
+                auto &lvl_pass1 = *bv_marked[i];
+                size_type c = 0;
+                size_type c_u = 0;
+                for (size_type j = 0; j < lvl_pass1.size(); j++) {
+                    blocks_skipped[j] = j - c;
+                    if (pass2_pointer[i][j] != -2) {
+                        bv_ref[c] = (bool) lvl_pass1[j];
+                        if (!lvl_pass1[j]) {
+                            ptr[c_u] = pass2_pointer[i][j] - blocks_skipped[pass2_pointer[i][j]];
+                            off[c_u] = pass2_offset[i][j];
+                            c_u++;
+                        }
+                        c++;
                     }
-                    c++;
                 }
+                this->block_tree_types_.push_back(&bv_ref);
+                this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv_ref));
+                sdsl::util::bit_compress(ptr);
+                sdsl::util::bit_compress(off);
+                this->block_tree_pointers_.push_back(p);
+                this->block_tree_offsets_.push_back(o);
+                this->block_size_lvl_.push_back(block_size_lvl_temp[i]);
             }
-            std::cout << "Made it til here2" << std::endl;
-            this->block_tree_types_.push_back(&bv_ref);
-            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv_ref));
-            sdsl::util::bit_compress(ptr);
-            sdsl::util::bit_compress(off);
-            this->block_tree_pointers_.push_back(p);
-            this->block_tree_offsets_.push_back(o);
         }
         int64_t leaf_count = 0;
         auto& last_level = (*bv_marked[bv_marked.size() - 1]);
@@ -338,16 +373,12 @@ public:
 //                if (!has_ptr) {
 //                    bv[j] = 1;
 //                }
-////                if (j == 340) {
-////                    std::cout<< i << " " << (*tree_bv)[j] << std::endl;
-////                }
+
 //            }
 //
 //            block_size *= this->tau_;
 //            bv_pruned.push_back(&bv);
-////            if (i == bv_marked.size() -1) {
-////                std::cout << *tree_bv << std::endl;
-////            }
+
 //            size_type ones_per_pass2 = 0;
 //            for (size_type j = 0; j < bv.size(); j++) {
 //                ones_per_pass2 += bv[j];
@@ -438,9 +469,7 @@ public:
 //            this->block_tree_pointers_.push_back(p);
 //            this->block_tree_offsets_.push_back(o);
 //            this->block_tree_types_.push_back(bit_vector);
-////            std::cout << (*bv_marked[pass1_i - 1]) << std::endl;
-////            std::cout << (*bv_pruned[i + 1]) << std::endl;
-////            std::cout << *bit_vector << std::endl;
+
 //
 //            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv_ref));
 //        }
@@ -456,20 +485,13 @@ public:
 //                }
 //            }
 //        }
-//        this->amount_of_leaves = leaf_count;
-        // final pass
-//        for (auto a: bv_marked) {
-//            std::cout << *a << std::endl << std::endl;
-//        }
-//        std::cout << "alles kllar" << std::endl;
-//        for (auto a: bv_pruned) {
-//            std::cout << *a << std::endl<< std::endl;
-//        }
+
 
         return 0;
     };
 
-    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, bool mark) {
+    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, bool mark, bool cut_first_level) {
+        this->CUT_FIRST_LEVELS = cut_first_level;
         this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
@@ -480,14 +502,16 @@ public:
         calculate_lz_factor(this->s_,lpf, lz);
         init(text, lpf, lpf_ptr, lz, mark);
     };
-    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark) {
+    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
+        this->CUT_FIRST_LEVELS = cut_first_level;
         this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = lz.size();
         init(text, lpf, lpf_ptr, lz, mark);
     };
-    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark) {
+    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
+        this->CUT_FIRST_LEVELS = cut_first_level;
         this->map_unique_chars(text);
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
@@ -497,8 +521,11 @@ public:
     ~BV_BlockTree_lpf_pruned() {
     };
 private:
+    // magic number to indicate that a block is pruned
+    const int PRUNED = -2;
+    // magic number to indicate that a block has no occurrences to its left side
+    const int NO_FORMER_OCC = -1;
     size_type generate_next_level(std::vector<int64_t> &old_level, std::vector<int64_t> &new_level, pasta::BitVector& bv, int64_t N, int64_t block_size) {
-//        std::cout << block_size << " this size " << " " << old_level.size() << " " << new_level.size() << std::endl;
         for (size_type i = 0; i < bv.size(); i++) {
             if (bv[i] == 1) {
                 for (size_type j = 0; j < this->tau_ ; j++) {
@@ -511,25 +538,19 @@ private:
         return 0;
     }
 
-    size_type mark_blocks(pasta::BitVector& bv, std::vector<size_type>& lz, std::vector<int64_t>& block_text_inx, int64_t block_size) {
-
-        size_type j = 0;
-        for (size_type i = 0; i < lz.size() - 1; i++) {
-            size_type f = lz[i];
-            while (j < block_text_inx.size() - 1 && block_text_inx[j + 1] <= f) {
-                j++;
-            }
-
-            bv[j] = 1;
-
-            if (j > 0 && block_text_inx[j - 1] + block_size == block_text_inx[j]) {
-                bv[j - 1] = 1;
-            }
-
-            if (j + 1 < bv.size() && block_text_inx[j] + block_size == block_text_inx[j + 1]) {
-                bv[j + 1] = 1;
+    size_type mark_blocks(pasta::BitVector& bv, std::vector<size_type>& lpf, std::vector<int64_t>& block_text_inx, int64_t block_size) {
+        bv[0] = 1;
+        for (size_type i = 1; i < block_text_inx.size() - 1; i++) {
+            if (block_text_inx[i - 1] + block_size == block_text_inx[i] && block_text_inx[i] + block_size == block_text_inx[i+1] &&
+                (lpf[block_text_inx[i - 1]] < 2 * block_size || lpf[block_text_inx[i]] < 2 * block_size)) {
+                bv[i] = 1;
             }
         }
+        if (bv.size() > 1) {
+            size_type last = bv.size() - 1;
+            bv[last] = block_text_inx[last - 1] + block_size == block_text_inx[last] && lpf[block_text_inx[last - 1]] < 2 * block_size;
+        }
+        return 0;
         return 0;
     }
 };

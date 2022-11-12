@@ -65,12 +65,12 @@ private:
                 lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
             }
         }
+        bool found_back_block = false;
+        size_type level = 0;
         do {
 
-            size_type max_pointer = 0;
-            size_type max_offset = 0;
 //            std::cout << "Blocksize: " << block_size << " Blocks in Level: " << block_text_inx.size();
-            this->block_size_lvl_.push_back(block_size);
+
             this->block_per_lvl_.push_back(block_text_inx.size());
             auto bit_vector = new pasta::BitVector(block_text_inx.size(),false);
             auto& bv = *bit_vector;
@@ -106,12 +106,6 @@ private:
                             }
                             pointers.push_back(current_pointer);
                             offsets.push_back(current_offset);
-                            if (current_pointer > max_pointer) {
-                                max_pointer = current_pointer;
-                            }
-                            if (current_offset > max_offset) {
-                                max_offset = current_offset;
-                            }
                         }
                         break;
                     }
@@ -122,8 +116,10 @@ private:
             }
             std::vector<int64_t> block_text_inx_new(0,0);
             block_size = block_size / this->tau_;
+            size_type ones_in_lvl = 0;
             for (size_type i = 0; i < bv.size(); i++) {
                 if (bv[i] == 1) {
+                    ones_in_lvl++;
                     for (size_type j = 0; j < this->tau_ ; j++) {
                         if (block_text_inx[i] + (j * block_size) < text.size()) {
                             block_text_inx_new.push_back(block_text_inx[i] + (j * block_size));
@@ -131,22 +127,24 @@ private:
                     }
                 }
             }
-            this->block_tree_types_.push_back(bit_vector);
-            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv));
-            int64_t ptr_size = (8 * sizeof(max_pointer)) - this->leading_zeros(max_pointer);
-            int64_t off_size = (8 * sizeof(max_offset)) - this->leading_zeros(max_offset);
-            auto p = new sdsl::int_vector(pointers.size(), 0,ptr_size);
-            auto o = new sdsl::int_vector(offsets.size(),0,off_size);
-            auto& ptr = *p;
-            auto& off = *o;
-            for(int64_t j = 0; j < pointers.size(); j++) {
-                auto pointer = pointers[pointers.size() - 1 - j];
-                auto offset = offsets[pointers.size() - 1 - j];
-                ptr[j] = pointer;
-                off[j] = offset;
+            found_back_block |= ones_in_lvl != bit_vector->size();
+            if (found_back_block) {
+                this->block_tree_types_.push_back(bit_vector);
+                this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(bv));
+                auto p = new sdsl::int_vector(pointers.size(), 0, 64);
+                auto o = new sdsl::int_vector(offsets.size(), 0, 64);
+                auto &ptr = *p;
+                auto &off = *o;
+                for (int64_t j = 0; j < pointers.size(); j++) {
+                    auto pointer = pointers[pointers.size() - 1 - j];
+                    auto offset = offsets[pointers.size() - 1 - j];
+                    ptr[j] = pointer;
+                    off[j] = offset;
+                }
+                this->block_size_lvl_.push_back(block_size * this->tau_);
+                this->block_tree_pointers_.push_back(p);
+                this->block_tree_offsets_.push_back(o);
             }
-            this->block_tree_pointers_.push_back(p);
-            this->block_tree_offsets_.push_back(o);
             block_text_inx = block_text_inx_new;
         } while (block_size > this->max_leaf_length_);
         this->leaf_size = block_size;
