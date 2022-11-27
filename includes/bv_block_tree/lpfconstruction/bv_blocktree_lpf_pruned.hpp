@@ -16,10 +16,9 @@ public:
         this->s_ = s;
         std::vector<size_type> lpf(text.size());
         std::vector<size_type> lpf_ptr(text.size());
-        std::vector<size_type> lz;
         lpf_array_stack(text, lpf, lpf_ptr);
-        if (dp) init_dp(text, lpf, lpf_ptr, lz, mark);
-        else init(text, lpf, lpf_ptr, lz, mark);
+        if (dp) init_dp(text, lpf, lpf_ptr, mark);
+        else init(text, lpf, lpf_ptr,  mark);
     };
     bool prune_block(std::vector<std::vector<size_type>>& counter, std::vector<std::vector<size_type>>& pointer, std::vector<std::vector<size_type>>& offset, std::vector<pasta::BitVector*>& marked_tree, std::vector<pasta::BitVector*>& pruned_tree, size_type i, size_type j, std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>>& ranks) {
         // string leaf children can always be pruned
@@ -145,7 +144,7 @@ public:
 
         return 0;
     }
-    int32_t init_dp(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& prevOcc, std::vector<size_type>& lz, bool mark) {
+    int32_t init_dp(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& prevOcc, bool mark) {
         // bv_marked contains all the marked
         std::vector<pasta::BitVector*> bv_marked;
         std::vector<pasta::BitVector*> bv_pruned;
@@ -513,7 +512,7 @@ public:
 
         return 0;
     };
-    int32_t init(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& prevOcc, std::vector<size_type>& lz, bool mark) {
+    int32_t init(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& prevOcc, bool mark) {
         // bv_marked contains all the marked
         std::vector<pasta::BitVector*> bv_marked;
         std::vector<pasta::BitVector*> bv_pruned;
@@ -728,8 +727,8 @@ public:
         std::vector<size_type> lz;
         lpf_array_stack(text, lpf, lpf_ptr);
         calculate_lz_factor(this->s_,lpf, lz);
-        if (dp) init_dp(text, lpf, lpf_ptr, lz, mark);
-        else init(text, lpf, lpf_ptr, lz, mark);
+        if (dp) init_dp(text, lpf, lpf_ptr,  mark);
+        else init(text, lpf, lpf_ptr, mark);
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
         this->CUT_FIRST_LEVELS = cut_first_level;
@@ -737,7 +736,7 @@ public:
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = lz.size();
-        init_dp(text, lpf, lpf_ptr, lz, mark);
+        init_dp(text, lpf, lpf_ptr, mark);
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
         this->CUT_FIRST_LEVELS = cut_first_level;
@@ -745,8 +744,7 @@ public:
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = s;
-        std::cout << lpf_ptr.size() << "hier stimmt es noch" << std::endl;
-        init_dp(text, lpf, lpf_ptr, lz, mark);
+        init_dp(text, lpf, lpf_ptr, mark);
     };
     ~BV_BlockTree_lpf_pruned() = default;
 private:
