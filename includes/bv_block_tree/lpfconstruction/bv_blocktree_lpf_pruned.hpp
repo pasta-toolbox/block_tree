@@ -217,7 +217,7 @@ public:
             blk_lvl.push_back(block_text_inx);
             block_size = block_size/ this->tau_;
             for (size_type b = 0; b < block_text_inx.size(); b++) {
-                for (size_type j = 0; j < block_size * this->tau_; j++) {
+                for (size_type j = 0; j < block_size * this->tau_ && block_text_inx[b] + j < lpf.size(); j++) {
                     size_type i = block_text_inx[b] + j;
                     size_type p = prevOcc[i];
                     if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
