@@ -115,7 +115,7 @@ public:
                 bool has_ptr = false;
                 auto ptr = pass1_pointer[i][j];
                 auto off = pass1_offset[i][j];
-                if (ptr == -1 || ptr + std::min(off, (int64_t)1) >= j) {
+                if (ptr == -1 || ptr + std::min(off, (size_type)1) >= j) {
                     (*bv)[j] = 1;
                 } else {
                     size_type b = ptr;
