@@ -8,7 +8,6 @@
 #include "support/wide_rank.hpp"
 #include "support/wide_rank_select.hpp"
 #include <chrono>
-#include "int_vector.hpp"
 #include "bv_blocktree.hpp"
 
 #ifndef BLOCK_TREE_BV_BLOCKTREE_LPF_H
@@ -25,7 +24,7 @@ public:
         std::vector<size_type> lpf(text.size());
         std::vector<size_type> lpf_ptr(text.size());
         std::vector<size_type> lz;
-        lpf_array(text, lpf, lpf_ptr);
+        lpf_array_stack(text, lpf, lpf_ptr);
         calculate_lz_factor(this->s_,lpf, lz);
         init(text, lpf, lpf_ptr, lz);
     };
@@ -59,10 +58,10 @@ private:
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
-//        manipulate lpf_ptr
-        for(size_type i = 0; i < lpf_ptr.size(); i++) {
-            if (lpf[i] <= lpf[lpf_ptr[i]] && lpf_ptr[i] == i-1) {
-                lpf_ptr[i] = lpf_ptr[lpf_ptr[i]];
+        for (size_type i = 0; i < lpf_ptr.size(); i++) {
+            size_type p = lpf_ptr[i];
+            if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
+                lpf_ptr[i] = lpf_ptr[p];
             }
         }
         bool found_back_block = false;
@@ -142,6 +141,8 @@ private:
                     off[j] = offset;
                 }
                 this->block_size_lvl_.push_back(block_size * this->tau_);
+                sdsl::util::bit_compress(*p);
+                sdsl::util::bit_compress(*o);
                 this->block_tree_pointers_.push_back(p);
                 this->block_tree_offsets_.push_back(o);
             }

@@ -14,7 +14,7 @@ template<typename input_type, typename size_type>
 class BV_BlockTree_fp_pruned : public BV_Block_Tree<input_type, size_type> {
 public:
     size_type const_size = 0;
-
+    size_type sigma_ = 0;
     bool prune_block(std::vector<std::vector<size_type>> &counter, std::vector<std::vector<size_type>> &pointer,
                      std::vector<std::vector<size_type>> &offset, std::vector<pasta::BitVector *> &marked_tree,
                      std::vector<pasta::BitVector *> &pruned_tree, size_type i, size_type j,
@@ -115,7 +115,7 @@ public:
                 bool has_ptr = false;
                 auto ptr = pass1_pointer[i][j];
                 auto off = pass1_offset[i][j];
-                if (ptr == -1 || ptr + std::min(off, 1) >= j) {
+                if (ptr == -1 || ptr + std::min(off, (int64_t)1) >= j) {
                     (*bv)[j] = 1;
                 } else {
                     size_type b = ptr;
@@ -182,7 +182,7 @@ public:
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> blocks = std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>>();
             for (size_type i = 0; i < block_text_inx.size() - last_block_padded; i++) {
                 auto index = block_text_inx[i];
-                MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, 256,
+                MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, sigma_,
                                                                                                              index,
                                                                                                              block_size,
                                                                                                              kPrime);
@@ -219,7 +219,7 @@ public:
                     block_text_inx[i] + pair_size <= text.size()) {
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_pair = MersenneRabinKarp<input_type, size_type>(text,
-                                                                                                                256,
+                                                                                                                sigma_,
                                                                                                                 index,
                                                                                                                 pair_size,
                                                                                                                 kPrime);
@@ -228,7 +228,7 @@ public:
                 }
             }
             // find pairs
-            MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, 256, 0,
+            MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, sigma_, 0,
                                                                                                            pair_size,
                                                                                                            kPrime);
             for (size_type i = 0; i < text.size() - pair_size; i++) {
@@ -267,7 +267,7 @@ public:
                 }
             }
             MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(
-                    text, 256, block_text_inx[0], block_size, kPrime);
+                    text, sigma_, block_text_inx[0], block_size, kPrime);
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 bool followed =
                         (i < block_text_inx.size() - 1) && block_text_inx[i] + block_size == block_text_inx[i + 1] &&
@@ -465,7 +465,7 @@ public:
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> blocks = std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>>();
             for (size_type i = 0; i < block_text_inx.size() - last_block_padded; i++) {
                 auto index = block_text_inx[i];
-                MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, 256,
+                MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, sigma_,
                                                                                                              index,
                                                                                                              block_size,
                                                                                                              kPrime);
@@ -499,7 +499,7 @@ public:
                     block_text_inx[i] + pair_size <= text.size()) {
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_pair = MersenneRabinKarp<input_type, size_type>(text,
-                                                                                                                256,
+                                                                                                                sigma_,
                                                                                                                 index,
                                                                                                                 pair_size,
                                                                                                                 kPrime);
@@ -508,7 +508,7 @@ public:
                 }
             }
             // find pairs
-            MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, 256, 0,
+            MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, sigma_, 0,
                                                                                                            pair_size, kPrime);
             for (size_type i = 0; i < text.size() - pair_size; i++) {
                 MersenneHash<input_type> mh_sw = MersenneHash<input_type>(text, rk_pair_sw.hash_, i, pair_size);
@@ -547,7 +547,7 @@ public:
             }
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(text,
-                                                                                                                 256,
+                                                                                                                 sigma_,
                                                                                                                  block_text_inx[i],
                                                                                                                  block_size,
                                                                                                                  kPrime);
@@ -709,8 +709,9 @@ public:
         return 0;
     };
 
-    BV_BlockTree_fp_pruned(std::vector<input_type> &text, size_type tau, size_type max_leaf_length, size_type s,
+    BV_BlockTree_fp_pruned(std::vector<input_type> &text, size_type tau, size_type max_leaf_length, size_type s, size_type sigma,
                            bool cut_first_levels, bool extended_prune) {
+        sigma_ = sigma;
         this->CUT_FIRST_LEVELS = cut_first_levels;
         this->map_unique_chars(text);
         this->tau_ = tau;

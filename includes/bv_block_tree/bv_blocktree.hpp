@@ -11,6 +11,7 @@
 #include <support/wide_rank.hpp>
 #include <support/wide_rank_select.hpp>
 #include <omp.h>
+#include <sdsl/int_vector.hpp>
 #ifndef BLOCK_TREE_BV_BLOCKTREE_HPP
 #define BLOCK_TREE_BV_BLOCKTREE_HPP
 
@@ -342,9 +343,8 @@ public:
             }
         }
         omp_set_num_threads(threads);
-#pragma omp parallel
-        {
-#pragma omp for
+
+#pragma omp parallel for default(none)
             for (auto c: chars_) {
                 for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
                     rank_block(c, 0, i);
@@ -405,7 +405,7 @@ public:
                     sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
             }
-        }
+
 
 //        c_ranks_.resize(u_chars_, )
 //        for (auto c: chars_) {

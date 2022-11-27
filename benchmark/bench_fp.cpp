@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <iostream>
 #include <unordered_set>
+
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
     // add a byte size argument which the user can enter like '1gi'
@@ -38,6 +39,8 @@ int main(int argc, char* argv[]) {
     std::stringstream buffer;
     t.read(&test[0], a_size);
 //    test = "NNBOBOTWNNBOBIOOTBSHTFNEBOBOTWNEBOBOTWNEBOBIOOTBSHTFNSBOBOTW";
+//    test = "abbaabbbaaabab";
+//test = "aabaaaaaaa";
 //   test = "ABCDABCDEFGHABCDDE12";
     std::vector<uint8_t> vec(test.begin(), test.end());
 
@@ -48,76 +51,103 @@ int main(int argc, char* argv[]) {
 
 
 
-    std::vector<int32_t> lpf(vec.size());
-    std::vector<int32_t> lpf_ptr(vec.size());
-    std::vector<int32_t> lz;
-    std::vector<int32_t> lpf2(vec.size());
-    std::vector<int32_t> lpf_ptr2(vec.size());
-    std::vector<int32_t> lz2;
-    int32_t lzn = 0;
+    std::vector<int64_t> lpfArray(vec.size());
+    std::vector<int64_t> prevOcc(vec.size());
+    std::vector<int64_t> lzPhrases;
+//    std::vector<int64_t> lpf2(vec.size());
+//    std::vector<int64_t> lpf_ptr2(vec.size());
+//    std::vector<int64_t> lz2;
+
+    int64_t numberOfLzPhrases = 0;
+    auto t0a = std::chrono::high_resolution_clock::now();
+//    lpf_array_ansv(vec, lpfArray, prevOcc);
+
+//    lpf_array_stack(vec, lpf2, lpf_ptr2);
+    auto t0b = std::chrono::high_resolution_clock::now();
+    auto ms_intstack = std::chrono::duration_cast<std::chrono::milliseconds>(t0b - t0a);
+    std::cout << "LPF TIME stack " << ms_intstack.count() << std::endl;
+
+
     auto t01 = std::chrono::high_resolution_clock::now();
-    lpf_array_stack(vec, lpf, lpf_ptr);
-    calculate_lz_factor(lzn,lpf, lz);
+//    lpf_array_ansv(vec, lpfArray, prevOcc);
+    lpf_array_stack(vec, lpfArray, prevOcc);
+    calculate_lz_factor(numberOfLzPhrases, lpfArray, lzPhrases);
     auto t02 = std::chrono::high_resolution_clock::now();
-//    for (int i = 0; i < lpf.size(); i++) {
-//        std::cout << lpf[i] << " ";
+
+//    for (int i = 0; i < lpfArray.size(); i++) {
+//        std::cout << lpfArray[i] << " ";
 //    }
 //    std::cout << std::endl;
-//    for (int i = 0; i < lpf2.size(); i++) {
-//        std::cout << lpf2[i] << " ";
+//
+//
+//    for (int i = 0; i < prevOcc.size(); i++) {
+//        std::cout << prevOcc[i] << " ";
 //    }
+
     std::cout << std::endl;
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-
     std::cout << "LPF TIME " << ms_int.count() << std::endl;
     bool DONT_CUT_FIRST_LEVELS = false;
     bool CUT_FIRST_LEVELS = true;
     bool EXTENDED_PRUNE = true;
     bool SIMPLE_PRUNE = false;
+    int tau = 2;
+    int mls = 1;
+    int64_t s = 1;
+    std::cout << "#LZ PHRASES " << s << std::endl;
 //    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1);
-//    BV_BlockTree_lpf_theory<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz);
+//    BV_BlockTree_lpf_theory<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpfArray, prevOcc, lzPhrases);
     auto t03 = std::chrono::high_resolution_clock::now();
-    auto* fpTheory_bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, 2, 4,1,256, CUT_FIRST_LEVELS);
+    auto* fpTheory_bt = new BV_BlockTree_fp_theory<uint8_t, int64_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS);
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_theo = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
     std::cout << "FP THEORY TIME " << ms_int_fp_theo.count() << std::endl;
-    auto* fpPruned_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 2, 4,1, CUT_FIRST_LEVELS,
+    auto* fpPruned_bt = new BV_BlockTree_fp_pruned<uint8_t, int64_t>(vec, tau, mls,s,256,CUT_FIRST_LEVELS,
                                                                      EXTENDED_PRUNE);
     auto t05 = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
     std::cout << "FP PRUNE TIME " << ms_int_fp_prune.count() << std::endl;
     auto t0x = std::chrono::high_resolution_clock::now();
-    auto* fpPruned_simple_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 2, 4,1, CUT_FIRST_LEVELS,
+    auto* fpPruned_simple_bt = new BV_BlockTree_fp_pruned<uint8_t, int64_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS,
                                                                             SIMPLE_PRUNE);
     auto t0y = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune_simple = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
     std::cout << "FP PRUNE SIMPLE TIME " << ms_int_fp_prune_simple.count() << std::endl;
-
-    auto* lpfHeuristic_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 4, lpf, lpf_ptr, lz);
+    lpf_array_stack(vec, lpfArray, prevOcc);
+    auto* lpfHeuristic_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int64_t>(vec, tau, mls);
     auto t06 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_heu = std::chrono::duration_cast<std::chrono::milliseconds>(t06 - t0y);
-    std::cout << "LPF Heuristic TIME " << ms_int_lpf_heu.count() + ms_int.count() << std::endl;
-    auto* lpfTheory_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 4, lpf, lpf_ptr, lz);
+    std::cout << "LPF Heuristic TIME " << ms_int_lpf_heu.count() << std::endl;
+    auto* lpfTheory_bt = new BV_BlockTree_lpf_theory<uint8_t, int64_t>(vec, tau, mls, false);
     auto t07 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_theo = std::chrono::duration_cast<std::chrono::milliseconds>(t07 - t06);
-    std::cout << "LPF THEORY TIME " << ms_int_lpf_theo.count() + ms_int.count() << std::endl;
-    auto* lpfPruned_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 4, lpf, lpf_ptr, lz,
-                                                                       true, CUT_FIRST_LEVELS);
+    std::cout << "LPF THEORY TIME " << ms_int_lpf_theo.count()<< std::endl;
+    auto* lpfTheory_bt_dp = new BV_BlockTree_lpf_theory<uint8_t, int64_t>(vec, tau, mls, true);
+    auto t0aa = std::chrono::high_resolution_clock::now();
+    auto ms_int_lpf_theo_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t0aa - t07);
+    std::cout << "LPF THEORY DP TIME " << ms_int_lpf_theo_dp.count()<< std::endl;
+    auto* lpfPruned_bt = new BV_BlockTree_lpf_pruned<uint8_t, int64_t>(vec, tau, mls,
+                                                                       true, CUT_FIRST_LEVELS, true);
     auto t08 = std::chrono::high_resolution_clock::now();
-    auto ms_int_lpf_prune = std::chrono::duration_cast<std::chrono::milliseconds>(t08 - t07);
-    std::cout << "LPF PRUNED TIME " << ms_int_lpf_prune.count() + ms_int.count() << std::endl;
+    auto ms_int_lpf_prune = std::chrono::duration_cast<std::chrono::milliseconds>(t08 - t0aa);
+    std::cout << "LPF PRUNED TIME " << ms_int_lpf_prune.count() << std::endl;
+    auto* lpfPruned_bt_dp = new BV_BlockTree_lpf_pruned<uint8_t, int64_t>(vec, tau, mls,
+                                                                       true, CUT_FIRST_LEVELS, false);
+    auto t09 = std::chrono::high_resolution_clock::now();
+    auto ms_int_lpf_prune_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t09 - t08);
+    std::cout << "LPF PRUNED DP TIME " << ms_int_lpf_prune_dp.count() << std::endl;
     std::cout << "time " << ms_int.count() << std::endl;
     std::cout << "fp theory space " << fpTheory_bt->print_space_usage() << " " << fpTheory_bt->block_tree_types_.size() <<  std::endl;
     std::cout << "fp pruned space " << fpPruned_bt->print_space_usage() << " " << fpPruned_bt->block_tree_types_.size() <<   std::endl;
     std::cout << "fp pruned simple space " << fpPruned_simple_bt->print_space_usage() << " " << fpPruned_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpf heuristic space " << lpfHeuristic_bt->print_space_usage() << " " << lpfHeuristic_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpf theory space " << lpfTheory_bt->print_space_usage() << " " << lpfTheory_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpf pruned space " << lpfPruned_bt->print_space_usage() << " " << lpfPruned_bt->block_tree_types_.size() <<  std::endl;
-//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt2 = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpf, lpf_ptr, lz, false);
-    std::cout << "lpf" << std::endl;
-//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpf, lpf_ptr, lz, true);
-
-
+    std::cout << "lpfArray heuristic space " << lpfHeuristic_bt->print_space_usage() << " " << lpfHeuristic_bt->block_tree_types_.size() <<   std::endl;
+    std::cout << "lpfArray theory space " << lpfTheory_bt->print_space_usage() << " " << lpfTheory_bt->block_tree_types_.size() <<   std::endl;
+    std::cout << "lpfArray theory dp space " << lpfTheory_bt_dp->print_space_usage() << " " << lpfTheory_bt_dp->block_tree_types_.size() <<   std::endl;
+    std::cout << "lpfArray pruned space " << lpfPruned_bt->print_space_usage() << " " << lpfPruned_bt->block_tree_types_.size() <<  std::endl;
+    std::cout << "lpfArray pruned dp space " << lpfPruned_bt_dp->print_space_usage() << " " << lpfPruned_bt_dp->block_tree_types_.size() <<  std::endl;
+//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt2 = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpfArray, prevOcc, lzPhrases, false);
+    std::cout << "lpfArray" << std::endl;
+//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpfArray, prevOcc, lzPhrases, true);
 
 //    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
 //        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
@@ -147,7 +177,7 @@ int main(int argc, char* argv[]) {
         auto x = lpfPruned_bt->access(i);
         if (x != vec[i]) {
             if (!error_mode) {
-            std::cout << i << std::endl;
+//            std::cout << i << std::endl;
                 error_mode = true;
             }
 //            std::cout << i << std::endl;
@@ -159,13 +189,32 @@ int main(int argc, char* argv[]) {
 
 
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfPruned_bt->access(i);
+        auto x = lpfTheory_bt->access(i);
         if (x != vec[i]) {
             j++;
         }
 
     }
     int32_t threads = 6;
+    std::cout << "Errors " << j << std::endl;
+    for (int i = 0; i < vec.size(); i++) {
+        auto x = lpfPruned_bt_dp->access(i);
+        if (x != vec[i]) {
+            j++;
+        }
+
+    }
+    std::cout << "Errors " << j << std::endl;
+
+
+    for (int i = 0; i < vec.size(); i++) {
+        auto x = lpfHeuristic_bt->access(i);
+        if (x != vec[i]) {
+            j++;
+        }
+
+    }
+
     std::cout << "Errors " << j << std::endl;
     auto t0r1 = std::chrono::high_resolution_clock::now();
     fpPruned_bt->add_rank_support_omp(threads);
@@ -333,7 +382,7 @@ int main(int argc, char* argv[]) {
 //    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
 //        for (int j = 0; j < (*lpf_bt->block_tree_types_[i]).size(); j++) {
 //            if ((bool)(*lpf_bt->block_tree_types_[i])[j] != (bool)(*fp_bt->block_tree_types_[i])[j]) {
-//                std::cout << i << " " << j << " lpf " << (*lpf_bt->block_tree_types_[i])[j] << " fp " << (*fp_bt->block_tree_types_[i])[j] << std::endl;
+//                std::cout << i << " " << j << " lpfArray " << (*lpf_bt->block_tree_types_[i])[j] << " fp " << (*fp_bt->block_tree_types_[i])[j] << std::endl;
 //            }
 //        }
 //    }
@@ -343,15 +392,15 @@ int main(int argc, char* argv[]) {
 //    for (auto bv: lpf_bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
 //    }
-//    std::vector<int32_t> lpf(test.size());
-//    std::vector<int32_t> lpf_ptr(test.size());
-//    int64_t lz = 0;
+//    std::vector<int32_t> lpfArray(test.size());
+//    std::vector<int32_t> prevOcc(test.size());
+//    int64_t lzPhrases = 0;
 //    int64_t k = 0;
-//    while (lz < test.size()) {
-//        lz = lz + std::max(1LL, lpf[lz + 1]);
+//    while (lzPhrases < test.size()) {
+//        lzPhrases = lzPhrases + std::max(1LL, lpfArray[lzPhrases + 1]);
 //        k++;
 //    }
-//    std::cout << "lz " << lz.size() << std::endl;
+//    std::cout << "lzPhrases " << lzPhrases.size() << std::endl;
 //    delete lpf_bt;
 //    delete fp_bt;
 //
@@ -412,6 +461,9 @@ int main(int argc, char* argv[]) {
     std::cout << "Starting Rank Queries" << "\n";
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_c_.size(); i++) {
+        if (lpfPruned_bt->rank(select_c_[i], access_queries_[i]) != fpPruned_bt->rank(select_c_[i], access_queries_[i])) {
+//            std::cout << i << std::endl;
+        }
         result += lpfPruned_bt->rank(select_c_[i], access_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
