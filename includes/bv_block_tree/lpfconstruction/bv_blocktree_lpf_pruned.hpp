@@ -8,6 +8,19 @@
 template<typename input_type, typename size_type>
 class BV_BlockTree_lpf_pruned: public BV_Block_Tree<input_type,size_type> {
 public:
+    BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, bool mark, bool cut_first_level, bool dp) {
+        this->CUT_FIRST_LEVELS = cut_first_level;
+        this->map_unique_chars(text);
+        this->tau_ = tau;
+        this->max_leaf_length_ = max_leaf_length;
+        this->s_ = s;
+        std::vector<size_type> lpf(text.size());
+        std::vector<size_type> lpf_ptr(text.size());
+        std::vector<size_type> lz;
+        lpf_array_stack(text, lpf, lpf_ptr);
+        if (dp) init_dp(text, lpf, lpf_ptr, lz, mark);
+        else init(text, lpf, lpf_ptr, lz, mark);
+    };
     bool prune_block(std::vector<std::vector<size_type>>& counter, std::vector<std::vector<size_type>>& pointer, std::vector<std::vector<size_type>>& offset, std::vector<pasta::BitVector*>& marked_tree, std::vector<pasta::BitVector*>& pruned_tree, size_type i, size_type j, std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>>& ranks) {
         // string leaf children can always be pruned
         // fully padded children don't exist and can be ignored/ sanity check
