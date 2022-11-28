@@ -722,6 +722,7 @@ public:
         } else {
             init_simple(text);
         }
+        this->add_encoded_pointers();
     };
 
     ~BV_BlockTree_fp_pruned() {

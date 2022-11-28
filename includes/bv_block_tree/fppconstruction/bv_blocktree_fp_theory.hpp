@@ -260,6 +260,7 @@ public:
         this->s_ = s;
         // first we create lpf and lpf_ptr arrays;
         init(text);
+        this->add_encoded_pointers();
     };
 };
 

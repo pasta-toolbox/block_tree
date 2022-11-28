@@ -253,6 +253,7 @@ public:
         calculate_lz_factor(this->s_,lpf, lz);
         if (dp) init_dp(text, lpf, lpf_ptr, lz);
         else init(text, lpf, lpf_ptr, lz);
+        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
         this->map_unique_chars(text);
@@ -261,6 +262,7 @@ public:
         // first we create lpf and lpf_ptr arrays;
         this->s_ = lz.size();
         init_dp(text, lpf, lpf_ptr, lz);
+        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
         this->map_unique_chars(text);
@@ -269,6 +271,7 @@ public:
         // first we create lpf and lpf_ptr arrays;
         this->s_ = s;
         init_dp(text, lpf, lpf_ptr, lz);
+        this->add_encoded_pointers();
     };
     ~BV_BlockTree_lpf_theory() {
 

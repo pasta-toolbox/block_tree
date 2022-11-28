@@ -29,6 +29,7 @@ public:
     std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>*> block_tree_types_rs_;
     std::vector<sdsl::int_vector<>*> block_tree_pointers_;
     std::vector<sdsl::int_vector<>*> block_tree_offsets_;
+    std::vector<sdsl::int_vector<>*> block_tree_encoded_;
     std::vector<int64_t> block_size_lvl_;
     std::vector<int64_t> block_per_lvl_;
     std::vector<input_type> leaves_;
@@ -38,33 +39,55 @@ public:
     std::vector<std::vector<int64_t>> top_level_c_ranks_;
     std::vector<std::vector<sdsl::int_vector<>>> c_ranks_;
     std::vector<std::vector<sdsl::int_vector<>>> pointer_c_ranks_;
-
-    int64_t access(size_type index) {
+    int64_t access_encoded(size_type index) {
         int64_t block_size = block_size_lvl_[0];
         int64_t blk_pointer = index / block_size;
         int64_t off = index % block_size;
         int64_t child = 0;
         for (size_type i = 0; i < block_tree_types_.size(); i++) {
-
+            auto& lvl = *block_tree_types_[i];
+            auto& lvl_rs = *block_tree_types_rs_[i];
+            auto& lvl_enc = *block_tree_encoded_[i];
+            if (lvl[blk_pointer] == 0) {
+                size_type blk = lvl_rs.rank0(blk_pointer);
+                size_type enc = lvl_enc[blk];
+                blk_pointer = enc / block_size;
+                off = off + enc % block_size;
+                if (off >= block_size) {
+                    blk_pointer++;
+                    off -= block_size;
+                }
+            }
+            block_size /= tau_;
+            child = off / block_size;
+            off = off % block_size;
+            blk_pointer = lvl_rs.rank1(blk_pointer) * tau_ + child;
+        }
+        return leaves_[blk_pointer * leaf_size + off];
+    }
+    int64_t access(size_type index) {
+        int64_t block_size = block_size_lvl_[0];
+        int64_t blk_pointer = index / block_size_lvl_[0];
+        int64_t off = index % block_size_lvl_[0];
+        int64_t child;
+        for (size_type i = 0; i < block_tree_types_.size(); i++) {
             auto& lvl = *block_tree_types_[i];
             auto& lvl_rs = *block_tree_types_rs_[i];
             auto& lvl_ptr = *block_tree_pointers_[i];
             auto& lvl_off = *block_tree_offsets_[i];
             if (lvl[blk_pointer] == 0) {
                 size_type blk = lvl_rs.rank0(blk_pointer);
-                size_type to = off + lvl_off[blk];
+                off = off + lvl_off[blk];
                 blk_pointer = lvl_ptr[blk];
-                if (to >= block_size) {
+                if (off >= block_size) {
                     blk_pointer++;
+                    off -= block_size;
                 }
-                off = to % block_size;
             }
-            size_type rank_blk = lvl_rs.rank1(blk_pointer);
-            blk_pointer = rank_blk * tau_;
             block_size /= tau_;
             child = off / block_size;
             off = off % block_size;
-            blk_pointer += child;
+            blk_pointer = lvl_rs.rank1(blk_pointer) * tau_ + child;
         }
         return leaves_[blk_pointer * leaf_size + off];
     };
@@ -324,6 +347,19 @@ public:
 //            }
 //        }
 
+        return 0;
+    }
+    int32_t add_encoded_pointers() {
+        auto block_size = block_size_lvl_[0];
+        for (size_type i = 0; i < block_tree_pointers_.size(); i++) {
+            auto p = new sdsl::int_vector(block_tree_pointers_[i]->size(), 0, 64);
+            for (size_type j = 0; j < block_tree_pointers_[i]->size(); j++) {
+                (*p)[j] = (*block_tree_pointers_[i])[j] * block_size + (*block_tree_offsets_[i])[j];
+            }
+            block_size /= tau_;
+            sdsl::util::bit_compress(*p);
+            this->block_tree_encoded_.push_back(p);
+        }
         return 0;
     }
     int32_t add_rank_support_omp(int32_t threads) {
