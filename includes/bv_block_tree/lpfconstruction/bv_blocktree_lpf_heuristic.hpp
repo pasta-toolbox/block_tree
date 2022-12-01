@@ -89,11 +89,8 @@ private:
                 bool has_ptr = false;
                 while (lpf[ind] >= block_size) {
                     int64_t ptr = lpf_ptr[ind];
-                    if (block_size + lpf_ptr[ind] - 1 >= initial_index) {
+                    if (block_size + lpf_ptr[ind] - 1 >= initial_index || lpf[lpf_ptr[ind]] >= block_size ) {
                         ind = lpf_ptr[ind];
-                    } else if (lpf[lpf_ptr[ind]] >= block_size ) {
-                        ind = lpf_ptr[ind];
-
                     } else {
                         int64_t b = this->find_next_smallest_index_binary_search(ptr, block_text_inx);
                         if (ptr <= block_text_inx[b] + block_size - 1 && ((block_text_inx[b] + block_size ==  block_text_inx[b+1]) || ptr % block_size == 0)) {

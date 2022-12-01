@@ -31,9 +31,9 @@ int main(int argc, char* argv[]) {
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
@@ -113,7 +113,6 @@ int main(int argc, char* argv[]) {
     auto t0y = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune_simple = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
     std::cout << "FP PRUNE SIMPLE TIME " << ms_int_fp_prune_simple.count() << std::endl;
-    lpf_array_stack(vec, lpfArray, prevOcc);
     auto* lpfHeuristic_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int64_t>(vec, tau, mls);
     auto t06 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_heu = std::chrono::duration_cast<std::chrono::milliseconds>(t06 - t0y);
@@ -174,7 +173,7 @@ int main(int argc, char* argv[]) {
     int  j = 0;
     bool error_mode = false;
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfPruned_bt->access(i);
+        auto x = lpfPruned_bt->access_encoded(i);
         if (x != vec[i]) {
             if (!error_mode) {
 //            std::cout << i << std::endl;
@@ -315,16 +314,16 @@ int main(int argc, char* argv[]) {
 //    for (auto bv: fp_bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
 //    }
-
-    j = 0;
-
-//    for (auto c: lpf_bt->chars_) {
+//
+//    j = 0;
+//
+//    for (auto c: lpfPruned_bt->chars_) {
 //        int count = 0;
 //        for (int i = 0; i < vec.size(); i++) {
 //            if (vec[i] == c) {
 //                count++;
 //            }
-//            auto x = lpf_bt->rank(c, i);
+//            auto x = lpfPruned_bt->rank(c, i);
 //            if (x != count) {
 //                std::cout << c << ":" << i << " " << x << " " << count << std::endl;
 //                j++;
@@ -333,9 +332,9 @@ int main(int argc, char* argv[]) {
 //
 //        }
 //        if (c=='e') std::cout << count <<" e's" << std::endl;
-//        std::cout << c << " Errors " << j << std::endl;
+//        std::cout << c << "  rank Errors " << j << std::endl;
 //    }
-    std::cout << "Errors " << j << std::endl;
+//    std::cout << "Errors " << j << std::endl;
 //    for (int i = 0; i < (*lpf_bt->block_tree_pointers_[1]).size(); i++) {
 //        if ((*lpf_bt->block_tree_pointers_[1])[i] % lpf_bt->tau_ == lpf_bt->tau_ - 1) {
 //            std::cout << "warum " << i << (*lpf_bt->block_tree_pointers_[1])[i] <<  std::endl;
@@ -458,21 +457,49 @@ int main(int argc, char* argv[]) {
         result += lpfPruned_bt->access(query);
     }
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+    std::cout << "Starting Encoded Queries" << "\n";
+    result = 0;
+    auto start3 = std::chrono::high_resolution_clock::now();
+    for (auto const& query : access_queries_) {
+        result += lpfPruned_bt->access_encoded(query);
+    }
+    auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
     std::cout << "Starting Rank Queries" << "\n";
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_c_.size(); i++) {
-        if (lpfPruned_bt->rank(select_c_[i], access_queries_[i]) != fpPruned_bt->rank(select_c_[i], access_queries_[i])) {
-//            std::cout << i << std::endl;
-        }
         result += lpfPruned_bt->rank(select_c_[i], access_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
+    auto start4 = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < select_c_.size(); i++) {
+            result += lpfPruned_bt->rank_base(select_c_[i], access_queries_[i]);
+    }
+
+    auto elapsed4 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start4).count();
+    auto start5 = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < select_c_.size(); i++) {
+        result += lpfPruned_bt->select(select_c_[i], select_queries_[i]);
+    }
+
+    auto elapsed5 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start5).count();
+    for (int i = 0; i < select_c_.size(); i++) {
+        if (lpfPruned_bt->rank_base(select_c_[i], access_queries_[i]) != lpfPruned_bt->rank(select_c_[i], access_queries_[i])) std::cout << i << std::endl;
+    }
     double nanosec_per_access = elapsed / static_cast<double>(access_queries_.size());
+    double nanosec_per_access2 = elapsed3 / static_cast<double>(access_queries_.size());
     double nanosec_per_rank = elapsed2 / static_cast<double>(access_queries_.size());
+    double nanosec_per_rank2 = elapsed4 / static_cast<double>(access_queries_.size());
+    double nanosec_per_select = elapsed5 / static_cast<double>(access_queries_.size());
     std::cout << "#access queries " << access_queries_.size() << std::endl;
     std::cout << nanosec_per_access << " ns per query\n";
+    std::cout << "#access encoded queries " << access_queries_.size() << std::endl;
+    std::cout << nanosec_per_access2 << " ns per query\n";
     std::cout << "#rank queries " << access_queries_.size() << std::endl;
     std::cout << nanosec_per_rank << " ns per query\n";
+    std::cout << "#rank queries base " << access_queries_.size() << std::endl;
+    std::cout << nanosec_per_rank2 << " ns per query\n";
+    std::cout << "#select queries " << access_queries_.size() << std::endl;
+    std::cout << nanosec_per_select << " ns per query\n";
 //    for (int i = 0; i < lpf_bt->block_tree_types_.size(); i++) {
 //        for (int j = 0; j < (*lpf_bt->block_tree_types_[i]).size(); j++) {
 //            if ((bool)((*lpf_bt->block_tree_types_[i])[j]) != (bool)((*fp_bt->block_tree_types_[i])[j])) {
