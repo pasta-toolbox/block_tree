@@ -61,7 +61,7 @@ public:
             }
             block_size /= this->tau_;
             for (size_type b = 0; b < block_text_inx.size(); b++) {
-                for (size_type j = 0; j < block_size * this->tau_; j++) {
+                for (size_type j = 0; j < block_size * this->tau_ && block_text_inx[b] + j < text.size(); j++) {
                     size_type i = block_text_inx[b] + j;
                     size_type p = lpf_ptr[i];
                     if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
@@ -185,15 +185,15 @@ public:
                 }
             }
             block_size /= this->tau_;
-            for (size_type b = 0; b < block_text_inx.size(); b++) {
-                for (size_type j = 0; j < block_size * this->tau_; j++) {
-                    size_type i = block_text_inx[b] + j;
-                    size_type p = lpf_ptr[i];
-                    if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
-                        lpf_ptr[i] = lpf_ptr[p];
-                    }
-                }
-            }
+//            for (size_type b = 0; b < block_text_inx.size(); b++) {
+//                for (size_type j = 0; j < block_size * this->tau_; j++) {
+//                    size_type i = block_text_inx[b] + j;
+//                    size_type p = lpf_ptr[i];
+//                    if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
+//                        lpf_ptr[i] = lpf_ptr[p];
+//                    }
+//                }
+//            }
             std::vector<int64_t> block_text_inx_new;
             size_type ones_in_lvl = 0;
             for (size_type i = 0; i < bv.size(); i++) {

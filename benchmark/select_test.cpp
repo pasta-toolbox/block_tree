@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
@@ -47,7 +47,8 @@ int main(int argc, char* argv[]) {
     std::vector<int32_t> lpf_ptr(vec.size());
     std::vector<int32_t> lz;
     int32_t lzn = 0;
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1,1,true, true,true);
+    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 16, 16,true, true,
+                                                                                                       false);
     lpf_bt->add_rank_support();
     std::cout << "time " << ms_int.count() << std::endl;
 

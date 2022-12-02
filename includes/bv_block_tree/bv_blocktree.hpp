@@ -644,7 +644,7 @@ public:
     inline size_type leading_zeros(int64_t val) {
         return __builtin_clzll(static_cast<unsigned long long>(val) | 1);
     }
-    void calculate_padding(int64_t &padding, int64_t text_length, int64_t &height, int64_t &blk_size) {
+    void calculate_padding(int64_t& padding, int64_t text_length, int64_t& height, int64_t& blk_size) {
         int64_t tmp_padding = this->s_ * this->tau_;
         int64_t h = 1;
         blk_size = tau_;

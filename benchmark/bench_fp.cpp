@@ -33,7 +33,9 @@ int main(int argc, char* argv[]) {
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
+
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
@@ -91,8 +93,8 @@ int main(int argc, char* argv[]) {
     bool CUT_FIRST_LEVELS = true;
     bool EXTENDED_PRUNE = true;
     bool SIMPLE_PRUNE = false;
-    int tau = 2;
-    int mls = 1;
+    int tau = 16;
+    int mls = 16;
     int64_t s = 1;
     std::cout << "#LZ PHRASES " << s << std::endl;
 //    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1);
