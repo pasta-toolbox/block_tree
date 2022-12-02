@@ -25,9 +25,9 @@ int main(int argc, char* argv[]) {
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
 //    std::ifstream t("/Users/daniel/Downloads/einstein.en.txt");
     std::stringstream buffer;
