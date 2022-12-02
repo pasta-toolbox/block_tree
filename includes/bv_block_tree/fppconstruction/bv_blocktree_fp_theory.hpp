@@ -53,6 +53,8 @@ public:
                     this->block_tree_pointers_.push_back(pointers);
                     this->block_tree_offsets_.push_back(offsets);
                     this->block_size_lvl_.push_back(block_size * this->tau_);
+                } else {
+                    delete bv;
                 }
                 continue;
             }
@@ -217,6 +219,10 @@ public:
                 this->block_tree_pointers_.push_back(pointers);
                 this->block_tree_offsets_.push_back(offsets);
                 this->block_size_lvl_.push_back(block_size);
+            } else {
+                delete bv;
+                delete pointers;
+                delete offsets;
             }
             block_text_inx = new_blocks;
             block_size = new_block_size;
@@ -235,17 +241,17 @@ public:
     }
 
     ~BV_BlockTree_fp_theory() {
-        for (auto a: this->block_tree_types_) {
-            delete a;
+        for(auto& bt_t: this->block_tree_types_) {
+            delete bt_t;
         }
-        for (auto a: this->block_tree_types_rs_) {
-            delete a;
+        for(auto& bt_rs: this->block_tree_types_rs_) {
+            delete bt_rs;
         }
-        for (auto a: this->block_tree_pointers_) {
-            delete a;
+        for(auto& bt_p: this->block_tree_pointers_) {
+            delete bt_p;
         }
-        for (auto a: this->block_tree_offsets_) {
-            delete a;
+        for(auto& bt_o: this->block_tree_offsets_) {
+            delete bt_o;
         }
 
     };
@@ -260,7 +266,6 @@ public:
         this->s_ = s;
         // first we create lpf and lpf_ptr arrays;
         init(text);
-        this->add_encoded_pointers();
     };
 };
 

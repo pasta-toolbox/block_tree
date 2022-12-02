@@ -19,7 +19,6 @@ public:
         lpf_array_stack(text, lpf, lpf_ptr);
         if (dp) init_dp(text, lpf, lpf_ptr, mark);
         else init(text, lpf, lpf_ptr,  mark);
-        this->add_encoded_pointers();
     };
     bool prune_block(std::vector<std::vector<size_type>>& counter, std::vector<std::vector<size_type>>& pointer, std::vector<std::vector<size_type>>& offset, std::vector<pasta::BitVector*>& marked_tree, std::vector<pasta::BitVector*>& pruned_tree, size_type i, size_type j, std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>>& ranks) {
         // string leaf children can always be pruned
@@ -475,7 +474,6 @@ public:
         calculate_lz_factor(this->s_,lpf, lz);
         if (dp) init_dp(text, lpf, lpf_ptr,  mark);
         else init(text, lpf, lpf_ptr, mark);
-        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
         this->CUT_FIRST_LEVELS = cut_first_level;
@@ -484,7 +482,6 @@ public:
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = lz.size();
         init_dp(text, lpf, lpf_ptr, mark);
-        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
         this->CUT_FIRST_LEVELS = cut_first_level;
@@ -493,9 +490,21 @@ public:
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = s;
         init_dp(text, lpf, lpf_ptr, mark);
-        this->add_encoded_pointers();
     };
-    ~BV_BlockTree_lpf_pruned() = default;
+    ~BV_BlockTree_lpf_pruned() {
+        for(auto& bt_t: this->block_tree_types_) {
+            delete bt_t;
+        }
+        for(auto& bt_rs: this->block_tree_types_rs_) {
+            delete bt_rs;
+        }
+        for(auto& bt_p: this->block_tree_pointers_) {
+            delete bt_p;
+        }
+        for(auto& bt_o: this->block_tree_offsets_) {
+            delete bt_o;
+        }
+    };
 private:
     // magic number to indicate that a block is pruned
     const int PRUNED = -2;

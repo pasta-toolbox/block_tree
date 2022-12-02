@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
     int  j = 0;
     bool error_mode = false;
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfPruned_bt->access_encoded(i);
+        auto x = lpfPruned_bt->access(i);
         if (x != vec[i]) {
             if (!error_mode) {
 //            std::cout << i << std::endl;
@@ -463,7 +463,7 @@ int main(int argc, char* argv[]) {
     result = 0;
     auto start3 = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
-        result += lpfPruned_bt->access_encoded(query);
+        result += lpfPruned_bt->access(query);
     }
     auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
     std::cout << "Starting Rank Queries" << "\n";
@@ -510,5 +510,12 @@ int main(int argc, char* argv[]) {
 //        }
 //    }
     delete fpTheory_bt;
+    delete fpPruned_bt;
+    delete fpPruned_simple_bt;
+    delete lpfPruned_bt;
+    delete lpfPruned_bt_dp;
+    delete lpfHeuristic_bt;
+    delete lpfTheory_bt;
+    delete lpfTheory_bt_dp;
 return 0;
 }

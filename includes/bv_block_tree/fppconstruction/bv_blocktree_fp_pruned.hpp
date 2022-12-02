@@ -160,7 +160,7 @@ public:
         std::vector<std::vector<int64_t>> blk_lvl;
         std::vector<std::vector<size_type>> pass1_pointer;
         std::vector<std::vector<size_type>> pass1_offset;
-        std::vector<pasta::BitVector *> bv_marked;
+        std::vector<pasta::BitVector*> bv_marked;
         std::vector<std::vector<size_type>> counter;
         std::vector<size_type> pass2_ones;
         std::vector<int64_t> block_size_lvl_temp;
@@ -427,7 +427,9 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
-
+        for (auto& bv: bv_marked) {
+            delete bv;
+        }
         return 0;
     }
 
@@ -702,10 +704,9 @@ public:
         for (auto bv: bv_pass_1) {
             delete bv;
         }
-        for (size_type i = 0; i < bv_pass_2.size() - 1; i++) {
-            delete bv_pass_2[i];
+        for (auto bv: bv_pass_2) {
+            delete bv;
         }
-
         return 0;
     };
 
@@ -722,21 +723,20 @@ public:
         } else {
             init_simple(text);
         }
-        this->add_encoded_pointers();
     };
 
     ~BV_BlockTree_fp_pruned() {
-        for (auto a: this->block_tree_types_) {
-            delete a;
+        for(auto& bt_t: this->block_tree_types_) {
+            delete bt_t;
         }
-        for (auto a: this->block_tree_types_rs_) {
-            delete a;
+        for(auto& bt_rs: this->block_tree_types_rs_) {
+            delete bt_rs;
         }
-        for (auto a: this->block_tree_pointers_) {
-            delete a;
+        for(auto& bt_p: this->block_tree_pointers_) {
+            delete bt_p;
         }
-        for (auto a: this->block_tree_offsets_) {
-            delete a;
+        for(auto& bt_o: this->block_tree_offsets_) {
+            delete bt_o;
         }
 
     };

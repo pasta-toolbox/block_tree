@@ -27,7 +27,6 @@ public:
         lpf_array_stack(text, lpf, lpf_ptr);
         calculate_lz_factor(this->s_,lpf, lz);
         init(text, lpf, lpf_ptr, lz);
-        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_heuristic(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
         this->map_unique_chars(text);
@@ -36,7 +35,6 @@ public:
         // first we create lpf and lpfptr arrays;
         this->s_ = lz.size();
         init(text, lpf, lpf_ptr, lz);
-        this->add_encoded_pointers();
     };
     BV_BlockTree_lpf_heuristic(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
         this->map_unique_chars(text);
@@ -45,9 +43,20 @@ public:
         // first we create lpf and lpfptr arrays;;
         this->s_ = s;
         init(text, lpf, lpf_ptr, lz);
-        this->add_encoded_pointers();
     };
     ~BV_BlockTree_lpf_heuristic() {
+        for(auto& bt_t: this->block_tree_types_) {
+            delete bt_t;
+        }
+        for(auto& bt_rs: this->block_tree_types_rs_) {
+            delete bt_rs;
+        }
+        for(auto& bt_p: this->block_tree_pointers_) {
+            delete bt_p;
+        }
+        for(auto& bt_o: this->block_tree_offsets_) {
+            delete bt_o;
+        }
     };
 
 private:
