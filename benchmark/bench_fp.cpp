@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/pitches");
     //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
@@ -88,8 +88,8 @@ int main(int argc, char* argv[]) {
     bool CUT_FIRST_LEVELS = true;
     bool EXTENDED_PRUNE = true;
     bool SIMPLE_PRUNE = false;
-    int tau = 8;
-    int mls = 16;
+    int tau = 2;
+    int mls = 4;
     int64_t s = 1;
     calculate_lz_factor(s,lpf2,lz2);
 
