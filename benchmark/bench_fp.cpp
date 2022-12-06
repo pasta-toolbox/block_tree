@@ -30,10 +30,10 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/Escherichia_Coli");
+    //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
 
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
@@ -53,15 +53,15 @@ int main(int argc, char* argv[]) {
 
 
 
-//    std::vector<int64_t> lpf2(vec.size());
-//    std::vector<int64_t> lpf_ptr2(vec.size());
-//    std::vector<int64_t> lz2;
+    std::vector<int64_t> lpf2(vec.size());
+    std::vector<int64_t> lpf_ptr2(vec.size());
+    std::vector<int64_t> lz2;
 
     int64_t numberOfLzPhrases = 0;
     auto t0a = std::chrono::high_resolution_clock::now();
 //    lpf_array_ansv(vec, lpfArray, prevOcc);
 
-//    lpf_array_stack(vec, lpf2, lpf_ptr2);
+    lpf_array_stack(vec, lpf2, lpf_ptr2);
     auto t0b = std::chrono::high_resolution_clock::now();
     auto ms_intstack = std::chrono::duration_cast<std::chrono::milliseconds>(t0b - t0a);
     std::cout << "LPF TIME stack " << ms_intstack.count() << std::endl;
@@ -88,9 +88,11 @@ int main(int argc, char* argv[]) {
     bool CUT_FIRST_LEVELS = true;
     bool EXTENDED_PRUNE = true;
     bool SIMPLE_PRUNE = false;
-    int tau = 16;
+    int tau = 8;
     int mls = 16;
     int64_t s = 1;
+    calculate_lz_factor(s,lpf2,lz2);
+
     std::cout << "#LZ PHRASES " << s << std::endl;
 //    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1);
 //    BV_BlockTree_lpf_theory<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpfArray, prevOcc, lzPhrases);
@@ -185,7 +187,7 @@ int main(int argc, char* argv[]) {
 
 
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfTheory_bt->access(i);
+        auto x = fpPruned_simple_bt->access(i);
         if (x != vec[i]) {
             j++;
         }
@@ -194,7 +196,7 @@ int main(int argc, char* argv[]) {
     int32_t threads = 6;
     std::cout << "Errors " << j << std::endl;
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfPruned_bt_dp->access(i);
+        auto x = fpTheory_bt->access(i);
         if (x != vec[i]) {
             j++;
         }
@@ -204,7 +206,7 @@ int main(int argc, char* argv[]) {
 
 
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfHeuristic_bt->access(i);
+        auto x = fpPruned_bt->access(i);
         if (x != vec[i]) {
             j++;
         }
@@ -444,10 +446,12 @@ int main(int argc, char* argv[]) {
             xsum += hist[x];
             x++;
         }
-        select_c_.push_back(x);
-        select_queries_.push_back(access_queries_[i] - xsum);
+        if (access_queries_[i] - xsum > 0) {
+            select_c_.push_back(x);
+            select_queries_.push_back(access_queries_[i] - xsum);
+        }
     }
-    std::cout << "Starting Queries" << "\n";
+    std::cout << "Starting Queries " << select_c_.size() <<  "\n";
     size_t result = 0;
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
@@ -477,7 +481,6 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < select_c_.size(); i++) {
         result += lpfPruned_bt->select(select_c_[i], select_queries_[i]);
     }
-
     auto elapsed5 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start5).count();
     for (int i = 0; i < select_c_.size(); i++) {
         if (lpfPruned_bt->rank_base(select_c_[i], access_queries_[i]) != lpfPruned_bt->rank(select_c_[i], access_queries_[i])) std::cout << i << std::endl;

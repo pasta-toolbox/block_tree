@@ -19,6 +19,23 @@ public:
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
+        if (block_size <= this->max_leaf_length_) {
+            auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            auto p0 = new sdsl::int_vector<>(0, 0);
+            auto o0 = new sdsl::int_vector<>(0, 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_types_.push_back(bv);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size);
+            this->leaf_size = block_size/this->tau_;
+            this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+            return 0;
+        }
         for (size_type i = 0; i < lpf_ptr.size(); i++) {
             size_type p = lpf_ptr[i];
             if (lpf[i] >= block_size && (lpf[p] >= block_size || lpf[i] <= lpf[p])) {
@@ -126,6 +143,23 @@ public:
         std::vector<int64_t> block_text_inx;
         for (int64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
+        }
+        if (block_size <= this->max_leaf_length_) {
+            auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            auto p0 = new sdsl::int_vector<>(0, 0);
+            auto o0 = new sdsl::int_vector<>(0, 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_types_.push_back(bv);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size);
+            this->leaf_size = block_size/this->tau_;
+            this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+            return 0;
         }
         for (size_type i = 0; i < lpf_ptr.size(); i++) {
             size_type p = lpf_ptr[i];

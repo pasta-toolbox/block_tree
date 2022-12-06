@@ -167,9 +167,27 @@ public:
         this->calculate_padding(added_padding, text.size(), tree_max_height, max_blk_size);
         auto is_padded = added_padding > 0 ? 1 : 0;
         int64_t block_size = max_blk_size;
+
         std::vector<int64_t> block_text_inx;
         for (int64_t i = 0; i < text.size(); i += block_size) {
             block_text_inx.push_back(i);
+        }
+        if (block_size <= this->max_leaf_length_) {
+            auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            auto p0 = new sdsl::int_vector<>(0, 0);
+            auto o0 = new sdsl::int_vector<>(0, 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_types_.push_back(bv);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size);
+            this->leaf_size = block_size/this->tau_;
+            this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+            return 0;
         }
         while (block_size > this->max_leaf_length_) {
             block_size_lvl_temp.push_back(block_size);
@@ -341,7 +359,7 @@ public:
 
 
         auto &top_level = *bv_marked[0];
-        bool found_back_block = top_level.size() != ones_per_lvl[0];
+        bool found_back_block = top_level.size() != ones_per_lvl[0] || bv_marked.size() == 1;
         if (found_back_block || !this->CUT_FIRST_LEVELS) {
             this->block_tree_types_.push_back(&top_level);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(top_level));
@@ -362,6 +380,8 @@ public:
             this->block_tree_pointers_.push_back(p0);
             this->block_tree_offsets_.push_back(o0);
             this->block_size_lvl_.push_back(block_size_lvl_temp[0]);
+        } else {
+            delete bv_marked[0];
         }
         for (size_type i = 1; i < bv_marked.size(); i++) {
 
@@ -411,6 +431,8 @@ public:
                 this->block_tree_pointers_.push_back(p);
                 this->block_tree_offsets_.push_back(o);
                 this->block_size_lvl_.push_back(block_size_lvl_temp[i]);
+            } else {
+                delete bv_marked[i];
             }
         }
 
@@ -427,9 +449,6 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
-        for (auto& bv: bv_marked) {
-            delete bv;
-        }
         return 0;
     }
 
@@ -456,6 +475,24 @@ public:
         for (int64_t i = 0; i < text.size(); i += block_size) {
             block_text_inx.push_back(i);
         }
+        if (block_size <= this->max_leaf_length_) {
+            auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            auto p0 = new sdsl::int_vector<>(0, 0);
+            auto o0 = new sdsl::int_vector<>(0, 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_types_.push_back(bv);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size);
+            this->leaf_size = block_size/this->tau_;
+            this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+            return 0;
+        }
+        bool found_back_block = this->max_leaf_length_ * this->tau_ >= block_size;
         while (block_size > this->max_leaf_length_) {
             block_size_lvl_temp.push_back(block_size);
             auto *bv = new pasta::BitVector(block_text_inx.size(), false);
@@ -601,7 +638,7 @@ public:
         pruning_simple(bv_pass_1, blk_lvl, bv_pass_2, pass1_pointer, pass1_offset, pass2_pointer,
                        pass2_offset, pass2_max_pointer, pass2_max_offset, pass2_ones, block_size);
         auto size = pass2_pointer[pass2_pointer.size() - 1].size();
-        bool found_back_block = size != 0;
+        found_back_block |= size != 0;
         if (found_back_block || !this->CUT_FIRST_LEVELS) {
             this->block_tree_types_.push_back(bv_pass_2[bv_pass_2.size() - 1]);
             this->block_tree_types_rs_.push_back(
@@ -618,6 +655,8 @@ public:
             this->block_tree_pointers_.push_back(p1);
             this->block_tree_offsets_.push_back(o1);
             this->block_size_lvl_.push_back(block_size_lvl_temp[0]);
+        } else {
+            delete bv_pass_2[bv_pass_2.size() - 1];
         }
 
         size_type level = 0;
@@ -684,8 +723,7 @@ public:
                 this->block_tree_pointers_.push_back(p);
                 this->block_tree_offsets_.push_back(o);
                 this->block_tree_types_.push_back(bit_vector);
-                this->block_tree_types_rs_.push_back(
-                        new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
+                this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bit_vector));
             }
         }
 
@@ -702,9 +740,6 @@ public:
         }
         this->amount_of_leaves = leaf_count;
         for (auto bv: bv_pass_1) {
-            delete bv;
-        }
-        for (auto bv: bv_pass_2) {
             delete bv;
         }
         return 0;

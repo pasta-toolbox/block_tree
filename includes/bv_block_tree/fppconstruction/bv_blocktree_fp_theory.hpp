@@ -26,7 +26,25 @@ public:
         for (int64_t i = 0; i < text.size(); i += block_size) {
             block_text_inx.push_back(i);
         }
-        bool found_back_block = false;
+
+        if (block_size <= this->max_leaf_length_) {
+            auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
+            this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
+            auto p0 = new sdsl::int_vector<>(0, 0);
+            auto o0 = new sdsl::int_vector<>(0, 0);
+            auto &ptr0 = *p0;
+            auto &off0 = *o0;
+            sdsl::util::bit_compress(ptr0);
+            sdsl::util::bit_compress(off0);
+            this->block_tree_types_.push_back(bv);
+            this->block_tree_pointers_.push_back(p0);
+            this->block_tree_offsets_.push_back(o0);
+            this->block_size_lvl_.push_back(block_size);
+            this->leaf_size = block_size/this->tau_;
+            this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+            return 0;
+        }
+        bool found_back_block = this->max_leaf_length_ * this->tau_ >= block_size;
         while (block_size > this->max_leaf_length_) {
             auto *bv = new pasta::BitVector(block_text_inx.size(), 0);
             auto left = pasta::BitVector(block_text_inx.size(), 0);
@@ -45,7 +63,8 @@ public:
                     }
                 }
                 block_text_inx = new_blocks;
-                if (!this->CUT_FIRST_LEVELS) {
+                if (!this->CUT_FIRST_LEVELS || found_back_block) {
+                    found_back_block = true;
                     this->block_tree_types_.push_back(bv);
                     this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
                     auto *pointers = new sdsl::int_vector(0, 0, 1);
@@ -60,7 +79,7 @@ public:
             }
             for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
                 if (block_text_inx[i] + block_size == block_text_inx[i + 1] &&
-                    block_text_inx[i] + pair_size <= text.size()) {
+                    block_text_inx[i] + pair_size < text.size()) {
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_pair = MersenneRabinKarp<input_type, size_type>(text,
                                                                                                                 sigma_,
@@ -68,6 +87,7 @@ public:
                                                                                                                 pair_size,
                                                                                                                 kPrime);
                     MersenneHash<input_type> mh_pair = MersenneHash<input_type>(text, rk_pair.hash_, index, pair_size);
+
                     pairs[mh_pair].push_back(i);
                 }
             }
@@ -128,7 +148,7 @@ public:
                                                                                                                  index,
                                                                                                                  block_size,
                                                                                                                  kPrime);
-                    MersenneHash<input_type> mh_block = MersenneHash<input_type>(text, rk_block.hash_, index,
+                    MersenneHash<input_type> mh_block = MersenneHash<input_type>(text, rk_block.hash_, rk_block.init_,
                                                                                  block_size);
                     blocks[mh_block].push_back(i);
                 }
@@ -209,9 +229,8 @@ public:
                     j++;
                 }
             }
-
             found_back_block |= ones_per_level != bv->size();
-            if (found_back_block || !this->CUT_FIRST_LEVELS) {
+            if (found_back_block || !this->CUT_FIRST_LEVELS || new_block_size <= this->max_leaf_length_) {
                 this->block_tree_types_.push_back(bv);
                 this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
                 sdsl::util::bit_compress(*pointers);

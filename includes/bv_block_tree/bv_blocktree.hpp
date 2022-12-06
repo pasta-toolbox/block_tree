@@ -92,7 +92,6 @@ public:
         return leaves_[blk_pointer * leaf_size + off];
     };
     int64_t select(input_type c, size_type j) {
-
         auto c_index = chars_index_[c];
         auto& top_level = *block_tree_types_[0];
 
@@ -104,7 +103,9 @@ public:
         int64_t block_size = block_size_lvl_[0];
         // find first level block containing the jth occurrence of c with a bin search
         while (current_block != end_block) {
+
             size_type m = current_block + (end_block-current_block)/2;
+
             size_type f = (m == 0)? 0 : c_ranks_[c_index][0][m - 1];
             if (f < j) {
                 if (end_block - current_block == 1) {

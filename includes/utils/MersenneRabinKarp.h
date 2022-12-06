@@ -32,7 +32,7 @@ public:
     };
 
     void restart(uint64_t index) {
-        if (index >= text_.size()) {
+        if (index + length_ >= text_.size()) {
             return;
         }
         init_ = index;
@@ -58,7 +58,7 @@ public:
     };
 
     void next() {
-        if (text_.size() == init_ + 1) {
+        if (text_.size() <= init_ + length_) {
             return;
         }
 
