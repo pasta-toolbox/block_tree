@@ -30,10 +30,10 @@ int main(int argc, char* argv[]) {
 //    std::cout << "Command line parsed okay." << std::endl;
     std::cout <<  std::endl  << "Run with "<< a_size << " Bytes" << std::endl;
     std::string test(a_size, ' ');
-    std::ifstream t("/home/daniel/blocktree-experiments/data/pitches");
+//    std::ifstream t("/home/daniel/blocktree-experiments/data/pitches");
     //    std::ifstream t("/home/daniel/blocktree-experiments/data/english");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.de.txt");
-//    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
+    std::ifstream t("/home/daniel/blocktree-experiments/data/einstein.en.txt");
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/world_leaders");
 
 //    std::ifstream t("/home/daniel/blocktree-experiments/data/influenza");
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
     int  j = 0;
     bool error_mode = false;
     for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfPruned_bt->access(i);
+        auto x = lpfTheory_bt_dp->access(i);
         if (x != vec[i]) {
             if (!error_mode) {
 //            std::cout << i << std::endl;

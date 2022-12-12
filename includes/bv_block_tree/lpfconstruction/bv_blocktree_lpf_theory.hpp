@@ -38,7 +38,7 @@ public:
         }
         for (size_type i = 0; i < lpf_ptr.size(); i++) {
             size_type p = lpf_ptr[i];
-            if (lpf[i] >= block_size && (lpf[p] >= block_size || lpf[i] <= lpf[p])) {
+            if ((lpf[i] >= block_size && lpf[p] >= block_size) || ((p != -1) && lpf[i] <= lpf[p])) {
                 lpf_ptr[i] = lpf_ptr[p];
             }
         }
@@ -306,7 +306,7 @@ public:
         this->max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpf_ptr arrays;
         this->s_ = lz.size();
-        init_dp(text, lpf, lpf_ptr);
+        init(text, lpf, lpf_ptr);
     };
     BV_BlockTree_lpf_theory(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz) {
         this->map_unique_chars(text);
@@ -314,7 +314,7 @@ public:
         this->max_leaf_length_ = max_leaf_length;
         // first we create lpf and lpf_ptr arrays;
         this->s_ = s;
-        init_dp(text, lpf, lpf_ptr);
+        init(text, lpf, lpf_ptr);
     };
     ~BV_BlockTree_lpf_theory() {
         for(auto& bt_t: this->block_tree_types_) {

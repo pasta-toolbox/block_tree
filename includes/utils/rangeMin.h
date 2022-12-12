@@ -18,9 +18,7 @@ public:
     size_type threads = 1;
     explicit min_range_q(std::vector<size_type>& _array, size_type _n, size_type _threads) : array(_array), n(_n), threads(_threads){
         m = 1 + (array.size() - 1)/BSIZE;
-        std::cout << "test" << std::endl;
         precompute();
-        std::cout << "test" << std::endl;
     };
     void precompute() {
         depth = log2(m) + 1;

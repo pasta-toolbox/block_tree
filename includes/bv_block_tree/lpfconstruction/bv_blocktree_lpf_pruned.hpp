@@ -515,7 +515,7 @@ public:
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = lz.size();
-        init_dp(text, lpf, lpf_ptr, mark);
+        init(text, lpf, lpf_ptr, mark);
     };
     BV_BlockTree_lpf_pruned(std::vector<input_type>& text, size_type tau, size_type max_leaf_length,size_type s, std::vector<size_type>& lpf, std::vector<size_type>& lpf_ptr, std::vector<size_type>& lz, bool mark, bool cut_first_level) {
         this->CUT_FIRST_LEVELS = cut_first_level;
@@ -523,7 +523,7 @@ public:
         this->tau_ = tau;
         this->max_leaf_length_ = max_leaf_length;
         this->s_ = s;
-        init_dp(text, lpf, lpf_ptr, mark);
+        init(text, lpf, lpf_ptr, mark);
     };
     ~BV_BlockTree_lpf_pruned() {
         for(auto& bt_t: this->block_tree_types_) {

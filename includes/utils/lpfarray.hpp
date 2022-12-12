@@ -445,6 +445,8 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, st
                 lpf[sai] = r_lcp;
             }
         }
+        lpf[0] = 0;
+        prev_Occ[0] = -1;
     return 0;
 }
 int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &prev_Occ, int64_t threads) {
@@ -455,19 +457,14 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, st
     libsais64_omp(text.data(), sa.data() , (int64_t) text.size(), 0, NULL, threads);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    std::cout << "SA TIME " << ms_int2.count() << std::endl;
     libsais64_plcp_omp(text.data(), sa.data(), plcp.data(), (int64_t) text.size(), threads);
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t02);
-    std::cout << "PLCP TIME " << ms_int3.count() << std::endl;
     libsais64_lcp_omp(plcp.data(), sa.data(), lcp.data(), (int64_t) text.size(), threads);
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int4 = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
-    std::cout << "LCP TIME " << ms_int4.count() << std::endl;
-
     std::vector<int64_t> l(text.size());
     std::vector<int64_t> r(text.size());
-    std::cout << "test" << std::endl;
     ansv_omp(sa, l, r, threads);
 
     auto rmq = min_range_q<int64_t>(lcp, lcp.size(), threads);
@@ -496,6 +493,8 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, st
             lpf[sai] = r_lcp;
         }
     }
+    lpf[0] = 0;
+    prev_Occ[0] = -1;
     return 0;
 }
 #endif //BLOCK_TREE_LPFARRAY_H
