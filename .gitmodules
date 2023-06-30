@@ -1,21 +1,21 @@
 [submodule "extlib/libsais"]
 	path = extlib/libsais
-	url = git@github.com:IlyaGrebnov/libsais.git
+	url = https://github.com/IlyaGrebnov/libsais
 [submodule "extlib/bit_vector"]
 	path = extlib/bit_vector
-	url = git@github.com:pasta-toolbox/bit_vector.git
+	url = https://github.com/pasta-toolbox/bit_vector
 [submodule "extlib/tlx"]
 	path = extlib/tlx
-	url = git@github.com:tlx/tlx.git
+	url = https://github.com/tlx/tlx
 [submodule "extlib/malloc_count"]
 	path = extlib/malloc_count
-	url = git@github.com:bingmann/malloc_count.git
+	url = https://github.com/bingmann/malloc_count
 [submodule "extlib/libsais_cmake"]
 	path = extlib/libsais_cmake
-	url = git@github.com:uqdwq/libsais.git
+	url = https://github.com/uqdwq/libsais
 [submodule "extlib/sdsl"]
 	path = extlib/sdsl
 	url = https://github.com/simongog/sdsl-lite
 [submodule "extlib/malloc_count_cmake"]
 	path = extlib/malloc_count_cmake
-	url = git@github.com:uqdwq/malloc_count.git
+	url = https://github.com/uqdwq/malloc_count
