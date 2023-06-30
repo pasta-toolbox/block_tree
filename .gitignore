@@ -1,10 +1,1 @@
-/cmake-build-debug/*
-/out/*
-/.idea/*
-.DS_Store
-*/.DS_Store
-.ccls-cache/*
-compile_commands.json
-/Testing/*
-valgrind-out.txt
-tests/Testing/*
+/build
