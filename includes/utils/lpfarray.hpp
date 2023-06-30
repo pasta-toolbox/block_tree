@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * This file is part of pasta::block_tree
+ *
+ * Copyright (C) 2022 Daniel Meyer
+ *
+ * pasta::block_tree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * pasta::block_tree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pasta::block_tree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ******************************************************************************/
+
+#pragma once
 
 #include <libsais.h>
 #include <libsais64.h>
@@ -9,9 +30,6 @@
 #include <cmath>
 #include <omp.h>
 #include <ANSV.h>
-#ifndef BLOCK_TREE_LPFARRAY_H
-#define BLOCK_TREE_LPFARRAY_H
-
 
 template<typename size_type>
 int32_t calculate_lz_factor(size_type &z, std::vector<size_type> &lpf, std::vector<size_type> &lz) {
@@ -497,4 +515,5 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, st
     prev_Occ[0] = -1;
     return 0;
 }
-#endif //BLOCK_TREE_LPFARRAY_H
+
+/******************************************************************************/

@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * This file is part of pasta::block_tree
+ *
+ * Copyright (C) 2022 Daniel Meyer
+ *
+ * pasta::block_tree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * pasta::block_tree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pasta::block_tree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ******************************************************************************/
+
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -12,8 +33,6 @@
 #include <support/wide_rank_select.hpp>
 #include <omp.h>
 #include <sdsl/int_vector.hpp>
-#ifndef BLOCK_TREE_BV_BLOCKTREE_HPP
-#define BLOCK_TREE_BV_BLOCKTREE_HPP
 
 template<typename input_type, typename size_type>
 class BV_Block_Tree {
@@ -795,4 +814,5 @@ public:
         return blk_pointer;
     };
 };
-#endif //BLOCK_TREE_BV_BLOCKTREE_HPP
+
+/******************************************************************************/

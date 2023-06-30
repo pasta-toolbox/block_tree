@@ -3,10 +3,7 @@
 #include <vector>
 #include "bit_vector.hpp"
 #include "cmdline_parser.hpp"
-#include <lpfconstruction/bv_blocktree_lpf_heuristic.hpp>
 #include <lpfconstruction/bv_blocktree_lpf_pruned.hpp>
-#include <lpfconstruction/bv_blocktree_lpf_theory.hpp>
-#include <fppconstruction/bv_blocktree_fp_theory.hpp>
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <chrono>
 #include <unordered_set>
@@ -50,33 +47,33 @@ int main(int argc, char* argv[]) {
 
     int32_t lzn = 0;
     calculate_lz_factor(lzn,lpf,lz);
-    BV_BlockTree_fp_theory<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, 16, 16,lzn, 256,
-                                                                                                       true);
-    std::cout << "time " << lpf_bt->block_tree_types_.size() << std::endl;
-    lpf_bt->add_rank_support();
-    std::cout << "time " << lpf_bt->block_tree_types_.size() << std::endl;
+    // BV_BlockTree_fp_theory<uint8_t, int32_t>*  lpf_bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, 16, 16,lzn, 256,
+                                                                                                       // true);
+    //std::cout << "time " << lpf_bt->block_tree_types_.size() << std::endl;
+    //lpf_bt->add_rank_support();
+    //std::cout << "time " << lpf_bt->block_tree_types_.size() << std::endl;
 
         int j = 0;
-        for (auto c: lpf_bt->chars_) {
-        int count = 0;
+    //     for (auto c: lpf_bt->chars_) {
+    //     int count = 0;
 
-        for (int i = 0; i < vec.size(); i++) {
-            if (vec[i] == c) {
+    //     for (int i = 0; i < vec.size(); i++) {
+    //         if (vec[i] == c) {
 
-                count++;
-                auto x = lpf_bt->select(c, count);
-                if (x != i) {
-                    std::cout << (int)c << ":" << i << " " << x << " " << count << std::endl;
-                    j++;
-                }
-            }
+    //             count++;
+    //             auto x = lpf_bt->select(c, count);
+    //             if (x != i) {
+    //                 std::cout << (int)c << ":" << i << " " << x << " " << count << std::endl;
+    //                 j++;
+    //             }
+    //         }
 
 
 
-        }
-        std::cout << c << "  select Errors " << j << std::endl;
-    }
+    //     }
+    //     std::cout << c << "  select Errors " << j << std::endl;
+    // }
     out:
-    delete lpf_bt;
+    // delete lpf_bt;
     return 0;
 }

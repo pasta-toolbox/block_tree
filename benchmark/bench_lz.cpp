@@ -9,9 +9,7 @@
 #include "cmdline_parser.hpp"
 #include <fstream>
 #include <sstream>
-#include "lpfconstruction/bv_blocktree_lpf_heuristic.hpp"
 #include "lpfconstruction/bv_blocktree_lpf_pruned.hpp"
-#include "lpfconstruction/bv_blocktree_lpf_theory.hpp"
 #include <chrono>
 #include <type_traits>
 #include <iostream>
@@ -63,16 +61,16 @@ int main(int argc, char* argv[]) {
 
 
 
-    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  bt2 = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1,lpf, lpf_ptr, lz);
-    auto t0x = std::chrono::high_resolution_clock::now();
-    BV_BlockTree_lpf_theory<uint8_t, int32_t>*  bt3 = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz);
+    // BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  bt2 = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1,lpf, lpf_ptr, lz);
+    // auto t0x = std::chrono::high_resolution_clock::now();
+    // BV_BlockTree_lpf_theory<uint8_t, int32_t>*  bt3 = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpf, lpf_ptr, lz);
 
-    auto t0y = std::chrono::high_resolution_clock::now();
-    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t02);
-    auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
-    std::cout << "time pruned " <<  ms_int.count() << std::endl;
-    std::cout << "time appr " <<  ms_int2.count() << std::endl;
-    std::cout << "time theory " <<  ms_int3.count() << std::endl;
+    // auto t0y = std::chrono::high_resolution_clock::now();
+    // auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t02);
+    // auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
+    // std::cout << "time pruned " <<  ms_int.count() << std::endl;
+    // std::cout << "time appr " <<  ms_int2.count() << std::endl;
+    // std::cout << "time theory " <<  ms_int3.count() << std::endl;
 //    std::cout << "pruned " << bt->block_size_lvl_[0]  << std::endl;
 //    for (auto bv: bt->block_tree_types_) {
 //        std::cout << *bv << std::endl;
@@ -192,59 +190,59 @@ int main(int argc, char* argv[]) {
     }
     std::cout << " leaves: " << bt->leaves_.size() << std::endl;
     std::cout << "appr" << std::endl;
-    for (int i = 0; i < bt2->block_tree_types_.size(); i++) {
-        auto& lvl_bv = *bt2->block_tree_types_[i];
-        auto& lvl_bv_rs = *bt2->block_tree_types_rs_[i];
-        auto& lvl_ptr = *bt2->block_tree_pointers_[i];
-        auto& lvl_off = *bt2->block_tree_offsets_[i];
-        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-        std::cout << lvl_bv.size() << "/";
-        std::cout << lvl_bv_rs.space_usage() << "/";
-        std::cout << "("<<lvl_ptr.size()<<","<<(int) lvl_ptr.width()<< ","<<lvl_ptr.bit_size()<<")/";
-        std::cout << "("<<lvl_off.size()<<","<< (int) lvl_off.width()<< ","<<lvl_off.bit_size()<<")"<<std::endl;
-    }
-    std::cout << " leaves: " << bt2->leaves_.size() << std::endl;
-    std::cout << "theo" << std::endl;
-    for (int i = 0; i < bt3->block_tree_types_.size(); i++) {
-        auto& lvl_bv = *bt3->block_tree_types_[i];
-        auto& lvl_bv_rs = *bt3->block_tree_types_rs_[i];
-        auto& lvl_ptr = *bt3->block_tree_pointers_[i];
-        auto& lvl_off = *bt3->block_tree_offsets_[i];
-        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-        std::cout << lvl_bv.size() << "/";
-        std::cout << lvl_bv_rs.space_usage() << "/";
-        std::cout << "("<<lvl_ptr.size()<<","<<(int) lvl_ptr.width()<< ","<<lvl_ptr.bit_size()<<")/";
-        std::cout << "("<<lvl_off.size()<<","<< (int) lvl_off.width()<< ","<<lvl_off.bit_size()<<")"<<std::endl;
-    }
-    std::cout << " leaves: " << bt3->leaves_.size() << std::endl;
+    // for (int i = 0; i < bt2->block_tree_types_.size(); i++) {
+    //     auto& lvl_bv = *bt2->block_tree_types_[i];
+    //     auto& lvl_bv_rs = *bt2->block_tree_types_rs_[i];
+    //     auto& lvl_ptr = *bt2->block_tree_pointers_[i];
+    //     auto& lvl_off = *bt2->block_tree_offsets_[i];
+    //     std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+    //     std::cout << lvl_bv.size() << "/";
+    //     std::cout << lvl_bv_rs.space_usage() << "/";
+    //     std::cout << "("<<lvl_ptr.size()<<","<<(int) lvl_ptr.width()<< ","<<lvl_ptr.bit_size()<<")/";
+    //     std::cout << "("<<lvl_off.size()<<","<< (int) lvl_off.width()<< ","<<lvl_off.bit_size()<<")"<<std::endl;
+    // }
+    // std::cout << " leaves: " << bt2->leaves_.size() << std::endl;
+    // std::cout << "theo" << std::endl;
+    // for (int i = 0; i < bt3->block_tree_types_.size(); i++) {
+    //     auto& lvl_bv = *bt3->block_tree_types_[i];
+    //     auto& lvl_bv_rs = *bt3->block_tree_types_rs_[i];
+    //     auto& lvl_ptr = *bt3->block_tree_pointers_[i];
+    //     auto& lvl_off = *bt3->block_tree_offsets_[i];
+    //     std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
+    //     std::cout << lvl_bv.size() << "/";
+    //     std::cout << lvl_bv_rs.space_usage() << "/";
+    //     std::cout << "("<<lvl_ptr.size()<<","<<(int) lvl_ptr.width()<< ","<<lvl_ptr.bit_size()<<")/";
+    //     std::cout << "("<<lvl_off.size()<<","<< (int) lvl_off.width()<< ","<<lvl_off.bit_size()<<")"<<std::endl;
+    // }
+    // std::cout << " leaves: " << bt3->leaves_.size() << std::endl;
     bt->print_space_usage();
-    bt2->print_space_usage();
-    bt3->print_space_usage();
-    int sizer = 0;
-    int sizer2 = 0;
-    for (auto pv: bt->block_tree_pointers_) {
-        auto& ptr = *pv;
-        auto x = 0;
-        for (auto p : *pv) {
-            if (p > x) {
-                x = p;
-            }
-        }
-        std::cout << (int)ptr.width() << " " << 32 -  __builtin_clz(static_cast<unsigned int>(x) | 1) << std::endl;
-        sizer +=  (32 -  __builtin_clz(static_cast<unsigned int>(x) | 1)) * ptr.size();
-        sizer2 += (int) ptr.width() * ptr.size();
-    }
-    std::cout << sizer << " " << sizer2 << " " << sizer2 - sizer << std::endl;
-    auto x = 0;
+    // bt2->print_space_usage();
+    // bt3->print_space_usage();
+    // int sizer = 0;
+    // int sizer2 = 0;
+    // for (auto pv: bt->block_tree_pointers_) {
+    //     auto& ptr = *pv;
+    //     auto x = 0;
+    //     for (auto p : *pv) {
+    //         if (p > x) {
+    //             x = p;
+    //         }
+    //     }
+    //     std::cout << (int)ptr.width() << " " << 32 -  __builtin_clz(static_cast<unsigned int>(x) | 1) << std::endl;
+    //     sizer +=  (32 -  __builtin_clz(static_cast<unsigned int>(x) | 1)) * ptr.size();
+    //     sizer2 += (int) ptr.width() * ptr.size();
+    // }
+    // std::cout << sizer << " " << sizer2 << " " << sizer2 - sizer << std::endl;
+    // auto x = 0;
     delete bt;
-    auto y = 0;
-    delete bt2;
-    auto z = 0;
-    delete bt3;
-    auto a = 0;
-    std::cout <<"Pruned: " <<  (double )8 * (x - y)/test.size() << " Bits/S" << std::endl;
-    std::cout <<"Appr.: " <<  (double )8 * (y - z)/test.size() << " Bits/S" << std::endl;
-    std::cout <<"Theory: " <<  (double )8 * (z - a)/test.size() << " Bits/S" << std::endl;
+    // auto y = 0;
+    // delete bt2;
+    // auto z = 0;
+    // delete bt3;
+    // auto a = 0;
+    // std::cout <<"Pruned: " <<  (double )8 * (x - y)/test.size() << " Bits/S" << std::endl;
+    // std::cout <<"Appr.: " <<  (double )8 * (y - z)/test.size() << " Bits/S" << std::endl;
+    // std::cout <<"Theory: " <<  (double )8 * (z - a)/test.size() << " Bits/S" << std::endl;
 //    std::cout << test << std::endl;
 
     return 0;

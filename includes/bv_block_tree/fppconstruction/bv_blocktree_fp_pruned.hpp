@@ -1,14 +1,30 @@
-//
-// Created by daniel on 07.09.22.
-//
+/*******************************************************************************
+ * This file is part of pasta::block_tree
+ *
+ * Copyright (C) 2022 Daniel Meyer
+ *
+ * pasta::block_tree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * pasta::block_tree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pasta::block_tree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ******************************************************************************/
+
+#pragma once
+
 #include <bv_blocktree.hpp>
 #include <MersenneRabinKarp.h>
 #include <MersenneHash.h>
 
-#ifndef BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
-#define BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 __extension__ typedef unsigned __int128 uint128_t;
-#endif //BLOCK_TREE_BV_BLOCKTREE_FP_PRUNED_H
 
 template<typename input_type, typename size_type>
 class BV_BlockTree_fp_pruned : public BV_Block_Tree<input_type, size_type> {
@@ -781,3 +797,5 @@ private:
     // magic number to indicate that a block has no occurrences to its left side
     const int NO_FORMER_OCC = -1;
 };
+
+/******************************************************************************/

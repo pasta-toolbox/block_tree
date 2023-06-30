@@ -6,10 +6,7 @@
 #include "cmdline_parser.hpp"
 #include <fstream>
 #include <sstream>
-#include <lpfconstruction/bv_blocktree_lpf_heuristic.hpp>
 #include <lpfconstruction/bv_blocktree_lpf_pruned.hpp>
-#include <lpfconstruction/bv_blocktree_lpf_theory.hpp>
-#include <fppconstruction/bv_blocktree_fp_theory.hpp>
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <chrono>
 #include <type_traits>
@@ -97,7 +94,7 @@ int main(int argc, char* argv[]) {
 //    BV_BlockTree_lpf_heuristic<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, 2, 1);
 //    BV_BlockTree_lpf_theory<uint8_t, int32_t>* fp_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, 2, 1,1,lpfArray, prevOcc, lzPhrases);
     auto t03 = std::chrono::high_resolution_clock::now();
-    auto* fpTheory_bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS);
+    // auto* fpTheory_bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS);
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_theo = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
     std::cout << "FP THEORY TIME " << ms_int_fp_theo.count() << std::endl;
@@ -112,15 +109,15 @@ int main(int argc, char* argv[]) {
     auto t0y = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune_simple = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
     std::cout << "FP PRUNE SIMPLE TIME " << ms_int_fp_prune_simple.count() << std::endl;
-    auto* lpfHeuristic_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, tau, mls);
+    // auto* lpfHeuristic_bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, tau, mls);
     auto t06 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_heu = std::chrono::duration_cast<std::chrono::milliseconds>(t06 - t0y);
     std::cout << "LPF Heuristic TIME " << ms_int_lpf_heu.count() << std::endl;
-    auto* lpfTheory_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, tau, mls, false);
+    // auto* lpfTheory_bt = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, tau, mls, false);
     auto t07 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_theo = std::chrono::duration_cast<std::chrono::milliseconds>(t07 - t06);
     std::cout << "LPF THEORY TIME " << ms_int_lpf_theo.count()<< std::endl;
-    auto* lpfTheory_bt_dp = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, tau, mls, true);
+    // auto* lpfTheory_bt_dp = new BV_BlockTree_lpf_theory<uint8_t, int32_t>(vec, tau, mls, true);
     auto t0aa = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_theo_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t0aa - t07);
     std::cout << "LPF THEORY DP TIME " << ms_int_lpf_theo_dp.count()<< std::endl;
@@ -135,12 +132,12 @@ int main(int argc, char* argv[]) {
     auto ms_int_lpf_prune_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t09 - t08);
     std::cout << "LPF PRUNED DP TIME " << ms_int_lpf_prune_dp.count() << std::endl;
     std::cout << "time " << ms_int.count() << std::endl;
-    std::cout << "fp theory space " << fpTheory_bt->print_space_usage() << " " << fpTheory_bt->block_tree_types_.size() <<  std::endl;
+    // std::cout << "fp theory space " << fpTheory_bt->print_space_usage() << " " << fpTheory_bt->block_tree_types_.size() <<  std::endl;
     std::cout << "fp pruned space " << fpPruned_bt->print_space_usage() << " " << fpPruned_bt->block_tree_types_.size() <<   std::endl;
     std::cout << "fp pruned simple space " << fpPruned_simple_bt->print_space_usage() << " " << fpPruned_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpfArray heuristic space " << lpfHeuristic_bt->print_space_usage() << " " << lpfHeuristic_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpfArray theory space " << lpfTheory_bt->print_space_usage() << " " << lpfTheory_bt->block_tree_types_.size() <<   std::endl;
-    std::cout << "lpfArray theory dp space " << lpfTheory_bt_dp->print_space_usage() << " " << lpfTheory_bt_dp->block_tree_types_.size() <<   std::endl;
+    // std::cout << "lpfArray heuristic space " << lpfHeuristic_bt->print_space_usage() << " " << lpfHeuristic_bt->block_tree_types_.size() <<   std::endl;
+    // std::cout << "lpfArray theory space " << lpfTheory_bt->print_space_usage() << " " << lpfTheory_bt->block_tree_types_.size() <<   std::endl;
+    // std::cout << "lpfArray theory dp space " << lpfTheory_bt_dp->print_space_usage() << " " << lpfTheory_bt_dp->block_tree_types_.size() <<   std::endl;
     std::cout << "lpfArray pruned space " << lpfPruned_bt->print_space_usage() << " " << lpfPruned_bt->block_tree_types_.size() <<  std::endl;
     std::cout << "lpfArray pruned dp space " << lpfPruned_bt_dp->print_space_usage() << " " << lpfPruned_bt_dp->block_tree_types_.size() <<  std::endl;
 //    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  lpf_bt2 = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, 2, 1, 15,lpfArray, prevOcc, lzPhrases, false);
@@ -169,21 +166,21 @@ int main(int argc, char* argv[]) {
 //        std::cout << "(" << fp_bt->block_tree_pointers_[i]->size() << "," << (int) fp_bt->block_tree_pointers_[i]->width() << "," << fp_bt->block_tree_pointers_[i]->bit_size() << ")/";
 //        std::cout << "(" << fp_bt->block_tree_offsets_[i]->size() << "," << (int) fp_bt->block_tree_offsets_[i]->width() << "," << fp_bt->block_tree_offsets_[i]->bit_size() << ")" << std::endl;
 //    }
-    int  j = 0;
-    bool error_mode = false;
-    for (int i = 0; i < vec.size(); i++) {
-        auto x = lpfTheory_bt_dp->access(i);
-        if (x != vec[i]) {
-            if (!error_mode) {
-//            std::cout << i << std::endl;
-                error_mode = true;
-            }
-//            std::cout << i << std::endl;
-            j++;
-        }
+     int  j = 0;
+//     bool error_mode = false;
+//     for (int i = 0; i < vec.size(); i++) {
+//         auto x = lpfTheory_bt_dp->access(i);
+//         if (x != vec[i]) {
+//             if (!error_mode) {
+// //            std::cout << i << std::endl;
+//                 error_mode = true;
+//             }
+// //            std::cout << i << std::endl;
+//             j++;
+//         }
 
-    }
-    std::cout << "Errors " << j << std::endl;
+//     }
+//     std::cout << "Errors " << j << std::endl;
 
 
     for (int i = 0; i < vec.size(); i++) {
@@ -194,14 +191,14 @@ int main(int argc, char* argv[]) {
 
     }
     int32_t threads = 6;
-    std::cout << "Errors " << j << std::endl;
-    for (int i = 0; i < vec.size(); i++) {
-        auto x = fpTheory_bt->access(i);
-        if (x != vec[i]) {
-            j++;
-        }
+    // std::cout << "Errors " << j << std::endl;
+    // for (int i = 0; i < vec.size(); i++) {
+    //     auto x = fpTheory_bt->access(i);
+    //     if (x != vec[i]) {
+    //         j++;
+    //     }
 
-    }
+    // }
     std::cout << "Errors " << j << std::endl;
 
 
@@ -507,13 +504,13 @@ int main(int argc, char* argv[]) {
 //            }
 //        }
 //    }
-    delete fpTheory_bt;
+    // delete fpTheory_bt;
     delete fpPruned_bt;
     delete fpPruned_simple_bt;
     delete lpfPruned_bt;
     delete lpfPruned_bt_dp;
-    delete lpfHeuristic_bt;
-    delete lpfTheory_bt;
-    delete lpfTheory_bt_dp;
+    // delete lpfHeuristic_bt;
+    // delete lpfTheory_bt;
+    // delete lpfTheory_bt_dp;
 return 0;
 }

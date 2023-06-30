@@ -1,7 +1,26 @@
-#include <iostream>
+/*******************************************************************************
+ * This file is part of pasta::block_tree
+ *
+ * Copyright (C) 2022 Daniel Meyer
+ *
+ * pasta::block_tree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * pasta::block_tree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pasta::block_tree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ******************************************************************************/
 
-#ifndef MERSENNE_RABINKARP_H
-#define MERSENNE_RABINKARP_H
+#pragma once
+
+#include <iostream>
 
 template<class T, class size_type>
 class MersenneRabinKarp {
@@ -82,4 +101,5 @@ public:
 
 };
 
-#endif // MERSENNE_RABINKARP_H
+/******************************************************************************/
+
