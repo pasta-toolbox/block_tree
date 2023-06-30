@@ -798,4 +798,9 @@ private:
     const int NO_FORMER_OCC = -1;
 };
 
+template <typename input_type, typename size_type>
+auto* make_block_tree_fp(std::vector<input_type>& input, size_type const tau, size_type const max_leaf_length) {
+  return new BlockTreeFP<input_type, size_type>(input, tau, max_leaf_length, 1, 256, true, true);
+}
+
 /******************************************************************************/

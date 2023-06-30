@@ -61,4 +61,4 @@ target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR
 
 
 
-#add_subdirectory(tests)
+add_subdirectory(tests)
