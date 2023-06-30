@@ -25,16 +25,17 @@
 #include <omp.h>
 
 template<typename size_type>
-class min_range_q {
+class RangeMinimum {
 public:
-    std::vector<size_type>& array;
+    std::vector<size_type> const& array;
     size_type m;
     size_type n;
     size_type** table;
     size_type depth;
     size_type BSIZE = 16;
     size_type threads = 1;
-    explicit min_range_q(std::vector<size_type>& _array, size_type _n, size_type _threads) : array(_array), n(_n), threads(_threads){
+
+    explicit RangeMinimum(std::vector<size_type> const& _array, size_type _n, size_type _threads) : array(_array), n(_n), threads(_threads){
         m = 1 + (array.size() - 1)/BSIZE;
         precompute();
     };
@@ -112,7 +113,7 @@ public:
 
             return array[min] < array[outOfBlockMin] ? min : outOfBlockMin;
     }
-    ~min_range_q() {
+    ~RangeMinimum() {
         for(size_type i=0;i<depth;i++){
             delete[] table[i];
         }

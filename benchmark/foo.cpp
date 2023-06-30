@@ -1,15 +1,11 @@
 #include <iostream>
 #include "libsais.h"
-#include "lpfarray.hpp"
+#include <pasta/block_tree/utils/lpf_array.hpp>
 #include <vector>
 #include "bit_vector.hpp"
 #include "cmdline_parser.hpp"
 #include <fstream>
 #include <sstream>
-//#include "lpfconstruction/bv_blocktree_lpf_heuristic.hpp"
-//#include "lpfconstruction/bv_blocktree_lpf_pruned.hpp"
-//#include "lpfconstruction/bv_blocktree_lpf_theory.hpp"
-//#include "fppconstruction/bv_blocktree_fp_theory.hpp"
 #include <chrono>
 #include <type_traits>
 #include <iostream>

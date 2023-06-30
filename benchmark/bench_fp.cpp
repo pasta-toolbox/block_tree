@@ -1,13 +1,13 @@
 #include <iostream>
 #include "libsais.h"
-#include <lpfarray.hpp>
+#include "pasta/block_tree/utils/lpf_array.hpp"
 #include <vector>
 #include "bit_vector.hpp"
 #include "cmdline_parser.hpp"
 #include <fstream>
 #include <sstream>
-#include <lpfconstruction/bv_blocktree_lpf_pruned.hpp>
-#include <fppconstruction/bv_blocktree_fp_pruned.hpp>
+#include "pasta/block_tree/construction/block_tree_lpf.hpp"
+#include "pasta/block_tree/construction/block_tree_fp.hpp"
 #include <chrono>
 #include <type_traits>
 #include <iostream>
@@ -98,13 +98,13 @@ int main(int argc, char* argv[]) {
     auto t04 = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_theo = std::chrono::duration_cast<std::chrono::milliseconds>(t04 - t03);
     std::cout << "FP THEORY TIME " << ms_int_fp_theo.count() << std::endl;
-    auto* fpPruned_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, mls,s,256,CUT_FIRST_LEVELS,
+    auto* fpPruned_bt = new BlockTreeFP<uint8_t, int32_t>(vec, tau, mls,s,256,CUT_FIRST_LEVELS,
                                                                      EXTENDED_PRUNE);
     auto t05 = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
     std::cout << "FP PRUNE TIME " << ms_int_fp_prune.count() << std::endl;
     auto t0x = std::chrono::high_resolution_clock::now();
-    auto* fpPruned_simple_bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS,
+    auto* fpPruned_simple_bt = new BlockTreeFP<uint8_t, int32_t>(vec, tau, mls,s,256, CUT_FIRST_LEVELS,
                                                                             SIMPLE_PRUNE);
     auto t0y = std::chrono::high_resolution_clock::now();
     auto ms_int_fp_prune_simple = std::chrono::duration_cast<std::chrono::milliseconds>(t0y - t0x);
@@ -121,12 +121,12 @@ int main(int argc, char* argv[]) {
     auto t0aa = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_theo_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t0aa - t07);
     std::cout << "LPF THEORY DP TIME " << ms_int_lpf_theo_dp.count()<< std::endl;
-    auto* lpfPruned_bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, mls,
+    auto* lpfPruned_bt = new BlockTreeLPF<uint8_t, int32_t>(vec, tau, mls,
                                                                        true, CUT_FIRST_LEVELS, true);
     auto t08 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_prune = std::chrono::duration_cast<std::chrono::milliseconds>(t08 - t0aa);
     std::cout << "LPF PRUNED TIME " << ms_int_lpf_prune.count() << std::endl;
-    auto* lpfPruned_bt_dp = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, mls,
+    auto* lpfPruned_bt_dp = new BlockTreeLPF<uint8_t, int32_t>(vec, tau, mls,
                                                                        true, CUT_FIRST_LEVELS, false);
     auto t09 = std::chrono::high_resolution_clock::now();
     auto ms_int_lpf_prune_dp = std::chrono::duration_cast<std::chrono::milliseconds>(t09 - t08);

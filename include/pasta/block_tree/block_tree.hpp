@@ -35,7 +35,7 @@
 #include <sdsl/int_vector.hpp>
 
 template<typename input_type, typename size_type>
-class BV_Block_Tree {
+class BlockTree {
 public:
     bool CUT_FIRST_LEVELS = true;
     size_type tau_;
@@ -58,32 +58,7 @@ public:
     std::vector<std::vector<int64_t>> top_level_c_ranks_;
     std::vector<std::vector<sdsl::int_vector<>>> c_ranks_;
     std::vector<std::vector<sdsl::int_vector<>>> pointer_c_ranks_;
-//    int64_t access_encoded(size_type index) {
-//        int64_t block_size = block_size_lvl_[0];
-//        int64_t blk_pointer = index / block_size;
-//        int64_t off = index % block_size;
-//        int64_t child = 0;
-//        for (size_type i = 0; i < block_tree_types_.size(); i++) {
-//            auto& lvl = *block_tree_types_[i];
-//            auto& lvl_rs = *block_tree_types_rs_[i];
-//            auto& lvl_enc = *block_tree_encoded_[i];
-//            if (lvl[blk_pointer] == 0) {
-//                size_type blk = lvl_rs.rank0(blk_pointer);
-//                size_type enc = lvl_enc[blk];
-//                blk_pointer = enc / block_size;
-//                off += enc % block_size;
-//                if (off >= block_size) {
-//                    blk_pointer++;
-//                    off -= block_size;
-//                }
-//            }
-//            block_size /= tau_;
-//            child = off / block_size;
-//            off = off % block_size;
-//            blk_pointer = lvl_rs.rank1(blk_pointer) * tau_ + child;
-//        }
-//        return leaves_[blk_pointer * leaf_size + off];
-//    }
+
     int64_t access(size_type index) {
         int64_t block_size = block_size_lvl_[0];
         int64_t blk_pointer = index / block_size_lvl_[0];
@@ -110,6 +85,7 @@ public:
         }
         return leaves_[blk_pointer * leaf_size + off];
     };
+  
     int64_t select(input_type c, size_type j) {
         auto c_index = chars_index_[c];
         auto& top_level = *block_tree_types_[0];
@@ -220,6 +196,7 @@ public:
 //        return 2;
         return current_block;
     }
+  
     int64_t rank_base(input_type c, size_type index) {
         pasta::BitVector& top_level = *block_tree_types_[0];
         auto& top_level_rs = *block_tree_types_rs_[0];
@@ -294,6 +271,7 @@ public:
         }
         return rank;
     }
+  
     int64_t rank(input_type c, size_type index) {
         pasta::BitVector& top_level = *block_tree_types_[0];
         auto& top_level_rs = *block_tree_types_rs_[0];
@@ -363,6 +341,7 @@ public:
         }
         return rank;
     };
+  
     int64_t print_space_usage() {
         int64_t space_usage = sizeof(tau_) + sizeof(max_leaf_length_) + sizeof(s_) + sizeof(leaf_size);
         for (auto bv: block_tree_types_) {
@@ -400,6 +379,7 @@ public:
 
         return space_usage;
     };
+  
     int32_t add_rank_support() {
         rank_support = true;
         c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
@@ -442,32 +422,6 @@ public:
                         counter = tau_;
                     }
                 }
-//                size_type j = 0;
-//                while (j < block_tree_types_[i]->size() - 1) {
-//                    temp1 = c_ranks_[chars_index_[c]][i][j];
-//                    temp2 = 0;
-//                    for (size_type k = 0; k < tau_ - 1; k++) {
-//                        std::cout << k << " " << block_tree_types_[i]->size() << std::endl;
-//                        temp1 = c_ranks_[chars_index_[c]][i][j + k];
-//                        temp2 = c_ranks_[chars_index_[c]][i][j + k + 1];
-//                        if (c == 'e' && i == 8) {
-//                            std::cout << "dieses " << temp1 << " " << temp2 << std::endl;
-//                        }
-//                        c_ranks_[chars_index_[c]][i][j + k + 1] += c_ranks_[chars_index_[c]][i][j + k];
-//                        temp1 = temp2;
-//                    };
-//                    j += tau_;
-//                }
-//                std::cout << c << " " << "rank dones3" << i << std::endl;
-//                temp1 = c_ranks_[chars_index_[c]][i][j];
-//                temp2 = 0;
-//                while (j < block_tree_types_[i]->size() - 1) {
-//                    temp1 = c_ranks_[chars_index_[c]][i][j];
-//                    temp2 = c_ranks_[chars_index_[c]][i][j + 1];
-//                    c_ranks_[chars_index_[c]][i][j + 1] += c_ranks_[chars_index_[c]][i][j];
-//                    temp1 = temp2;
-//                    j++;
-//                }
             }
                 for (size_type i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(pointer_c_ranks_[chars_index_[c]][i]);
@@ -476,48 +430,6 @@ public:
                     sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
         }
-//        c_ranks_.resize(u_chars_, )
-//        for (auto c: chars_) {
-//            size_type rank_c = 0;
-//            for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
-//                rank_c += rank_block(c,0,i);
-//            }
-//            std::cout << c << ": " << rank_c << std::endl;
-//            for (int i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
-//                for (int j = 0; j < c_ranks_[chars_index_[c]][i].size(); j++) {
-//                    std::cout << c_ranks_[chars_index_[c]][i][j] << " ";
-//                }
-//                std::cout << std::endl;
-//            }
-//            for (int i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
-//                for (int j = 0; j < pointer_c_ranks_[chars_index_[c]][i].size(); j++) {
-//                    std::cout << pointer_c_ranks_[chars_index_[c]][i][j] << " ";
-//                }
-//                std::cout << std::endl;
-//            }
-//        }
-//        for (int64_t i = 0; i < amount_of_leaves; i++) {
-//            leaf_ranks[chars_index_[c]][i]  = rank_leaf(c,i, leaf_size);
-//        }
-//        std::vector<std::vector<std::vector<size_type>>> ranks;
-//        std::vector<std::vector<std::vector<size_type>>> pointer_ranks;
-//        for (int i = block_tree_types_.size() - 1; i >= 0; i++) {
-//            for (int j = 0; j < block_tree_types_[i]->size(); j++) {
-//                size_type child = j % tau_;
-//                std::vector<size_type> accumulator = std::vector<size_type>(u_chars_, 0);
-//                for (int k = 0; k < tau_; k++) {
-////                    for (auto c: chars_) {
-////                        ranks[i][j][chars_index_[c]]
-////                    }
-//                }
-//
-//                // ranks as child
-//                if (!(*block_tree_types_[i])[j]) {
-//                    // ranks internal
-//                }
-//            }
-//        }
-
         return 0;
     }
 
@@ -566,32 +478,6 @@ public:
                             counter = tau_;
                         }
                     }
-//                size_type j = 0;
-//                while (j < block_tree_types_[i]->size() - 1) {
-//                    temp1 = c_ranks_[chars_index_[c]][i][j];
-//                    temp2 = 0;
-//                    for (size_type k = 0; k < tau_ - 1; k++) {
-//                        std::cout << k << " " << block_tree_types_[i]->size() << std::endl;
-//                        temp1 = c_ranks_[chars_index_[c]][i][j + k];
-//                        temp2 = c_ranks_[chars_index_[c]][i][j + k + 1];
-//                        if (c == 'e' && i == 8) {
-//                            std::cout << "dieses " << temp1 << " " << temp2 << std::endl;
-//                        }
-//                        c_ranks_[chars_index_[c]][i][j + k + 1] += c_ranks_[chars_index_[c]][i][j + k];
-//                        temp1 = temp2;
-//                    };
-//                    j += tau_;
-//                }
-//                std::cout << c << " " << "rank dones3" << i << std::endl;
-//                temp1 = c_ranks_[chars_index_[c]][i][j];
-//                temp2 = 0;
-//                while (j < block_tree_types_[i]->size() - 1) {
-//                    temp1 = c_ranks_[chars_index_[c]][i][j];
-//                    temp2 = c_ranks_[chars_index_[c]][i][j + 1];
-//                    c_ranks_[chars_index_[c]][i][j + 1] += c_ranks_[chars_index_[c]][i][j];
-//                    temp1 = temp2;
-//                    j++;
-//                }
                 }
                 for (size_type i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(pointer_c_ranks_[chars_index_[c]][i]);
@@ -600,58 +486,17 @@ public:
                     sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
             }
-
-
-//        c_ranks_.resize(u_chars_, )
-//        for (auto c: chars_) {
-//            size_type rank_c = 0;
-//            for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
-//                rank_c += rank_block(c,0,i);
-//            }
-//            std::cout << c << ": " << rank_c << std::endl;
-//            for (int i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
-//                for (int j = 0; j < c_ranks_[chars_index_[c]][i].size(); j++) {
-//                    std::cout << c_ranks_[chars_index_[c]][i][j] << " ";
-//                }
-//                std::cout << std::endl;
-//            }
-//            for (int i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
-//                for (int j = 0; j < pointer_c_ranks_[chars_index_[c]][i].size(); j++) {
-//                    std::cout << pointer_c_ranks_[chars_index_[c]][i][j] << " ";
-//                }
-//                std::cout << std::endl;
-//            }
-//        }
-//        for (int64_t i = 0; i < amount_of_leaves; i++) {
-//            leaf_ranks[chars_index_[c]][i]  = rank_leaf(c,i, leaf_size);
-//        }
-//        std::vector<std::vector<std::vector<size_type>>> ranks;
-//        std::vector<std::vector<std::vector<size_type>>> pointer_ranks;
-//        for (int i = block_tree_types_.size() - 1; i >= 0; i++) {
-//            for (int j = 0; j < block_tree_types_[i]->size(); j++) {
-//                size_type child = j % tau_;
-//                std::vector<size_type> accumulator = std::vector<size_type>(u_chars_, 0);
-//                for (int k = 0; k < tau_; k++) {
-////                    for (auto c: chars_) {
-////                        ranks[i][j][chars_index_[c]]
-////                    }
-//                }
-//
-//                // ranks as child
-//                if (!(*block_tree_types_[i])[j]) {
-//                    // ranks internal
-//                }
-//            }
-//        }
-
         return 0;
     }
+  
     inline size_type leading_zeros(int32_t val) {
         return __builtin_clz(static_cast<unsigned int>(val) | 1);
     }
+  
     inline size_type leading_zeros(int64_t val) {
         return __builtin_clzll(static_cast<unsigned long long>(val) | 1);
     }
+  
     void calculate_padding(int64_t& padding, int64_t text_length, int64_t& height, int64_t& blk_size) {
         int64_t tmp_padding = this->s_ * this->tau_;
         int64_t h = 1;
@@ -663,8 +508,8 @@ public:
         }
         height = h;
         padding = tmp_padding - text_length;
-//        std::cout << "Padding: " << padding << " h: " << h << " SIZE: " << tmp_padding << " BLK_SIZE: " <<  blk_size <<   std::endl;
     }
+  
     size_type rank_block(input_type c, size_type i, size_type j) {
         if (j >= block_tree_types_[i]->size()) {
             return 0;

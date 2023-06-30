@@ -51,7 +51,7 @@ inline int64_t get_parent(int64_t i) {
     return i >> 1;
 }
 
-inline int32_t getLeft_opt(std::vector<std::vector<int32_t>> &table, int32_t depth, int32_t index, int32_t start) {
+inline int32_t get_left_opt(std::vector<std::vector<int32_t>> &table, int32_t depth, int32_t index, int32_t start) {
     int32_t value = table[0][index];
     if (value == table[depth - 1][0]) return -1;
 
@@ -73,7 +73,7 @@ inline int32_t getLeft_opt(std::vector<std::vector<int32_t>> &table, int32_t dep
     return cur;
 }
 
-inline int64_t getLeft_opt(std::vector<std::vector<int64_t>> &table, int64_t depth, int64_t index, int64_t start) {
+inline int64_t get_left_opt(std::vector<std::vector<int64_t>> &table, int64_t depth, int64_t index, int64_t start) {
     int64_t value = table[0][index];
     if (value == table[depth - 1][0]) return -1;
 
@@ -95,7 +95,7 @@ inline int64_t getLeft_opt(std::vector<std::vector<int64_t>> &table, int64_t dep
     return cur;
 }
 
-inline int64_t getRight_opt(std::vector<std::vector<int64_t>> &table, int64_t depth, int64_t index, int64_t start) {
+inline int64_t get_right_opt(std::vector<std::vector<int64_t>> &table, int64_t depth, int64_t index, int64_t start) {
     int64_t value = table[0][index];
     if (value == table[depth - 1][0]) return -1;
 
@@ -117,7 +117,7 @@ inline int64_t getRight_opt(std::vector<std::vector<int64_t>> &table, int64_t de
     return cur;
 }
 
-inline int32_t getRight_opt(std::vector<std::vector<int32_t>> &table, int32_t depth, int32_t index, int32_t start) {
+inline int32_t get_right_opt(std::vector<std::vector<int32_t>> &table, int32_t depth, int32_t index, int32_t start) {
     int32_t value = table[0][index];
     if (value == table[depth - 1][0]) return -1;
 
@@ -141,7 +141,7 @@ inline int32_t getRight_opt(std::vector<std::vector<int32_t>> &table, int32_t de
 
 template<typename size_type>
 int32_t
-ansv(std::vector<size_type> &array, std::vector<size_type> &ln, std::vector<size_type> &rn, size_type offset,
+ansv(std::vector<size_type> const& array, std::vector<size_type> &ln, std::vector<size_type> &rn, size_type offset,
      size_type n) {
     std::stack<size_type> stack_left;
     for (size_type i = 0; i < n; i++) {
@@ -204,7 +204,7 @@ void ansv_omp(std::vector<size_type> &array, std::vector<size_type> &left, std::
         for (size_type k = i; k < j; k++) {
             if (left[k] == -1) {
                 if (tmp != -1 && array[tmp] >= array[k]) {
-                    tmp = getLeft_opt(table, depth, k, tmp);
+                    tmp = get_left_opt(table, depth, k, tmp);
                 }
                 left[k] = tmp;
             }
@@ -214,7 +214,7 @@ void ansv_omp(std::vector<size_type> &array, std::vector<size_type> &left, std::
         for (size_type k = j - 1; k >= i; k--) {
             if (right[k] == -1) {
                 if (tmp != -1 && array[tmp] >= array[k]) {
-                    tmp = getRight_opt(table, depth, k, tmp);
+		  tmp = get_right_opt(table, depth, k, tmp);
                 }
                 right[k] = tmp;
             }

@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include <bv_blocktree.hpp>
-#include <MersenneRabinKarp.h>
-#include <MersenneHash.h>
+#include "pasta/block_tree/block_tree.hpp"
+#include "pasta/block_tree/utils/MersenneRabinKarp.hpp"
+#include "pasta/block_tree/utils/MersenneHash.hpp"
 
 __extension__ typedef unsigned __int128 uint128_t;
 
 template<typename input_type, typename size_type>
-class BV_BlockTree_fp_pruned : public BV_Block_Tree<input_type, size_type> {
+class BlockTreeFP : public BlockTree<input_type, size_type> {
 public:
     size_type const_size = 0;
     size_type sigma_ = 0;
@@ -761,7 +761,7 @@ public:
         return 0;
     };
 
-    BV_BlockTree_fp_pruned(std::vector<input_type> &text, size_type tau, size_type max_leaf_length, size_type s, size_type sigma,
+    BlockTreeFP(std::vector<input_type> &text, size_type tau, size_type max_leaf_length, size_type s, size_type sigma,
                            bool cut_first_levels, bool extended_prune) {
         sigma_ = sigma;
         this->CUT_FIRST_LEVELS = cut_first_levels;
@@ -776,7 +776,7 @@ public:
         }
     };
 
-    ~BV_BlockTree_fp_pruned() {
+    ~BlockTreeFP() {
         for(auto& bt_t: this->block_tree_types_) {
             delete bt_t;
         }

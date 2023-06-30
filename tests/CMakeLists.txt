@@ -12,6 +12,5 @@ macro(blocktree_build_test TESTNAME)
             COMMAND ${TESTNAME_REPLACED} ${ARGN})
 endmacro(blocktree_build_test)
 
-
 find_package(GTest REQUIRED)
 blocktree_build_test(block_tree/block_tree_test)

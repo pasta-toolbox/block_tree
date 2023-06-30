@@ -26,10 +26,10 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <rangeMin.h>
+#include "pasta/block_tree/utils/range_minimum.hpp"
 #include <cmath>
 #include <omp.h>
-#include <ANSV.h>
+#include "pasta/block_tree/utils/ANSV.hpp"
 
 template<typename size_type>
 int32_t calculate_lz_factor(size_type &z, std::vector<size_type> &lpf, std::vector<size_type> &lz) {
@@ -57,6 +57,7 @@ int32_t calculate_number_lz_factor(size_type &z, std::vector<size_type> &lpf) {
     return 0;
 
 };
+
 int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &lpf_ptr) {
     std::vector<int64_t> sa(text.size());
     std::vector<int64_t> p_lcp(text.size());
@@ -172,6 +173,7 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std
 //    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
     return 0;
 }
+
 int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::vector<int32_t> &lpf_ptr, int32_t threads) {
     std::vector<int32_t> sa(text.size());
     std::vector<int32_t> plcp(text.size());
@@ -227,6 +229,7 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std
 //    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
     return 0;
 }
+
 int32_t lpf_array_stack(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::vector<int32_t> &lpf_ptr) {
     std::vector<int32_t> sa(text.size());
     std::vector<int32_t> plcp(text.size());
@@ -268,6 +271,7 @@ int32_t lpf_array_stack(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, s
     }
     return 0;
 }
+
 int32_t lpf_array_stack(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &lpf_ptr) {
     std::vector<int64_t> sa(text.size());
     std::vector<int64_t> plcp(text.size());
@@ -310,6 +314,7 @@ int32_t lpf_array_stack(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, s
     lpf_ptr[0] = -1;
     return 0;
 }
+
 int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::vector<int32_t> &lpf_ptr) {
     std::vector<int32_t> sa(text.size());
     std::vector<int32_t> plcp(text.size());
@@ -365,6 +370,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
 //    std::cout << "LPF TIME " << ms_int6.count() << std::endl;
     return 0;
 }
+
 int32_t lpf_array(std::string &text, std::vector<int32_t> &lpf, std::vector<int32_t> &lpf_ptr) {
     std::vector<int32_t> sa(text.size());
     std::vector<int32_t> plcp(text.size());
@@ -396,24 +402,6 @@ int32_t lpf_array(std::string &text, std::vector<int32_t> &lpf, std::vector<int3
     return 0;
 }
 
-//int32_t ansv(std::vector<int32_t>& array, std::vector<int32_t>& ln, std::vector<int32_t>& rn, int32_t offset) {
-//    std::stack<int32_t> stack_left;
-//    for (int32_t i = 0; i < array.size(); i++) {
-//        while (!stack_left.empty() && array[stack_left.top()] > array[i]) stack_left.pop();
-//        if (stack_left.empty()) ln[i] = -1;
-//        else ln[i] = stack_left.top() + offset;
-//        stack_left.push(i);
-//    }
-//    std::stack<int32_t> stack_right;
-//    for (int32_t i = (int) array.size() - 1; i >= 0; i--) {
-//        while (!stack_right.empty() && array[stack_right.top()] > array[i]) stack_right.pop();
-//        if (stack_right.empty()) rn[i] = -1;
-//        else rn[i] = stack_right.top() + offset;
-//        stack_right.push(i);
-//    }
-//    return 0;
-//}
-
 int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::vector<int32_t> &prev_Occ, int32_t threads) {
     std::vector<int32_t> sa(text.size());
     std::vector<int32_t> plcp(text.size());
@@ -437,7 +425,7 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, st
 
     ansv_omp(sa, l, r, threads);
 
-    auto rmq = min_range_q<int32_t>(lcp, lcp.size(), threads);
+    auto rmq = RangeMinimum<int32_t>(lcp, lcp.size(), threads);
     omp_set_num_threads(threads);
 
 #pragma omp parallel for default(none) shared(lpf,l,r,sa,lcp,rmq,prev_Occ)
@@ -467,6 +455,7 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, st
         prev_Occ[0] = -1;
     return 0;
 }
+
 int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &prev_Occ, int64_t threads) {
     std::vector<int64_t> sa(text.size());
     std::vector<int64_t> plcp(text.size());
@@ -485,7 +474,7 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, st
     std::vector<int64_t> r(text.size());
     ansv_omp(sa, l, r, threads);
 
-    auto rmq = min_range_q<int64_t>(lcp, lcp.size(), threads);
+    auto rmq = RangeMinimum<int64_t>(lcp, lcp.size(), threads);
     omp_set_num_threads(threads);
 
 #pragma omp parallel for default(none) shared(lpf,l,r,sa,lcp,rmq,prev_Occ)
