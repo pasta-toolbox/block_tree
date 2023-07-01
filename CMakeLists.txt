@@ -19,12 +19,15 @@
 #
 ################################################################################
 
-cmake_minimum_required(VERSION 3.4.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-project(pasta_block_tree LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20  -g -fopenmp -lm -lstdc++")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project(pasta_block_tree)
+
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20  -g -fopenmp -lm -lstdc++")
 # 
 #-g -fsanitize=address
 #add_executable(foo benchmark/foo.cpp includes/utils/print_util.h)
@@ -36,7 +39,7 @@ option(PASTA_BLOCK_TREE_BUILD_BENCHMARKS
   "Build blocktree's benchmarks." OFF)
 
 # Optional test
-if(BLOCK_TREE_BUILD_TESTS)
+if(PASTA_BLOCK_TREE_BUILD_TESTS)
     include(FetchContent)
     FetchContent_Declare(
             googletest
@@ -49,7 +52,7 @@ if(BLOCK_TREE_BUILD_TESTS)
     add_subdirectory(tests)
     include(GoogleTest)
 endif()
-if(BLOCK_TREE_BUILD_BENCHMARKS)
+if(PASTA_BLOCK_TREE_BUILD_BENCHMARKS)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
 endif()
 

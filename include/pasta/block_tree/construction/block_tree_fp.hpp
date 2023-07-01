@@ -38,7 +38,7 @@ public:
         // string leaf children can always be pruned
         // fully padded children don't exist and can be ignored/ sanity check
         // assumes short circuit evaluation as compiler behaviour
-        if (i >= marked_tree.size() || j >= marked_tree[i]->size()) {
+      if (static_cast<uint64_t>(i) >= marked_tree.size() || static_cast<uint64_t>(j) >= marked_tree[i]->size()) {
             return false;
         }
 
@@ -61,10 +61,10 @@ public:
                 if (offset[i][j] > 0) {
                     counter[i][pointer[i][j] + 1]++;
                 }
-                if (i + 1 < counter.size()) {
+                if (static_cast<uint64_t>(i + 1) < counter.size()) {
                     // remove all of its children by decrementing counters and marking them as PRUNED
                     for (size_type k = this->tau_ - 1; k >= 0; k--) {
-                        if (rank_blk * this->tau_ + k < counter[i + 1].size()) {
+		      if (static_cast<uint64_t>(rank_blk * this->tau_) + k < counter[i + 1].size()) {
                             auto ptr_child = pointer[i + 1][rank_blk * this->tau_ + k];
                             counter[i + 1][ptr_child]--;
                             if (offset[i + 1][rank_blk * this->tau_ + k] > 0) {
@@ -105,11 +105,11 @@ public:
                            std::vector<size_type> &pass2_ones,
                            int64_t &block_size) {
 
-        for (size_type i = first_pass_bv.size() - 1; i >= 0; i--) {
+        for (int64_t i = first_pass_bv.size() - 1; i >= 0; i--) {
             auto *bv = new pasta::BitVector(blk_lvl[i].size(), 0);
             size_type marked_counter = 0;
-            if (i != first_pass_bv.size() - 1) {
-                for (size_type j = 0; j < bv->size(); j++) {
+            if (static_cast<uint64_t>(i) != first_pass_bv.size() - 1) {
+                for (uint64_t j = 0; j < bv->size(); j++) {
                     if ((*first_pass_bv[i])[j] == 1) {
                         for (size_type k = 0; k < this->tau_; k++) {
                             if ((*bv_pass_2[bv_pass_2.size() - 1])[marked_counter * this->tau_ + k] == 1) {
@@ -157,7 +157,7 @@ public:
             bv_pass_2.push_back(bv);
 
             size_type ones_per_pass2 = 0;
-            for (size_type j = 0; j < bv->size(); j++) {
+            for (uint64_t j = 0; j < bv->size(); j++) {
                 ones_per_pass2 += (*bv)[j];
             }
             pass2_ones.push_back(ones_per_pass2);
@@ -185,7 +185,7 @@ public:
         int64_t block_size = max_blk_size;
 
         std::vector<int64_t> block_text_inx;
-        for (int64_t i = 0; i < text.size(); i += block_size) {
+        for (uint64_t i = 0; i < text.size(); i += block_size) {
             block_text_inx.push_back(i);
         }
         if (block_size <= this->max_leaf_length_) {
@@ -211,10 +211,10 @@ public:
             auto left = pasta::BitVector(block_text_inx.size(), false);
             auto right = pasta::BitVector(block_text_inx.size(), false);
             auto pair_size = 2 * block_size;
-            auto last_block_padded = block_text_inx[block_text_inx.size() - 1] + block_size != text.size() ? 1 : 0;
+            auto last_block_padded = static_cast<uint64_t>(block_text_inx[block_text_inx.size() - 1] + block_size) != text.size() ? 1 : 0;
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> pairs(0);
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> blocks = std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>>();
-            for (size_type i = 0; i < block_text_inx.size() - last_block_padded; i++) {
+            for (uint64_t i = 0; i < block_text_inx.size() - last_block_padded; i++) {
                 auto index = block_text_inx[i];
                 MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, sigma_,
                                                                                                              index,
@@ -226,13 +226,13 @@ public:
             std::vector<size_type> pointers(block_text_inx.size(), -1);
             std::vector<size_type> offsets(block_text_inx.size(), 0);
             std::vector<size_type> counters(block_text_inx.size(), 0);
-            if (pair_size > text.size()) {
+            if (static_cast<uint64_t>(pair_size) > text.size()) {
                 block_size /= this->tau_;
                 std::vector<int64_t> new_blocks(0);
-                for (size_type i = 0; i < block_text_inx.size(); i++) {
+                for (uint64_t i = 0; i < block_text_inx.size(); i++) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_; j++) {
-                        if (block_text_inx[i] + (j * block_size) < text.size()) {
+		      if (static_cast<uint64_t>(block_text_inx[i] + (j * block_size)) < text.size()) {
                             new_blocks.push_back(block_text_inx[i] + (j * block_size));
                         }
                     }
@@ -248,9 +248,9 @@ public:
                 counter.push_back(c);
                 continue;
             }
-            for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
+            for (uint64_t i = 0; i < block_text_inx.size() - 1; i++) {
                 if (block_text_inx[i] + block_size == block_text_inx[i + 1] &&
-                    block_text_inx[i] + pair_size <= text.size()) {
+                    static_cast<uint64_t>(block_text_inx[i] + pair_size) <= text.size()) {
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_pair = MersenneRabinKarp<input_type, size_type>(text,
                                                                                                                 sigma_,
@@ -265,11 +265,11 @@ public:
             MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, sigma_, 0,
                                                                                                            pair_size,
                                                                                                            kPrime);
-            for (size_type i = 0; i < text.size() - pair_size; i++) {
+            for (uint64_t i = 0; i < text.size() - pair_size; i++) {
                 MersenneHash<input_type> mh_sw = MersenneHash<input_type>(text, rk_pair_sw.hash_, i, pair_size);
                 if (pairs.find(mh_sw) != pairs.end()) {
                     for (auto b: pairs[mh_sw]) {
-                        if (i != block_text_inx[b]) {
+		      if (i != static_cast<uint64_t>(block_text_inx[b])) {
                             left[b] = 1;
                             right[b + 1] = 1;
                         }
@@ -281,7 +281,7 @@ public:
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
             std::vector<int64_t> new_blocks(0);
-            for (size_type i = 0; i < block_text_inx.size(); i++) {
+            for (uint64_t i = 0; i < block_text_inx.size(); i++) {
                 bool surrounded = (i > 0 && i < block_text_inx.size() - 1) &&
                                   block_text_inx[i] + old_block_size == block_text_inx[i + 1] &&
                                   block_text_inx[i - 1] + old_block_size == block_text_inx[i];
@@ -291,10 +291,10 @@ public:
                 } else {
                     marked = left[i] || right[i];
                 }
-                if (!(marked) || block_text_inx[i] + old_block_size >= text.size()) {
+                if (!(marked) || static_cast<uint64_t>(block_text_inx[i] + old_block_size) >= text.size()) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_; j++) {
-                        if (block_text_inx[i] + (j * new_block_size) < text.size()) {
+		      if (static_cast<uint64_t>(block_text_inx[i] + (j * new_block_size)) < text.size()) {
                             new_blocks.push_back(block_text_inx[i] + (j * new_block_size));
                         }
                     }
@@ -302,16 +302,16 @@ public:
             }
             MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(
                     text, sigma_, block_text_inx[0], block_size, kPrime);
-            for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
+            for (int64_t i = 0; static_cast<uint64_t>(i) < block_text_inx.size() - 1; i++) {
                 bool followed =
-                        (i < block_text_inx.size() - 1) && block_text_inx[i] + block_size == block_text_inx[i + 1] &&
+		  (static_cast<uint64_t>(i) < block_text_inx.size() - 1) && block_text_inx[i] + block_size == block_text_inx[i + 1] &&
                         (*bv)[i + 1] == 1;
                 if ((*bv)[i] == 1) {
-                    if (rk_first_occ.init_ != block_text_inx[i]) {
+		  if (rk_first_occ.init_ != static_cast<uint64_t>(block_text_inx[i])) {
                         rk_first_occ.restart(block_text_inx[i]);
                     }
                     if (followed) {
-                        for (size_type j = 0; j < block_size && block_text_inx[i] + j + block_size < text.size(); j++) {
+		      for (int64_t j = 0; j < block_size && static_cast<uint64_t>(block_text_inx[i] + j + block_size) < text.size(); j++) {
                             MersenneHash<input_type> mh_first_occ = MersenneHash<input_type>(text, rk_first_occ.hash_,
                                                                                              block_text_inx[i] + j,
                                                                                              block_size);
@@ -360,13 +360,12 @@ public:
         this->leaf_size = block_size;
         block_size *= this->tau_;
         pruning_extended(counter, pass1_pointer, pass1_offset, bv_marked, bv_marked);
-        auto t03 = std::chrono::high_resolution_clock::now();
 
         std::vector<size_type> ones_per_lvl(bv_marked.size(), 0);
         // count 1s in each lvl;
-        for (size_type i = 0; i < bv_marked.size(); i++) {
+        for (uint64_t i = 0; i < bv_marked.size(); i++) {
             auto &current_lvl = *bv_marked[i];
-            for (size_type j = 0; j < bv_marked[i]->size(); j++) {
+            for (uint64_t j = 0; j < bv_marked[i]->size(); j++) {
                 if (current_lvl[j]) {
                     ones_per_lvl[i]++;
                 }
@@ -375,7 +374,7 @@ public:
 
 
         auto &top_level = *bv_marked[0];
-        bool found_back_block = top_level.size() != ones_per_lvl[0] || bv_marked.size() == 1;
+        bool found_back_block = top_level.size() != static_cast<uint64_t>(ones_per_lvl[0]) || bv_marked.size() == 1;
         if (found_back_block || !this->CUT_FIRST_LEVELS) {
             this->block_tree_types_.push_back(&top_level);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(top_level));
@@ -384,7 +383,7 @@ public:
             auto &ptr0 = *p0;
             auto &off0 = *o0;
             size_type c = 0;
-            for (size_type j = 0; j < top_level.size(); j++) {
+            for (uint64_t j = 0; j < top_level.size(); j++) {
                 if (!top_level[j]) {
                     ptr0[c] = pass1_pointer[0][j];
                     off0[c] = pass1_offset[0][j];
@@ -399,13 +398,13 @@ public:
         } else {
             delete bv_marked[0];
         }
-        for (size_type i = 1; i < bv_marked.size(); i++) {
+        for (uint64_t i = 1; i < bv_marked.size(); i++) {
 
             size_type new_size = (ones_per_lvl[i - 1] - is_padded) * this->tau_;
             auto last_block_parent = blk_lvl[i - 1][blk_lvl[i - 1].size() - 1];
             auto lvl_block_size = block_size_lvl_temp[i];
             if (is_padded) {
-                for (size_type j = 0; j < this->tau_; j++) {
+	      for (uint64_t j = 0; j < static_cast<uint64_t>(this->tau_); j++) {
                     if (last_block_parent + j * lvl_block_size < text.size()) {
                         new_size++;
                     }
@@ -419,16 +418,11 @@ public:
                 auto o = new sdsl::int_vector<>(bv_ref.size() - ones_per_lvl[i], 0);
                 auto &ptr = *p;
                 auto &off = *o;
-                size_type pointer_saved = 0;
-                size_type pointer_skipped = 0;
                 std::unordered_map<size_type, size_type> blocks_skipped;
-                size_type skip = 0;
-                size_type replace = 0;
-                auto &lvl_above_pass1 = *bv_marked[i - 1];
                 auto &lvl_pass1 = *bv_marked[i];
                 size_type c = 0;
                 size_type c_u = 0;
-                for (size_type j = 0; j < lvl_pass1.size(); j++) {
+                for (uint64_t j = 0; j < lvl_pass1.size(); j++) {
                     blocks_skipped[j] = j - c;
                     if (pass1_pointer[i][j] != -2) {
                         bv_ref[c] = (bool) lvl_pass1[j];
@@ -454,11 +448,11 @@ public:
 
         int64_t leaf_count = 0;
         auto &last_level = (*bv_marked[bv_marked.size() - 1]);
-        for (size_type i = 0; i < last_level.size(); i++) {
+        for (uint64_t i = 0; i < last_level.size(); i++) {
             if (last_level[i] == 1) {
                 leaf_count += this->tau_;
-                for (int j = 0; j < this->leaf_size * this->tau_; j++) {
-                    if (blk_lvl[blk_lvl.size() - 1][i] + j < text.size()) {
+                for (uint64_t j = 0; j < static_cast<uint64_t>(this->leaf_size * this->tau_); j++) {
+		  if (static_cast<uint64_t>(blk_lvl[blk_lvl.size() - 1][i] + j) < text.size()) {
                         this->leaves_.push_back(text[blk_lvl[blk_lvl.size() - 1][i] + j]);
                     }
                 }
@@ -488,7 +482,7 @@ public:
         auto is_padded = added_padding > 0 ? 1 : 0;
         int64_t block_size = max_blk_size;
         std::vector<int64_t> block_text_inx;
-        for (int64_t i = 0; i < text.size(); i += block_size) {
+        for (uint64_t i = 0; i < text.size(); i += block_size) {
             block_text_inx.push_back(i);
         }
         if (block_size <= this->max_leaf_length_) {
@@ -515,10 +509,10 @@ public:
             auto left = pasta::BitVector(block_text_inx.size(), false);
             auto right = pasta::BitVector(block_text_inx.size(), false);
             auto pair_size = 2 * block_size;
-            auto last_block_padded = block_text_inx[block_text_inx.size() - 1] + block_size != text.size() ? 1 : 0;
+            auto last_block_padded = static_cast<uint64_t>(block_text_inx[block_text_inx.size() - 1] + block_size) != text.size() ? 1 : 0;
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> pairs(0);
             std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>> blocks = std::unordered_map<MersenneHash<uint8_t>, std::vector<size_type>>();
-            for (size_type i = 0; i < block_text_inx.size() - last_block_padded; i++) {
+            for (uint64_t i = 0; i < block_text_inx.size() - last_block_padded; i++) {
                 auto index = block_text_inx[i];
                 MersenneRabinKarp<input_type, size_type> rk_block = MersenneRabinKarp<input_type, size_type>(text, sigma_,
                                                                                                              index,
@@ -529,13 +523,13 @@ public:
             }
             std::vector<size_type> pointers(block_text_inx.size(), -1);
             std::vector<size_type> offsets(block_text_inx.size(), 0);
-            if (pair_size > text.size()) {
+            if (static_cast<uint64_t>(pair_size) > text.size()) {
                 block_size /= this->tau_;
                 std::vector<int64_t> new_blocks(0);
-                for (size_type i = 0; i < block_text_inx.size(); i++) {
+                for (uint64_t i = 0; i < block_text_inx.size(); i++) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_; j++) {
-                        if (block_text_inx[i] + (j * block_size) < text.size()) {
+		      if (static_cast<uint64_t>(block_text_inx[i] + (j * block_size)) < text.size()) {
                             new_blocks.push_back(block_text_inx[i] + (j * block_size));
                         }
                     }
@@ -549,9 +543,9 @@ public:
                 pass1_offset.push_back(o);
                 continue;
             }
-            for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
+            for (uint64_t i = 0; i < block_text_inx.size() - 1; i++) {
                 if (block_text_inx[i] + block_size == block_text_inx[i + 1] &&
-                    block_text_inx[i] + pair_size <= text.size()) {
+                    static_cast<uint64_t>(block_text_inx[i] + pair_size) <= text.size()) {
                     auto index = block_text_inx[i];
                     MersenneRabinKarp<input_type, size_type> rk_pair = MersenneRabinKarp<input_type, size_type>(text,
                                                                                                                 sigma_,
@@ -565,11 +559,11 @@ public:
             // find pairs
             MersenneRabinKarp<input_type, size_type> rk_pair_sw = MersenneRabinKarp<input_type, size_type>(text, sigma_, 0,
                                                                                                            pair_size, kPrime);
-            for (size_type i = 0; i < text.size() - pair_size; i++) {
+            for (uint64_t i = 0; i < text.size() - pair_size; i++) {
                 MersenneHash<input_type> mh_sw = MersenneHash<input_type>(text, rk_pair_sw.hash_, i, pair_size);
                 if (pairs.find(mh_sw) != pairs.end()) {
                     for (auto b: pairs[mh_sw]) {
-                        if (i != block_text_inx[b]) {
+		      if (i != static_cast<uint64_t>(block_text_inx[b])) {
                             left[b] = 1;
                             right[b + 1] = 1;
                         }
@@ -581,7 +575,7 @@ public:
             auto old_block_size = block_size;
             auto new_block_size = block_size / this->tau_;
             std::vector<int64_t> new_blocks(0);
-            for (size_type i = 0; i < block_text_inx.size(); i++) {
+            for (uint64_t i = 0; i < block_text_inx.size(); i++) {
                 bool surrounded = (i > 0 && i < block_text_inx.size() - 1) &&
                                   block_text_inx[i] + old_block_size == block_text_inx[i + 1] &&
                                   block_text_inx[i - 1] + old_block_size == block_text_inx[i];
@@ -591,16 +585,16 @@ public:
                 } else {
                     marked = left[i] || right[i];
                 }
-                if (!(marked) || block_text_inx[i] + old_block_size >= text.size()) {
+                if (!(marked) || static_cast<uint64_t>(block_text_inx[i] + old_block_size) >= text.size()) {
                     (*bv)[i] = 1;
                     for (size_type j = 0; j < this->tau_; j++) {
-                        if (block_text_inx[i] + (j * new_block_size) < text.size()) {
+		      if (static_cast<uint64_t>(block_text_inx[i] + (j * new_block_size)) < text.size()) {
                             new_blocks.push_back(block_text_inx[i] + (j * new_block_size));
                         }
                     }
                 }
             }
-            for (size_type i = 0; i < block_text_inx.size() - 1; i++) {
+            for (uint64_t i = 0; i < block_text_inx.size() - 1; i++) {
                 MersenneRabinKarp<input_type, size_type> rk_first_occ = MersenneRabinKarp<input_type, size_type>(text,
                                                                                                                  sigma_,
                                                                                                                  block_text_inx[i],
@@ -611,13 +605,13 @@ public:
                         (*bv)[i + 1] == 1;
                 if ((*bv)[i] == 1) {
                     if (followed) {
-                        for (size_type j = 0; j < block_size && block_text_inx[i] + j + block_size < text.size(); j++) {
+		      for (uint64_t j = 0; j < static_cast<uint64_t>(block_size) && block_text_inx[i] + j + block_size < text.size(); j++) {
                             MersenneHash<input_type> mh_first_occ = MersenneHash<input_type>(text, rk_first_occ.hash_,
                                                                                              block_text_inx[i] + j,
                                                                                              block_size);
                             if (blocks.find(mh_first_occ) != blocks.end()) {
                                 for (auto b: blocks[mh_first_occ]) {
-                                    if (b != i) {
+				  if (static_cast<uint64_t>(b) != i) {
                                         pointers[b] = i;
                                         offsets[b] = j;
                                     }
@@ -631,7 +625,7 @@ public:
                                                                                          block_text_inx[i], block_size);
                         if (blocks.find(mh_first_occ) != blocks.end()) {
                             for (auto b: blocks[mh_first_occ]) {
-                                if (b != i) {
+			      if (static_cast<uint64_t>(b) != i) {
                                     pointers[b] = i;
                                     offsets[b] = 0;
                                 }
@@ -664,7 +658,7 @@ public:
                     pass2_max_pointer[pass2_max_pointer.size() - 1]));
             auto o1 = new sdsl::int_vector<>(size, 0, (8 * sizeof(size_type)) - this->leading_zeros(
                     pass2_max_offset[pass2_max_offset.size() - 1]));
-            for (size_type i = 0; i < pass2_pointer[pass2_pointer.size() - 1].size(); i++) {
+            for (uint64_t i = 0; i < pass2_pointer[pass2_pointer.size() - 1].size(); i++) {
                 (*p1)[i] = pass2_pointer[pass2_pointer.size() - 1][size - 1 - i];
                 (*o1)[i] = pass2_offset[pass2_offset.size() - 1][size - 1 - i];
             }
@@ -687,7 +681,7 @@ public:
             if (is_padded) {
                 for (size_type j = 0; j < this->tau_; j++) {
 
-                    if (last_block_parent + j * lvl_block_size < text.size()) {
+		  if (static_cast<uint64_t>(last_block_parent + j * lvl_block_size) < text.size()) {
                         new_size++;
                     }
                 }
@@ -702,7 +696,7 @@ public:
                 std::unordered_map<size_type, size_type> blocks_skipped;
                 size_type skip = 0;
                 size_type replace = 0;
-                for (size_type j = 0; j < bv_pass_1[pass1_i - 1]->size(); j++) {
+                for (uint64_t j = 0; j < bv_pass_1[pass1_i - 1]->size(); j++) {
                     if ((*bv_pass_1[pass1_i - 1])[j] == 1) {
                         if ((*bv_pass_2[i + 1])[j] == 1) {
                             for (size_type k = 0; k < this->tau_ && replace * this->tau_ + k < new_size; k++) {
@@ -731,7 +725,7 @@ public:
                                                 (8 * sizeof(size_type)) - this->leading_zeros(pass2_max_pointer[i]));
                 auto o = new sdsl::int_vector<>(pointer.size(), 0,
                                                 (8 * sizeof(size_type)) - this->leading_zeros(pass2_max_offset[i]));
-                for (size_type j = 0; j < pointer.size(); j++) {
+                for (uint64_t j = 0; j < pointer.size(); j++) {
                     (*p)[j] = pointer[j];
                     (*o)[j] = offset[j];
                 }
@@ -744,11 +738,11 @@ public:
         }
 
         int64_t leaf_count = 0;
-        for (size_type i = 0; i < bv_pass_2[0]->size(); i++) {
+        for (uint64_t i = 0; i < bv_pass_2[0]->size(); i++) {
             if ((*bv_pass_2[0])[i] == 1) {
                 leaf_count += this->tau_;
                 for (int j = 0; j < this->leaf_size * this->tau_; j++) {
-                    if (blk_lvl[blk_lvl.size() - 1][i] + j < text.size()) {
+		  if (static_cast<uint64_t>(blk_lvl[blk_lvl.size() - 1][i] + j) < text.size()) {
                         this->leaves_.push_back(text[blk_lvl[blk_lvl.size() - 1][i] + j]);
                     }
                 }

@@ -37,7 +37,7 @@ class MersenneHash
 //            std::cout << start_ << " " << other.start_ << std::endl;
             if (length_ != other.length_) return false;
             
-            for (int i = 0; i < length_; i++) {
+            for (uint64_t i = 0; i < length_; i++) {
                 if (text_[start_ + i] != other.text_[other.start_ + i]) {
                     return false;
                 }

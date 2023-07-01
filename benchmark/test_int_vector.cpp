@@ -4,7 +4,7 @@
 #include <sdsl/int_vector.hpp>
 #include <vector>
 #include <unordered_map>
-int main(int argc, char* argv[]) {
+int main() {
     auto vector = std::vector<std::vector<sdsl::int_vector<>*>*>();
     vector.resize(6, new std::vector<sdsl::int_vector<>*>());
     std::cout << vector.size() << std::endl;

@@ -102,7 +102,7 @@ inline int64_t get_right_opt(std::vector<std::vector<int64_t>> &table, int64_t d
     int64_t cur = get_parent(start), d, dist = 2;
     for (d = 1; d < depth; d++) {
         if (cur * dist < index) cur++;
-        if (cur * dist >= table[0].size()) return -1;
+        if (static_cast<uint64_t>(cur * dist) >= table[0].size()) return -1;
 
         if (table[d][cur] >= value) cur = get_parent(cur);
         else break;
@@ -124,7 +124,7 @@ inline int32_t get_right_opt(std::vector<std::vector<int32_t>> &table, int32_t d
     int32_t cur = get_parent(start), d, dist = 2;
     for (d = 1; d < depth; d++) {
         if (cur * dist < index) cur++;
-        if (cur * dist >= table[0].size()) return -1;
+        if (static_cast<uint64_t>(cur * dist) >= table[0].size()) return -1;
 
         if (table[d][cur] >= value) cur = get_parent(cur);
         else break;
@@ -196,7 +196,7 @@ void ansv_omp(std::vector<size_type> &array, std::vector<size_type> &left, std::
     }
     omp_set_num_threads(threads);
 #pragma omp parallel for default(none) shared(table, array, left, right, depth)
-    for (size_type i = 0; i < array.size(); i += BLOCK_SIZE) {
+    for (size_type i = 0; static_cast<uint64_t>(i) < array.size(); i += BLOCK_SIZE) {
         size_type j = std::min(i + BLOCK_SIZE, (size_type) array.size());
         ansv(array, left, right, i, j - i);
 

@@ -54,7 +54,6 @@ int main(int argc, char* argv[]) {
     std::vector<int64_t> lpf_ptr2(vec.size());
     std::vector<int64_t> lz2;
 
-    int64_t numberOfLzPhrases = 0;
     auto t0a = std::chrono::high_resolution_clock::now();
 //    lpf_array_ansv(vec, lpfArray, prevOcc);
 
@@ -81,7 +80,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     std::cout << "LPF TIME " << ms_int.count() << std::endl;
-    bool DONT_CUT_FIRST_LEVELS = false;
+    //bool DONT_CUT_FIRST_LEVELS = false;
     bool CUT_FIRST_LEVELS = true;
     bool EXTENDED_PRUNE = true;
     bool SIMPLE_PRUNE = false;
@@ -183,7 +182,7 @@ int main(int argc, char* argv[]) {
 //     std::cout << "Errors " << j << std::endl;
 
 
-    for (int i = 0; i < vec.size(); i++) {
+    for (uint64_t i = 0; i < vec.size(); i++) {
         auto x = fpPruned_simple_bt->access(i);
         if (x != vec[i]) {
             j++;
@@ -202,7 +201,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Errors " << j << std::endl;
 
 
-    for (int i = 0; i < vec.size(); i++) {
+    for (uint64_t i = 0; i < vec.size(); i++) {
         auto x = fpPruned_bt->access(i);
         if (x != vec[i]) {
             j++;
@@ -430,7 +429,7 @@ int main(int argc, char* argv[]) {
     std::vector<int> select_queries_;
     std::vector<uint8_t> select_c_;
     std::uniform_int_distribution<uint64_t> dist(0, test.size() - 1);
-    for (int i =  0; i < test.size(); i++) {
+    for (uint64_t i =  0; i < test.size(); i++) {
         hist[test[i]] = hist[test[i]] + 1;
     }
     for (size_t i = 0; i < 1000000; ++i) {
@@ -464,22 +463,22 @@ int main(int argc, char* argv[]) {
     auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
     std::cout << "Starting Rank Queries" << "\n";
     auto start2 = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < select_c_.size(); i++) {
+    for (uint64_t i = 0; i < select_c_.size(); i++) {
         result += lpfPruned_bt->rank(select_c_[i], access_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
     auto start4 = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < select_c_.size(); i++) {
+    for (uint64_t i = 0; i < select_c_.size(); i++) {
             result += lpfPruned_bt->rank_base(select_c_[i], access_queries_[i]);
     }
 
     auto elapsed4 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start4).count();
     auto start5 = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < select_c_.size(); i++) {
+    for (uint64_t i = 0; i < select_c_.size(); i++) {
         result += lpfPruned_bt->select(select_c_[i], select_queries_[i]);
     }
     auto elapsed5 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start5).count();
-    for (int i = 0; i < select_c_.size(); i++) {
+    for (uint64_t i = 0; i < select_c_.size(); i++) {
         if (lpfPruned_bt->rank_base(select_c_[i], access_queries_[i]) != lpfPruned_bt->rank(select_c_[i], access_queries_[i])) std::cout << i << std::endl;
     }
     double nanosec_per_access = elapsed / static_cast<double>(access_queries_.size());

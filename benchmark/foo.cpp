@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <iostream>
 
-int main(int argc, char* argv[]) {
+int main() {
     return 0;
 }
 //    tlx::CmdlineParser cp;

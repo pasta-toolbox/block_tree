@@ -64,7 +64,7 @@ public:
         int64_t blk_pointer = index / block_size_lvl_[0];
         int64_t off = index % block_size_lvl_[0];
         int64_t child;
-        for (size_type i = 0; i < block_tree_types_.size(); i++) {
+        for (size_type i = 0; static_cast<uint64_t>(i) < block_tree_types_.size(); i++) {
             auto& lvl = *block_tree_types_[i];
             auto& lvl_rs = *block_tree_types_rs_[i];
             auto& lvl_ptr = *block_tree_pointers_[i];
@@ -104,7 +104,7 @@ public:
             size_type f = (m == 0)? 0 : c_ranks_[c_index][0][m - 1];
             if (f < j) {
                 if (end_block - current_block == 1) {
-                    if (c_ranks_[c_index][0][m] < j) {
+		  if (c_ranks_[c_index][0][m] < static_cast<uint64_t>(j)) {
                         current_block = m + 1;
                     }
                     break;
@@ -136,7 +136,7 @@ public:
 
             }
         }
-        int64_t i = 1;
+        uint64_t i = 1;
         while (i < block_tree_types_.size()) {
             auto& current_level = *block_tree_types_[i];
             auto& current_level_rs= *block_tree_types_rs_[i];
@@ -232,7 +232,7 @@ public:
             blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;
         }
         // we first calculate the
-        size_type i = 1;
+        uint64_t i = 1;
         while (i < block_tree_types_.size()) {
             rank += (child == 0) ? 0 : c_ranks_[c_index][i][blk_pointer - 1];
             if ((*block_tree_types_[i])[blk_pointer]) {
@@ -305,7 +305,7 @@ public:
             blk_pointer = top_level_rs.rank1(blk_pointer) * tau_ + child;
         }
         // we first calculate the 
-        size_type i = 1;
+        uint64_t i = 1;
         while (i < block_tree_types_.size()) {
             rank += (child == 0) ? 0 : c_ranks_[c_index][i][blk_pointer - 1];
             if ((*block_tree_types_[i])[blk_pointer]) {
@@ -384,35 +384,33 @@ public:
         rank_support = true;
         c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
         pointer_c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
-        for (int i = 0; i < c_ranks_.size(); i++) {
+        for (uint64_t i = 0; i < c_ranks_.size(); i++) {
             c_ranks_[i].resize(block_tree_types_.size(), sdsl::int_vector<0>());
-            for (int j = 0; j < c_ranks_[i].size(); j++) {
+            for (uint64_t j = 0; j < c_ranks_[i].size(); j++) {
                 c_ranks_[i][j].resize(block_tree_types_[j]->size());
             }
         }
-        for (int i = 0; i < pointer_c_ranks_.size(); i++) {
+        for (uint64_t i = 0; i < pointer_c_ranks_.size(); i++) {
             pointer_c_ranks_[i].resize(block_tree_pointers_.size(), sdsl::int_vector<0>());
-            for (int j = 0; j < pointer_c_ranks_[i].size(); j++) {
+            for (uint64_t j = 0; j < pointer_c_ranks_[i].size(); j++) {
                 pointer_c_ranks_[i][j].resize(block_tree_pointers_[j]->size());
             }
         }
         for (auto c: chars_) {
-            for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
+            for (uint64_t i = 0; i < block_tree_types_[0]->size(); i++) {
                 rank_block(c, 0, i);
             }
-            size_type temp1 = 0;
-            size_type temp2 = 0;
             size_type max = 0;
-            for (size_type i = 1; i < block_tree_types_[0]->size(); i++) {
+            for (uint64_t i = 1; i < block_tree_types_[0]->size(); i++) {
                 c_ranks_[chars_index_[c]][0][i] += c_ranks_[chars_index_[c]][0][i - 1];
-                if (c_ranks_[chars_index_[c]][0][i] > max) {
+                if (c_ranks_[chars_index_[c]][0][i] > static_cast<uint64_t>(max)) {
                     max = c_ranks_[chars_index_[c]][0][i];
                 }
             }
-            for (size_type i = 1; i < block_tree_types_.size(); i++) {
+            for (uint64_t i = 1; i < block_tree_types_.size(); i++) {
                 size_type counter = tau_;
                 size_type acc = 0;
-                for (size_type j = 0; j < block_tree_types_[i]->size(); j++) {
+                for (uint64_t j = 0; j < block_tree_types_[i]->size(); j++) {
                     size_type temp = c_ranks_[chars_index_[c]][i][j];
                     c_ranks_[chars_index_[c]][i][j] += acc;
                     acc += temp;
@@ -423,10 +421,10 @@ public:
                     }
                 }
             }
-                for (size_type i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
+                for (uint64_t i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(pointer_c_ranks_[chars_index_[c]][i]);
                 }
-                for (size_type i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
+                for (uint64_t i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
         }
@@ -437,15 +435,15 @@ public:
         rank_support = true;
         c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
         pointer_c_ranks_.resize(chars_.size(), std::vector<sdsl::int_vector<0>>());
-        for (int i = 0; i < c_ranks_.size(); i++) {
+        for (uint64_t i = 0; i < c_ranks_.size(); i++) {
             c_ranks_[i].resize(block_tree_types_.size(), sdsl::int_vector<0>());
-            for (int j = 0; j < c_ranks_[i].size(); j++) {
+            for (uint64_t j = 0; j < c_ranks_[i].size(); j++) {
                 c_ranks_[i][j].resize(block_tree_types_[j]->size());
             }
         }
-        for (int i = 0; i < pointer_c_ranks_.size(); i++) {
+        for (uint64_t i = 0; i < pointer_c_ranks_.size(); i++) {
             pointer_c_ranks_[i].resize(block_tree_pointers_.size(), sdsl::int_vector<0>());
-            for (int j = 0; j < pointer_c_ranks_[i].size(); j++) {
+            for (uint64_t j = 0; j < pointer_c_ranks_[i].size(); j++) {
                 pointer_c_ranks_[i][j].resize(block_tree_pointers_[j]->size());
             }
         }
@@ -453,22 +451,20 @@ public:
 
 #pragma omp parallel for default(none)
             for (auto c: chars_) {
-                for (size_type i = 0; i < block_tree_types_[0]->size(); i++) {
+                for (uint64_t i = 0; i < block_tree_types_[0]->size(); i++) {
                     rank_block(c, 0, i);
                 }
-                size_type temp1 = 0;
-                size_type temp2 = 0;
                 size_type max = 0;
-                for (size_type i = 1; i < block_tree_types_[0]->size(); i++) {
+                for (uint64_t i = 1; i < block_tree_types_[0]->size(); i++) {
                     c_ranks_[chars_index_[c]][0][i] += c_ranks_[chars_index_[c]][0][i - 1];
-                    if (c_ranks_[chars_index_[c]][0][i] > max) {
+                    if (c_ranks_[chars_index_[c]][0][i] > static_cast<uint64_t>(max)) {
                         max = c_ranks_[chars_index_[c]][0][i];
                     }
                 }
-                for (size_type i = 1; i < block_tree_types_.size(); i++) {
+                for (uint64_t i = 1; i < block_tree_types_.size(); i++) {
                     size_type counter = tau_;
                     size_type acc = 0;
-                    for (size_type j = 0; j < block_tree_types_[i]->size(); j++) {
+                    for (uint64_t j = 0; j < block_tree_types_[i]->size(); j++) {
                         size_type temp = c_ranks_[chars_index_[c]][i][j];
                         c_ranks_[chars_index_[c]][i][j] += acc;
                         acc += temp;
@@ -479,10 +475,10 @@ public:
                         }
                     }
                 }
-                for (size_type i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
+                for (uint64_t i = 0; i < pointer_c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(pointer_c_ranks_[chars_index_[c]][i]);
                 }
-                for (size_type i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
+                for (uint64_t i = 0; i < c_ranks_[chars_index_[c]].size(); i++) {
                     sdsl::util::bit_compress(c_ranks_[chars_index_[c]][i]);
                 }
             }
@@ -511,12 +507,12 @@ public:
     }
   
     size_type rank_block(input_type c, size_type i, size_type j) {
-        if (j >= block_tree_types_[i]->size()) {
+      if (static_cast<uint64_t>(j) >= block_tree_types_[i]->size()) {
             return 0;
         }
         size_type rank_c = 0;
         if ((*block_tree_types_[i])[j] == 1) {
-            if (i != block_tree_types_.size() - 1) {
+	  if (static_cast<uint64_t>(i) != block_tree_types_.size() - 1) {
                 size_type rank_blk = block_tree_types_rs_[i]->rank1(j);
                 for (size_type k = 0; k < tau_; k++) {
                     rank_c += rank_block(c, i + 1, rank_blk * tau_ + k);
@@ -545,13 +541,12 @@ public:
         return rank_c;
     }
     size_type part_rank_block(input_type c, size_type i, size_type j, size_type g) {
-        if (j >= block_tree_types_[i]->size()) {
+      if (static_cast<uint64_t>(j) >= block_tree_types_[i]->size()) {
             return 0;
         }
         size_type rank_c = 0;
-        size_type blk_size = block_size_lvl_[i];
         if ((*block_tree_types_[i])[j] == 1) {
-            if (i != block_tree_types_.size() - 1) {
+	  if (static_cast<uint64_t>(i) != block_tree_types_.size() - 1) {
                 size_type rank_blk = block_tree_types_rs_[i]->rank1(j);
                 size_type k = 0;
                 size_type k_sum = 0;
@@ -590,7 +585,7 @@ public:
     }
     size_type rank_leaf(input_type c, size_type leaf_index,size_type i) {
 
-        if (leaf_index * leaf_size >= leaves_.size()) {
+      if (static_cast<uint64_t>(leaf_index * leaf_size) >= leaves_.size()) {
             return 0;
         }
 //        size_type x = leaves_.size() - leaf_index * this->tau_;

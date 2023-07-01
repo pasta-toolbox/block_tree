@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     //lpf_bt->add_rank_support();
     //std::cout << "time " << lpf_bt->block_tree_types_.size() << std::endl;
 
-        int j = 0;
+    //   int j = 0;
     //     for (auto c: lpf_bt->chars_) {
     //     int count = 0;
 
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     //     }
     //     std::cout << c << "  select Errors " << j << std::endl;
     // }
-    out:
+    //out:
     // delete lpf_bt;
     return 0;
 }

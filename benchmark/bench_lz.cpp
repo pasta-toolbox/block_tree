@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
     int j = 0;
 //    std::cout << 146 << " " << bt2->access(146) << std::endl;
 //    std::cout << 146 << " " << bt->access(146) << std::endl;
-    for (int i = 0; i < test.size(); i++) {
+    for (uint64_t i = 0; i < test.size(); i++) {
         if (bt->access(i) != vec[i]) {
             std::cout << i << " " << bt->access(i) << " " << vec[i] << std::endl;
             j++;
@@ -177,7 +177,7 @@ int main(int argc, char* argv[]) {
 //        std::cout << (int)v->width() << std::endl;
 //    }
     std::cout << "pruned" << std::endl;
-    for (int i = 0; i < bt->block_tree_types_.size(); i++) {
+    for (uint64_t i = 0; i < bt->block_tree_types_.size(); i++) {
         auto& lvl_bv = *bt->block_tree_types_[i];
         auto& lvl_bv_rs = *bt->block_tree_types_rs_[i];
         auto& lvl_ptr = *bt->block_tree_pointers_[i];
