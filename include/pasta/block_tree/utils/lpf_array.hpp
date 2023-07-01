@@ -65,6 +65,10 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::ve
     libsais64_plcp(text.data(), sa.data(), p_lcp.data(), text.size());
     libsais64_lcp(p_lcp.data(), sa.data(), lcp.data(), text.size());
 
+
+    std::cout << "HIER!" << "\n";
+
+    
     std::vector<int64_t> isu(text.size());
     std::vector<int64_t> prev(text.size());
     std::vector<int64_t> next(text.size());
@@ -156,12 +160,12 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std
     for(uint64_t i = 0; i < text.size(); i++) {
         isu[sa[i]] = i;
     }
-    for (uint64_t r = 0; r < text.size() - 1; r++) {
+    for (int64_t r = 0; static_cast<uint64_t>(r) < text.size() - 1; r++) {
         prev[r] = r - 1;
         next[r] = r + 1;
     }
     lcp[lcp.size() - 1] = 0;
-    for (int32_t i = text.size(); i >= 0; i--) {
+    for (int32_t i = text.size() - 1; i >= 0; i--) {
         int32_t r = isu[i];
         if (lcp[r] <= lcp[next[r]]) {
             lpf[i] = lcp[next[r]];
@@ -176,7 +180,7 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std
         if (prev[r] >= 0) {
             next[prev[r]] = next[r];
         }
-        if (static_cast<uint64_t>(next[r]) < text.size()) {
+        if (next[r] < static_cast<int64_t>(text.size())) {
             prev[next[r]] = prev[r];
         }
     }
@@ -259,18 +263,19 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
     libsais(text.data(), sa.data() , text.size(), 0, NULL);
     libsais_plcp(text.data(), sa.data(), plcp.data(), text.size());
     libsais_lcp(plcp.data(), sa.data(), lcp.data(), text.size());
+
     std::vector<int32_t> isu(text.size());
     std::vector<int32_t> prev(text.size());
     std::vector<int32_t> next(text.size());
     for(uint64_t i = 0; i < text.size(); i++) {
         isu[sa[i]] = i;
     }
-    for (uint64_t r = 0; r < text.size() - 1; r++) {
+    for (int32_t r = 0; static_cast<uint64_t>(r) < text.size() - 1; r++) {
         prev[r] = r - 1;
         next[r] = r + 1;
     }
     lcp[lcp.size() - 1] = 0;
-    for (int32_t i = text.size(); i >= 0; i--) {
+    for (int32_t i = text.size() - 1; i >= 0; i--) {
         int32_t r = isu[i];
         if (lcp[r] <= lcp[next[r]]) {
             lpf[i] = lcp[next[r]];
@@ -285,7 +290,7 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std::ve
         if (prev[r] >= 0) {
             next[prev[r]] = next[r];
         }
-        if (static_cast<uint64_t>(next[r]) < text.size()) {
+        if (next[r] < static_cast<int32_t>(text.size())) {
             prev[next[r]] = prev[r];
         }
     }

@@ -109,9 +109,11 @@ public:
                     outOfBlockMin = array[table[k][block_i]] <= array[table[k][block_j+1-p]]
                                     ? table[k][block_i] : table[k][block_j+1-p];
                 }
-		return array[min] < array[outOfBlockMin] ? min : outOfBlockMin;
             }
-	    return min;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+	    return array[min] < array[outOfBlockMin] ? min : outOfBlockMin;
+#pragma GCC diagnostic pop
             
     }
     ~RangeMinimum() {

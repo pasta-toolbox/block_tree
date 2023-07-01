@@ -309,9 +309,11 @@ public:
         auto is_padded = added_padding > 0 ? 1 : 0;
         int64_t block_size = max_blk_size;
         std::vector<int64_t> block_text_inx;
+
         for (uint64_t i = 0; i < text.size(); i+= block_size) {
             block_text_inx.push_back(i);
         }
+
         if (block_size <= this->max_leaf_length_) {
             auto *bv = new pasta::BitVector(block_text_inx.size(), 1);
             this->block_tree_types_rs_.push_back(new pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>(*bv));
@@ -335,6 +337,7 @@ public:
                 prevOcc[i] = prevOcc[p];
             }
         }
+
         // Firstly we build the theory structure or even just generate an all internal blocks tree
         while (block_size > this->max_leaf_length_) {
             // if marking enabled we initialize everything to 0 and mark else is init_simple to 1
@@ -413,9 +416,6 @@ public:
             }
         }
 
-
-
-
         auto& top_level = *bv_marked[0];
         bool found_back_block = top_level.size() != static_cast<uint64_t>(ones_per_lvl[0]);
         if (found_back_block || !this->CUT_FIRST_LEVELS) {
@@ -488,6 +488,7 @@ public:
                 this->block_size_lvl_.push_back(block_size_lvl_temp[i]);
             }
         }
+
         int64_t leaf_count = 0;
         auto& last_level = (*bv_marked[bv_marked.size() - 1]);
         for (uint64_t i = 0; i < last_level.size(); i++) {
@@ -501,6 +502,7 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
+
         return 0;
     }
     BlockTreeLPF(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, bool mark, bool cut_first_level, bool dp) {
@@ -589,7 +591,7 @@ auto* make_block_tree_lpf(std::vector<input_type>& text, size_type tau, size_typ
   size_type lzn = 0;
   lpf_array(text, lpf, lpf_ptr);
   calculate_lz_factor(lzn, lpf, lz);
-
+  
   return new BlockTreeLPF<input_type, size_type>(text, tau, max_leaf_length, (set_s_to_z ? lzn : 1), lpf, lpf_ptr, lz, false, true);
 }
 
