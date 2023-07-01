@@ -595,4 +595,16 @@ auto* make_block_tree_lpf(std::vector<input_type>& text, size_type tau, size_typ
   return new BlockTreeLPF<input_type, size_type>(text, tau, max_leaf_length, (set_s_to_z ? lzn : 1), lpf, lpf_ptr, lz, false, true);
 }
 
+template <typename input_type, typename size_type>
+auto* make_block_tree_lpf_parallel(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, bool set_s_to_z, size_t threads) {
+  std::vector<size_type> lpf(text.size());
+  std::vector<size_type> lpf_ptr(text.size());
+  std::vector<size_type> lz;
+  size_type lzn = 0;
+  lpf_array_ansv(text, lpf, lpf_ptr, threads);
+  calculate_lz_factor(lzn, lpf, lz);
+  
+  return new BlockTreeLPF<input_type, size_type>(text, tau, max_leaf_length, (set_s_to_z ? lzn : 1), lpf, lpf_ptr, lz, false, true);
+}
+
 /******************************************************************************/

@@ -65,10 +65,6 @@ int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::ve
     libsais64(text.data(), sa.data() , text.size(), 0, NULL);
     libsais64_plcp(text.data(), sa.data(), p_lcp.data(), text.size());
     libsais64_lcp(p_lcp.data(), sa.data(), lcp.data(), text.size());
-
-
-    std::cout << "HIER!" << "\n";
-
     
     std::vector<int64_t> isu(text.size());
     std::vector<int64_t> prev(text.size());
@@ -116,9 +112,11 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std
     std::vector<int64_t> isu(text.size());
     std::vector<int64_t> prev(text.size());
     std::vector<int64_t> next(text.size());
+    #pragma omp for
     for(size_t i = 0; i < text.size(); i++) {
         isu[sa[i]] = i;
     }
+    #pragma omp for
     for (size_t r = 0; r < text.size() - 1; r++) {
         prev[r] = r-1;
         next[r] = r+1;
@@ -158,9 +156,11 @@ int32_t lpf_array_omp(std::vector<uint8_t> &text, std::vector<int32_t> &lpf, std
     std::vector<int32_t> isu(text.size());
     std::vector<int32_t> prev(text.size());
     std::vector<int32_t> next(text.size());
+    #pragma omp for
     for(uint64_t i = 0; i < text.size(); i++) {
         isu[sa[i]] = i;
     }
+    #pragma omp for
     for (int64_t r = 0; static_cast<uint64_t>(r) < text.size() - 1; r++) {
         prev[r] = r - 1;
         next[r] = r + 1;
