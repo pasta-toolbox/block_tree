@@ -42,7 +42,8 @@ int32_t calculate_lz_factor(size_type &z, std::vector<size_type> &lpf, std::vect
 //    std::cout << "Given Text has " << z << " LZ-factors"<< std::endl;
     return 0;
 
-};
+}
+
 template<typename size_type>
 int32_t calculate_number_lz_factor(size_type &z, std::vector<size_type> &lpf) {
     size_type counter = 0;
@@ -55,7 +56,7 @@ int32_t calculate_number_lz_factor(size_type &z, std::vector<size_type> &lpf) {
 //    std::cout << "Given Text has " << z << " LZ-factors"<< std::endl;
     return 0;
 
-};
+}
 
 int32_t lpf_array(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, std::vector<int64_t> &lpf_ptr) {
     std::vector<int64_t> sa(text.size());

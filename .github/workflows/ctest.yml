@@ -1,0 +1,39 @@
+name: pasta::block_tree CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        compiler: [{cpp: g++-10, c: gcc-10}]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Prepare build environment
+      run: |
+        sudo apt update
+        sudo apt upgrade
+        sudo apt-get install ninja-build libgtest-dev libsdsl-dev
+
+    - name: Configure CMake
+      run: cmake --preset=release -DPASTA_BLOCK_TREE_BUILD_TESTS=ON
+      env:
+        CC: gcc-10
+        CXX: g++-10
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build/
+
+    - name: Test
+      run: ctest --output-on-failure --test-dir ${{github.workspace}}/build/
