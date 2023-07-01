@@ -7,12 +7,6 @@
 [submodule "extlib/tlx"]
 	path = extlib/tlx
 	url = https://github.com/tlx/tlx
-[submodule "extlib/malloc_count"]
-	path = extlib/malloc_count
-	url = https://github.com/bingmann/malloc_count
 [submodule "extlib/sdsl"]
 	path = extlib/sdsl
 	url = https://github.com/simongog/sdsl-lite
-[submodule "extlib/malloc_count_cmake"]
-	path = extlib/malloc_count_cmake
-	url = https://github.com/uqdwq/malloc_count
