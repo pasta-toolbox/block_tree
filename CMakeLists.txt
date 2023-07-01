@@ -33,30 +33,30 @@ endif()
 # endif()
 
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake)
+
+set(LIBSAIS_USE_OPENMP ON CACHE BOOL "Use OpenMP for parallelization of libsais" FORCE)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/bit_vector)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/tlx)
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/sdsl)
-
-
 
 add_library(pasta_block_tree INTERFACE)
 target_include_directories(pasta_block_tree INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+target_link_libraries(pasta_block_tree INTERFACE
+  libsais)
+
 target_link_libraries(pasta_block_tree INTERFACE pasta_bit_vector)
 target_link_libraries(pasta_block_tree INTERFACE sdsl)
 target_link_libraries(pasta_block_tree INTERFACE tlx)
-target_link_libraries(pasta_block_tree INTERFACE sais)
-target_link_libraries(pasta_block_tree INTERFACE sais64)
+# target_link_libraries(pasta_block_tree INTERFACE sais)
+# target_link_libraries(pasta_block_tree INTERFACE sais64)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/bit_vector/include/pasta/bit_vector)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/tlx/tlx)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/bit_vector/include/pasta/bit_vector/support)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/sdsl/include/sdsl)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/utils)
 target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes/bv_block_tree)
-target_include_directories(pasta_block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais_cmake/src)
-# target_include_directories(block_tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/extlib/malloc_count_cmake)
 
 
 

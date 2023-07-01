@@ -29,7 +29,7 @@ macro(pasta_block_tree_build_test TESTNAME)
     add_test(
             NAME ${TESTNAME_REPLACED}
             COMMAND ${TESTNAME_REPLACED} ${ARGN})
-endmacro(blocktree_build_test)
+endmacro(pasta_block_tree_build_test)
 
 include(CTest)
 

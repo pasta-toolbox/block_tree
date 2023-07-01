@@ -10,9 +10,6 @@
 [submodule "extlib/malloc_count"]
 	path = extlib/malloc_count
 	url = https://github.com/bingmann/malloc_count
-[submodule "extlib/libsais_cmake"]
-	path = extlib/libsais_cmake
-	url = https://github.com/uqdwq/libsais
 [submodule "extlib/sdsl"]
 	path = extlib/sdsl
 	url = https://github.com/simongog/sdsl-lite
