@@ -2,8 +2,8 @@
 #include "libsais.h"
 #include "pasta/block_tree/utils/lpf_array.hpp"
 #include <vector>
-#include "bit_vector.hpp"
-#include "cmdline_parser.hpp"
+#include <pasta/bit_vector/bit_vector.hpp>
+#include <tlx/cmdline_parser.hpp>
 #include <fstream>
 #include <sstream>
 #include "pasta/block_tree/construction/block_tree_lpf.hpp"

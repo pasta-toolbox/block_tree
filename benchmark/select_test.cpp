@@ -1,10 +1,10 @@
 #include <iostream>
 #include "pasta/block_tree/utils/lpf_array.hpp"
 #include <vector>
-#include "bit_vector.hpp"
-#include "cmdline_parser.hpp"
-#include "pasta/block_tree/construction/block_tree_lpf.hpp"
-#include "pasta/block_tree/construction/block_tree_fp.hpp"
+#include <pasta/bit_vector/bit_vector.hpp>
+#include <tlx/cmdline_parser.hpp>
+#include <pasta/block_tree/construction/block_tree_lpf.hpp>
+#include <pasta/block_tree/construction/block_tree_fp.hpp>
 #include <chrono>
 #include <unordered_set>
 int main(int argc, char* argv[]) {
