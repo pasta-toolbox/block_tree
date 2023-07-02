@@ -25,6 +25,8 @@
 #include <stack>
 #include <cmath>
 
+namespace pasta {
+
 const int BLOCK_SIZE = 8192;
 
 inline int32_t get_left(int32_t i) {
@@ -222,4 +224,6 @@ void ansv_omp(std::vector<size_type> &array, std::vector<size_type> &left, std::
     }
 }
 
+} // namespace pasta
+  
 /******************************************************************************/

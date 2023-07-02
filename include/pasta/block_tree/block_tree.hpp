@@ -34,6 +34,8 @@
 #include <omp.h>
 #include <sdsl/int_vector.hpp>
 
+namespace pasta {
+
 template<typename input_type, typename size_type>
 class BlockTree {
 public:
@@ -664,4 +666,6 @@ public:
     };
 };
 
+} // namespace pasta
+  
 /******************************************************************************/

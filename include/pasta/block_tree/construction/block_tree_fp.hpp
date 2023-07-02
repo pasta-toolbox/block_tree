@@ -26,6 +26,8 @@
 
 __extension__ typedef unsigned __int128 uint128_t;
 
+namespace pasta {
+
 template<typename input_type, typename size_type>
 class BlockTreeFP : public BlockTree<input_type, size_type> {
 public:
@@ -801,4 +803,6 @@ auto* make_block_tree_fp(std::vector<input_type>& input, size_type const tau, si
   return new BlockTreeFP<input_type, size_type>(input, tau, max_leaf_length, 1, 256, true, true);
 }
 
+} // namespace pasta
+  
 /******************************************************************************/

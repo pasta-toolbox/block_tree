@@ -23,6 +23,8 @@
 #include "pasta/block_tree/block_tree.hpp"
 #include "pasta/block_tree/utils/lpf_array.hpp"
 
+namespace pasta {
+
 template<typename input_type, typename size_type>
 class BlockTreeLPF: public BlockTree<input_type,size_type> {
 public:
@@ -611,4 +613,6 @@ auto* make_block_tree_lpf_parallel(std::vector<input_type>& text, size_type tau,
   return new BlockTreeLPF<input_type, size_type>(text, tau, max_leaf_length, (set_s_to_z ? lzn : 1), lpf, lpf_ptr, lz, false, true);
 }
 
+} // namespace pasta
+  
 /******************************************************************************/

@@ -24,6 +24,8 @@
 #include <math.h>
 #include <omp.h>
 
+namespace pasta {
+
 template<typename size_type>
 class RangeMinimum {
 public:
@@ -124,4 +126,6 @@ public:
     };
 };
 
+} // namespace pasta
+  
 /******************************************************************************/

@@ -22,6 +22,8 @@
 
 #include <iostream>
 
+namespace pasta {
+
 template<class T, class size_type>
 class MersenneRabinKarp {
     __extension__ typedef unsigned __int128 uint128_t;
@@ -101,5 +103,7 @@ public:
 
 };
 
+} // namespace pasta
+  
 /******************************************************************************/
 

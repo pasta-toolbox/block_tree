@@ -33,7 +33,7 @@ protected:
 
   std::vector<uint8_t> text;
 
-  BlockTreeFP<uint8_t, int32_t>* bt;
+  pasta::BlockTreeFP<uint8_t, int32_t>* bt;
   
   void SetUp() override {
 
@@ -47,7 +47,7 @@ protected:
       text[i] = dist(gen);
     }
       
-    bt = make_block_tree_fp<uint8_t, int32_t>(text, 2, 1);
+    bt = pasta::make_block_tree_fp<uint8_t, int32_t>(text, 2, 1);
     bt->add_rank_support();
   }
 

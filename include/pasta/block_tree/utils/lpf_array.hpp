@@ -30,6 +30,8 @@
 #include <omp.h>
 #include "pasta/block_tree/utils/ANSV.hpp"
 
+namespace pasta {
+
 template<typename size_type>
 int32_t calculate_lz_factor(size_type &z, std::vector<size_type> &lpf, std::vector<size_type> &lz) {
     size_type i = 0;
@@ -415,4 +417,6 @@ int32_t lpf_array_ansv(std::vector<uint8_t> &text, std::vector<int64_t> &lpf, st
     return 0;
 }
 
+} // namespace pasta
+  
 /******************************************************************************/

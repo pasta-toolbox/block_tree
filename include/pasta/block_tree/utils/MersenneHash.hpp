@@ -24,6 +24,8 @@
 #include <iostream>
 #include <vector>
 
+namespace pasta {
+
 template <typename T>
 class MersenneHash
 {
@@ -46,15 +48,18 @@ class MersenneHash
         }
 };
 
+} // namespace pasta
 
 namespace std {
     template<typename T>
-    struct hash<MersenneHash<T>> {
-        std::size_t operator()(const MersenneHash<T>& hS) const {
+    struct hash<pasta::MersenneHash<T>> {
+      std::size_t operator()(const pasta::MersenneHash<T>& hS) const {
             return hS.hash_;
         }
     };
 }
 
+
+  
 /******************************************************************************/
 
