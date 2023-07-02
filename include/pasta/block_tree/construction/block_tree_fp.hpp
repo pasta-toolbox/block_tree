@@ -203,6 +203,7 @@ public:
             this->block_size_lvl_.push_back(block_size);
             this->leaf_size = block_size/this->tau_;
             this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+	    this->compress_leaves();
             return 0;
         }
         while (block_size > this->max_leaf_length_) {
@@ -459,6 +460,7 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
+	this->compress_leaves();
         return 0;
     }
 
@@ -500,6 +502,7 @@ public:
             this->block_size_lvl_.push_back(block_size);
             this->leaf_size = block_size/this->tau_;
             this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+	    this->compress_leaves();
             return 0;
         }
         bool found_back_block = this->max_leaf_length_ * this->tau_ >= block_size;
@@ -749,6 +752,7 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
+	this->compress_leaves();
         for (auto bv: bv_pass_1) {
             delete bv;
         }

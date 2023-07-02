@@ -52,6 +52,11 @@ public:
     std::vector<int64_t> block_size_lvl_;
     std::vector<int64_t> block_per_lvl_;
     std::vector<input_type> leaves_;
+
+  std::vector<uint8_t> compress_map_;
+  std::vector<uint8_t> decompress_map_;
+  sdsl::int_vector<> compressed_leaves_;
+  
     std::unordered_map<input_type, size_type> chars_index_;
     std::vector<input_type> chars_;
     size_type u_chars_;
@@ -83,7 +88,7 @@ public:
             off = off % block_size;
             blk_pointer = lvl_rs.rank1(blk_pointer) * tau_ + child;
         }
-        return leaves_[blk_pointer * leaf_size + off];
+        return compressed_leaves_[blk_pointer * leaf_size + off];
     };
   
     int64_t select(input_type c, size_type j) {
@@ -173,28 +178,10 @@ public:
         current_block = (*block_tree_types_rs_[i - 1]).rank1(current_block) * tau_;
         int64_t l = 0;
         while (j > 0) {
-            if (leaves_[current_block * leaf_size + l] == c) j--;
+            if (compressed_leaves_[current_block * leaf_size + l] == compress_map_[c]) j--;
             l++;
         }
         return s + l;
-//        size_type h = current_block * block_size_lvl_[0];
-//        size_type first_lvl_prefix = (current_block == 0) ? 0 : c_ranks_[chars_index_[c]][0][current_block - 1];
-//        size_type current_length = block_size_lvl_[0];
-//        size_type i = 0;
-//        while (i < block_tree_types_.size() - 1) {
-//            if ((*block_tree_types_[i])[current_block]) {
-//                size_type first_child = (*block_tree_types_rs_[i]).rank1(current_block) * tau_;
-//                size_type child = first_child;
-//                int last_possible_child = (first_child + tau_ - 1 > c_ranks_[chars_index_[c]][i].size() - 1) ?  c_ranks_[chars_index_[c]][i].size() - 1 : first_child + tau_ -1;
-//                while (child < last_possible_child && j > c_ranks_[chars_index_[c]][i + 1][current_block - 1]) {
-//                    child++;
-//                }
-//
-//            }
-//
-//        }
-//        return 2;
-        return current_block;
     }
   
     int64_t rank_base(input_type c, size_type index) {
@@ -264,10 +251,10 @@ public:
         }
         size_type prefix_leaves = blk_pointer - child;
         for (int j = 0; j < child * leaf_size; j++) {
-            if ((leaves_)[prefix_leaves * leaf_size + j] == c) rank++;
+            if ((compressed_leaves_)[prefix_leaves * leaf_size + j] == compress_map_[c]) rank++;
         }
         for (int j = 0; j <= off; j++) {
-            if ((leaves_)[blk_pointer * leaf_size + j] == c) rank++;
+            if ((compressed_leaves_)[blk_pointer * leaf_size + j] == compress_map_[c]) rank++;
         }
         return rank;
     }
@@ -334,10 +321,10 @@ public:
         }
         size_type prefix_leaves = blk_pointer - child;
         for (int j = 0; j < child * leaf_size; j++) {
-            if ((leaves_)[prefix_leaves * leaf_size + j] == c) rank++;
+            if ((compressed_leaves_)[prefix_leaves * leaf_size + j] == compress_map_[c]) rank++;
         }
         for (int j = 0; j <= off; j++) {
-            if ((leaves_)[blk_pointer * leaf_size + j] == c) rank++;
+            if ((compressed_leaves_)[blk_pointer * leaf_size + j] == compress_map_[c]) rank++;
         }
         return rank;
     };
@@ -375,10 +362,32 @@ public:
         for (auto v: block_per_lvl_) {
             space_usage += sizeof(v);
         }
-        space_usage += leaves_.size() * sizeof(input_type);
+        // space_usage += leaves_.size() * sizeof(input_type);
+        space_usage += sdsl::size_in_bytes(compressed_leaves_);
+        space_usage += compress_map_.size();
 
         return space_usage;
     };
+
+   void compress_leaves() {
+     compress_map_.resize(256, 0);
+     for (size_t i = 0; i < this->leaves_.size(); ++i) {
+       compress_map_[this->leaves_[i]] = 1;
+     }
+     for (size_t i = 0, cur_val = 0; i < this->compress_map_.size(); ++i) {
+       size_t tmp = compress_map_[i];
+       compress_map_[i] = cur_val;
+       cur_val += tmp;
+     }
+     
+     compressed_leaves_.resize(this->leaves_.size());
+     for (size_t i = 0; i < this->leaves_.size(); ++i) {
+       compressed_leaves_[i] = compress_map_[this->leaves_[i]];
+     }
+     sdsl::util::bit_compress(this->compressed_leaves_);     
+     leaves_.resize(0);
+     leaves_.shrink_to_fit();
+   }
   
     int32_t add_rank_support() {
         rank_support = true;
@@ -585,14 +594,14 @@ public:
     }
     size_type rank_leaf(input_type c, size_type leaf_index,size_type i) {
 
-      if (static_cast<uint64_t>(leaf_index * leaf_size) >= leaves_.size()) {
+      if (static_cast<uint64_t>(leaf_index * leaf_size) >= compressed_leaves_.size()) {
             return 0;
         }
 //        size_type x = leaves_.size() - leaf_index * this->tau_;
 //        i = std::min(i, x);
         size_type result = 0;
         for (size_type ind = 0; ind < i; ind++) {
-            if (leaves_[leaf_index * leaf_size + ind] == c) {
+            if (compressed_leaves_[leaf_index * leaf_size + ind] == compress_map_[c]) {
                 result++;
             }
         }

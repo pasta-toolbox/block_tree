@@ -130,6 +130,7 @@ public:
             this->block_size_lvl_.push_back(block_size);
             this->leaf_size = block_size/this->tau_;
             this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+	    this->compress_leaves();
             return 0;
         }
         for (uint64_t i = 0; i < prevOcc.size(); i++) {
@@ -288,6 +289,7 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
+	this->compress_leaves();
         return 0;
     };
     int32_t init(std::vector<input_type>& text, std::vector<size_type>& lpf, std::vector<size_type>& prevOcc, bool mark) {
@@ -329,6 +331,7 @@ public:
             this->block_size_lvl_.push_back(block_size);
             this->leaf_size = block_size/this->tau_;
             this->leaves_ = std::vector<input_type>(text.begin(), text.end());
+	    this->compress_leaves();
             return 0;
         }
         for (size_type i = 0; static_cast<uint64_t>(i) < prevOcc.size(); i++) {
@@ -502,6 +505,7 @@ public:
             }
         }
         this->amount_of_leaves = leaf_count;
+	this->compress_leaves();
 
         return 0;
     }
