@@ -26,16 +26,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(pasta_block_tree)
 
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20  -g -fopenmp -lm -lstdc++")
-# 
-#-g -fsanitize=address
-#add_executable(foo benchmark/foo.cpp includes/utils/print_util.h)
-# Options when compiling pasta::bit_vector
 ## Build tests
 option(PASTA_BLOCK_TREE_BUILD_TESTS
         "Build blocktree's tests." OFF)
-option(PASTA_BLOCK_TREE_BUILD_BENCHMARKS
+option(PASTA_BLOCK_TREE_BUILD_EXAMPLES
   "Build blocktree's benchmarks." OFF)
 
 # Optional test
@@ -52,8 +46,11 @@ if(PASTA_BLOCK_TREE_BUILD_TESTS)
     add_subdirectory(tests)
     include(GoogleTest)
 endif()
-if(PASTA_BLOCK_TREE_BUILD_BENCHMARKS)
-  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+if(PASTA_BLOCK_TREE_BUILD_EXAMPLES)
+  add_executable(example
+    examples/block_tree_construction.cpp)
+  target_link_libraries(example
+    pasta_block_tree)
 endif()
 
 set(LIBSAIS_USE_OPENMP ON CACHE BOOL "Use OpenMP for parallelization of libsais" FORCE)
