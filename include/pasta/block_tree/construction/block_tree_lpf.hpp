@@ -28,7 +28,7 @@ namespace pasta {
 template<typename input_type, typename size_type>
 class BlockTreeLPF: public BlockTree<input_type,size_type> {
 public:
-    BlockTreeLPF(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, bool mark, bool cut_first_level, bool dp) {
+  BlockTreeLPF(std::vector<input_type>& text, size_type tau, size_type max_leaf_length, size_type s, bool mark, bool cut_first_level, bool dp, size_t const threads) {
         this->CUT_FIRST_LEVELS = cut_first_level;
         this->map_unique_chars(text);
         this->tau_ = tau;
@@ -36,7 +36,11 @@ public:
         this->s_ = s;
         std::vector<size_type> lpf(text.size());
         std::vector<size_type> lpf_ptr(text.size());
-        lpf_array_stack(text, lpf, lpf_ptr);
+	if (threads == 0) {
+	  lpf_array_stack(text, lpf, lpf_ptr);
+	} else {
+	  lpf_array_ansv(text, lpf, lpf_ptr, threads);
+	}
         if (dp) init_dp(text, lpf, lpf_ptr, mark);
         else init(text, lpf, lpf_ptr,  mark);
     };
