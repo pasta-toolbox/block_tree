@@ -28,8 +28,6 @@ This library has only a single dependency in the form of the Succinct Data Struc
 Please make sure you have this library installed, such that CMake can find it.
 You can see in our [example](examples/block_tree_construction.cpp) below, that the block tree is easy to compute and easy to use.
 
-[^removeSDSL]: We are working hard on removing this dependency.
-
 ```cpp
 // Generate some random text
 std::random_device rd;
@@ -83,3 +81,37 @@ Below, you can find some of the figures we present in the paper.
 ![Parallel construction time plot](https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/parallel_construction_time_repetitive_wo_rank_select_v0.1.0.png)
 
 [benchmark repository]: https://github.com/pasta-toolbox/block_tree_experiments
+
+## How to Get This
+Below, we list all commands that are required to build the code in this repository.
+To this end, we provide three CMake presets (_debug_, _release_, and _release with debug information_).
+
+- The debug preset creates a `debug` folder and uses the compiler flags `-DDEBUG -O0 -g -ggdb -fsanitize=address`.
+- The release preset creates a `build` folder and uses the compiler flags `-DNDEBUG -march=native -O3`.
+- The release with debug information preset creates a `build_with_debug_info` folder and uses the compiler flags `-DDEBUG -g -march=native -O3`.
+
+Per default, we use the following compiler flags: `-Wall -Wextra -Wpedantic -fdiagnostics-color=always`.
+
+### Requirements
+pasta::block_tree is written in C++20 and requires a compiler that [supports][] it.
+We use [Ninja][] as build system.
+Additionally, we require the Succinct Data Structure Library ([SDSL](https://github.com/simongog/sdsl-lite)) to be installed on the system.[^removeSDSL]
+
+[supports]: https://en.cppreference.com/w/cpp/compiler_support
+[Ninja]: https://ninja-build.org/
+
+### tl;dr
+To just clone the source code, use the following.
+```bash
+git clone git@github.com:pasta-toolbox/block_tree
+cd block_tree
+git submodule update --init --recursive
+```
+If you also want to build the test, please continue with the following commands.
+```bash
+cmake --preset=build -DPASTA_BLOCK_TREE_BUILD_TESTS=On -DPASTA_BLOCK_TREE_BUILD_EXAMPLES=On
+cmake --build --preset=build
+ctest --test-dir build
+```
+
+[^removeSDSL]: We are working hard on removing this dependency.
