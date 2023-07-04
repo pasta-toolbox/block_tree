@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="113.08262mm"
+   height="122.75315mm"
+   viewBox="0 0 113.08262 122.75315"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="logo_pasta_block_tree.svg"
+   inkscape:export-filename="logo_pasta_block_tree.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.86461119"
+     inkscape:cx="-118.5504"
+     inkscape:cy="362.01243"
+     inkscape:window-width="2556"
+     inkscape:window-height="1397"
+     inkscape:window-x="0"
+     inkscape:window-y="514"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-23.841827,-59.606677)">
+    <path
+       id="rect957"
+       style="fill:#c87137;fill-opacity:0.497089;stroke:#784421;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       d="m 101.35155,101.5516 c -0.33575,0.007 -0.67131,0.12603 -0.94723,0.36277 l -13.197125,11.32282 v -8.07393 c 0,-0.831 -0.669168,-1.50016 -1.500167,-1.50016 H 72.716606 c -0.830999,0 -1.500166,0.66916 -1.500166,1.50016 v 60.11003 c 0,0.831 0.669167,1.49965 1.500166,1.49965 h 12.990422 c 0.830999,0 1.500167,-0.66865 1.500167,-1.49965 v -38.87566 c 0.396959,0.043 0.810087,-0.0707 1.138432,-0.35244 l 18.870683,-16.19074 c 0.63068,-0.54111 0.70286,-1.48444 0.16175,-2.11512 l -4.85862,-5.66322 c -0.30438,-0.35476 -0.73621,-0.53295 -1.16789,-0.52451 z" />
+    <rect
+       style="fill:#aad400;fill-opacity:0.497089;stroke:#445016;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       id="rect234"
+       width="32.761864"
+       height="29.409153"
+       x="38.454926"
+       y="88.919334"
+       rx="1.4999996"
+       ry="1.4999996" />
+    <rect
+       style="fill:#aad400;fill-opacity:0.497089;stroke:#445016;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       id="rect236"
+       width="33.520714"
+       height="34.97541"
+       x="54.835857"
+       y="68.648499"
+       rx="1.4999996"
+       ry="1.4999996" />
+    <rect
+       style="fill:#aad400;fill-opacity:0.497089;stroke:#445016;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       id="rect244"
+       width="26.836468"
+       height="26.666821"
+       x="81.706055"
+       y="60.929592"
+       rx="1.4999996"
+       ry="1.4999996" />
+    <rect
+       style="fill:#aad400;fill-opacity:0.497089;stroke:#445016;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       id="rect238"
+       width="45.778496"
+       height="31.558834"
+       x="64.317947"
+       y="96.4263"
+       rx="1.4999996"
+       ry="1.4999996" />
+    <rect
+       style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+       id="rect240"
+       width="41.643444"
+       height="33.819344"
+       x="77.821861"
+       y="78.386375"
+       rx="1.4999996"
+       ry="1.4999996" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:monospace;-inkscape-font-specification:monospace;fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.264583;stroke-linejoin:round;stroke-opacity:1"
+       x="23.127455"
+       y="179.68755"
+       id="text1178"><tspan
+         sodipodi:role="line"
+         id="tspan1176"
+         style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.264583;stroke-linejoin:round;stroke-opacity:1"
+         x="23.127455"
+         y="179.68755">pasta::bl  ck_tree</tspan></text>
+    <rect
+       style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:1.237;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1388"
+       width="10.485336"
+       height="4.8181977"
+       x="81.489883"
+       y="174.39682"
+       rx="1.4999996"
+       ry="1.4999995" />
+  </g>
+</svg>

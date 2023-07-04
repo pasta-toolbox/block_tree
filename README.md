@@ -1,5 +1,9 @@
 # pasta::block_tree
 
+<p align="center">
+   <img width=284.5 height=309.3 src="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.svg" />
+</p>
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://zenodo.org/badge/660360825.svg)](https://zenodo.org/badge/latestdoi/660360825)
 [![pasta::block_tree CI badge](https://github.com/pasta-toolbox/block_tree/actions/workflows/ctest.yml/badge.svg)](https://github.com/pasta-toolbox/block_tree/actions/workflows/ctest.yml)
