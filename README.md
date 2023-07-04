@@ -1,6 +1,7 @@
 # pasta::block_tree
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://zenodo.org/badge/660360825.svg)](https://zenodo.org/badge/latestdoi/660360825)
 [![pasta::block_tree CI badge](https://github.com/pasta-toolbox/block_tree/actions/workflows/ctest.yml/badge.svg)](https://github.com/pasta-toolbox/block_tree/actions/workflows/ctest.yml)
 
 This header-only library contains two highly configurable block tree implementations and is largely based on Daniel Meyer's [code](https://github.com/uqdwq/block_tree) developed during his Master's thesis.
