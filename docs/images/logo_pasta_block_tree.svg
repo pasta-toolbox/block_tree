@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="113.08262mm"
-   height="122.75315mm"
-   viewBox="0 0 113.08262 122.75315"
+   width="113.95345mm"
+   height="123.00336mm"
+   viewBox="0 0 113.95346 123.00336"
    version="1.1"
    id="svg5"
    sodipodi:docname="logo_pasta_block_tree.svg"
@@ -27,13 +27,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.86461119"
-     inkscape:cx="-118.5504"
-     inkscape:cy="362.01243"
+     inkscape:zoom="0.61137244"
+     inkscape:cx="128.39964"
+     inkscape:cy="276.42725"
      inkscape:window-width="2556"
      inkscape:window-height="1397"
      inkscape:window-x="0"
-     inkscape:window-y="514"
+     inkscape:window-y="535"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -42,7 +42,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-23.841827,-59.606677)">
+     transform="translate(-23.327036,-59.606677)">
     <path
        id="rect957"
        style="fill:#c87137;fill-opacity:0.497089;stroke:#784421;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
@@ -94,23 +94,23 @@
        ry="1.4999996" />
     <text
        xml:space="preserve"
-       style="font-size:10.5833px;line-height:1.25;font-family:monospace;-inkscape-font-specification:monospace;fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.264583;stroke-linejoin:round;stroke-opacity:1"
+       style="font-size:10.5833px;line-height:1.25;font-family:monospace;-inkscape-font-specification:monospace;fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.765;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        x="23.127455"
        y="179.68755"
        id="text1178"><tspan
          sodipodi:role="line"
          id="tspan1176"
-         style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.264583;stroke-linejoin:round;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:monospace;-inkscape-font-specification:'monospace Bold';fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.765;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          x="23.127455"
          y="179.68755">pasta::bl  ck_tree</tspan></text>
     <rect
-       style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:1.237;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#a9d300;fill-opacity:0.498039;stroke:#445016;stroke-width:0.765;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
        id="rect1388"
-       width="10.485336"
-       height="4.8181977"
-       x="81.489883"
-       y="174.39682"
-       rx="1.4999996"
-       ry="1.4999995" />
+       width="10.485"
+       height="5.9920001"
+       x="81.448616"
+       y="173.69554"
+       rx="1.4999998"
+       ry="1.4999998" />
   </g>
 </svg>
