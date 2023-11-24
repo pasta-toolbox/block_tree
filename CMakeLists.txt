@@ -24,6 +24,8 @@ cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+
 project(pasta_block_tree)
 
 ## Build tests
@@ -31,6 +33,20 @@ option(PASTA_BLOCK_TREE_BUILD_TESTS
         "Build blocktree's tests." OFF)
 option(PASTA_BLOCK_TREE_BUILD_EXAMPLES
   "Build blocktree's benchmarks." OFF)
+
+FetchContent_Declare(
+  tlx
+  GIT_REPOSITORY https://github.com/tlx/tlx.git
+  GIT_TAG        b6af589 #release 0.6.1
+)
+
+FetchContent_Declare(
+  pasta_bit_vector
+  GIT_REPOSITORY https://github.com/pasta-toolbox/bit_vector.git
+  GIT_TAG        05acd97 #main
+)
+
+FetchContent_MakeAvailable(tlx pasta_bit_vector)
 
 # Optional test
 if(PASTA_BLOCK_TREE_BUILD_TESTS)
@@ -55,8 +71,6 @@ endif()
 
 set(LIBSAIS_USE_OPENMP ON CACHE BOOL "Use OpenMP for parallelization of libsais" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/libsais)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/bit_vector)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extlib/tlx)
 
 add_library(pasta_block_tree INTERFACE)
 target_include_directories(pasta_block_tree INTERFACE

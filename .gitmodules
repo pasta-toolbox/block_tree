@@ -1,12 +1,6 @@
 [submodule "extlib/libsais"]
 	path = extlib/libsais
 	url = https://github.com/IlyaGrebnov/libsais
-[submodule "extlib/bit_vector"]
-	path = extlib/bit_vector
-	url = https://github.com/pasta-toolbox/bit_vector
-[submodule "extlib/tlx"]
-	path = extlib/tlx
-	url = https://github.com/tlx/tlx
 [submodule "extlib/doxygen-awesome-css"]
 	path = extlib/doxygen-awesome-css
 	url = https://github.com/jothepro/doxygen-awesome-css.git
