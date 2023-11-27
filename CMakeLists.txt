@@ -35,6 +35,13 @@ option(PASTA_BLOCK_TREE_BUILD_EXAMPLES
   "Build blocktree's benchmarks." OFF)
 
 FetchContent_Declare(
+  sdsl
+  GIT_REPOSITORY https://github.com/simongog/sdsl-lite.git
+  GIT_TAG        c32874c #main
+)
+
+
+FetchContent_Declare(
   tlx
   GIT_REPOSITORY https://github.com/tlx/tlx.git
   GIT_TAG        b6af589 #release 0.6.1
@@ -46,7 +53,7 @@ FetchContent_Declare(
   GIT_TAG        05acd97 #main
 )
 
-FetchContent_MakeAvailable(tlx pasta_bit_vector)
+FetchContent_MakeAvailable(sdsl tlx pasta_bit_vector)
 
 # Optional test
 if(PASTA_BLOCK_TREE_BUILD_TESTS)
