@@ -43,7 +43,7 @@ FetchContent_Declare(
 FetchContent_Declare(
   pasta_bit_vector
   GIT_REPOSITORY https://github.com/pasta-toolbox/bit_vector.git
-  GIT_TAG        05acd97 #main
+  GIT_TAG        b4798d5 #main
 )
 
 FetchContent_MakeAvailable(tlx pasta_bit_vector)
