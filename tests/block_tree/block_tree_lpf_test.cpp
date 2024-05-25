@@ -32,8 +32,10 @@ class BlockTreeLPFTest : public ::testing::Test {
 protected:
 
   std::vector<uint8_t> text;
+  std::vector<uint8_t> gappy_alphabet_text;
 
   pasta::BlockTreeLPF<uint8_t, int32_t>* bt;
+  pasta::BlockTreeLPF<uint8_t, int32_t>* gappy_alphabet_bt;
   
   void SetUp() override {
 
@@ -43,16 +45,21 @@ protected:
 
     size_t const string_length = 100000;
     text.resize(string_length);
+	gappy_alphabet_text.resize(string_length);
     for (size_t i = 0; i < text.size(); ++i) {
       text[i] = dist(gen);
+	  gappy_alphabet_text[i] = 2*dist(gen);
     }
 
     bt = pasta::make_block_tree_lpf<uint8_t, int32_t>(text, 2, 1, true);
     bt->add_rank_support();
+	gappy_alphabet_bt = pasta::make_block_tree_lpf<uint8_t, int32_t>(gappy_alphabet_text, 2, 1, true);
+    gappy_alphabet_bt->add_rank_support();
   }
 
   void TearDown() override {
     delete bt;
+	delete gappy_alphabet_bt;
   }
 
 };
@@ -60,6 +67,12 @@ protected:
 TEST_F(BlockTreeLPFTest, access) {
   for (size_t i = 0; i < text.size(); ++i) {
     ASSERT_EQ(bt->access(i), text[i]);
+  }
+}
+
+TEST_F(BlockTreeLPFTest, access_gappy_alphabet) {
+  for (size_t i = 0; i < text.size(); ++i) {
+    ASSERT_EQ(gappy_alphabet_bt->access(i), gappy_alphabet_text[i]);
   }
 }
 
