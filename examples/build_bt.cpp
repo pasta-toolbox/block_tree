@@ -465,31 +465,29 @@ int main(int argc, char** argv) {
 
     std::cout << " rec=" << RECURSION_LEVELS;
     std::cout << " time=" << elapsed << " space=" << bt->print_space_usage();
-    std::cout << std::endl;
 
     if (!verify) {
+      std::cout << std::endl;
       return 0;
     }
 
-    std::cerr << "Start verification...\n";
+    // std::cerr << "Start verification...\n";
 #if defined BT_INSTRUMENT && defined BT_DBG
     pasta::print_hash_data();
 #endif
 
-    std::cerr << "Access queries... " << std::flush;
+    // std::cerr << "Access queries... " << std::flush;
 #pragma omp parallel for
     for (size_t i = 0; i < text.size(); ++i) {
       const auto c = bt->access(i);
       if (c != text[i]) {
-        std::osyncstream(std::cerr)
-            << "Error at position " << i
-            << "\nExpected: " << static_cast<char>(text[i])
-            << "\nActual: " << static_cast<char>(c) << std::endl;
-        exit(1);
+        #pragma omp critical
+        std::cout << " verification=failed" << std::endl;
+        std::exit(-1);
       }
     }
   }
-  std::cerr << "successful" << std::endl;
+  std::cout << " verification=passed" << std::endl;
 
   return 0;
 }
