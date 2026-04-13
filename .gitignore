@@ -1,1 +1,12 @@
-/build
+/build*
+/cmake-build-*
+.cache
+compile_commands.json
+.idea/*
+perf.data*
+.pdf
+*.txt
+!CMakeLists.txt
+debug
+dev/
+.vscode

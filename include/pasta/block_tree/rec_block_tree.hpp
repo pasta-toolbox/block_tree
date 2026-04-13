@@ -2,6 +2,7 @@
  * This file is part of pasta::block_tree
  *
  * Copyright (C) 2022 Daniel Meyer
+ * Copyright (C) 2023 Etienne Palanga  <etienne.palanga@tu-dortmund.de>
  *
  * pasta::block_tree is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +21,33 @@
 
 #pragma once
 
-#include <ankerl/unordered_dense.h>
+#include <cstddef>
 #include <omp.h>
 #include <pasta/bit_vector/bit_vector.hpp>
 #include <pasta/bit_vector/support/optimized_for.hpp>
-#include <pasta/bit_vector/support/rank.hpp>
 #include <pasta/bit_vector/support/rank_select.hpp>
 #include <pasta/bit_vector/support/wide_rank_select.hpp>
+#include <pasta/block_tree/rec_dense_bit_block_tree.hpp>
 #include <sdsl/int_vector.hpp>
+#include <ankerl/unordered_dense.h>
 #include <vector>
 
 namespace pasta {
-
-template <typename input_type, typename size_type>
-class BlockTree {
+template <std::integral input_type,
+          std::signed_integral size_type,
+          uint8_t recursion_level = 0>
+class RecursiveBlockTree {
 public:
+  constexpr static bool types_is_block_tree = recursion_level > 0;
+  using IsInternalType =
+      std::conditional_t<types_is_block_tree,
+                         RecursiveDenseBitBlockTree<size_type, recursion_level - 1>,
+                         pasta::BitVector>;
+  using IsInternalRankType =
+      std::conditional_t<types_is_block_tree,
+                         RecursiveDenseBitBlockTree<size_type, recursion_level - 1>,
+                         pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>>;
+
   /// @brief If this is true, then the only levels of the tree start to be
   ///   included starting at the first level that contains a back block
   ///
@@ -47,9 +60,8 @@ public:
   size_type leaf_size = 0;
   size_type amount_of_leaves = 0;
   bool rank_support = false;
-  std::vector<pasta::BitVector*> block_tree_types_;
-  std::vector<pasta::RankSelect<pasta::OptimizedFor::ONE_QUERIES>*>
-      block_tree_types_rs_;
+  std::vector<IsInternalType*> block_tree_types_;
+  std::vector<IsInternalRankType*> block_tree_types_rs_;
   std::vector<sdsl::int_vector<>*> block_tree_pointers_;
   std::vector<sdsl::int_vector<>*> block_tree_offsets_;
   //    std::vector<sdsl::int_vector<>*> block_tree_encoded_;
@@ -67,6 +79,23 @@ public:
   std::vector<std::vector<int64_t>> top_level_c_ranks_;
   std::vector<std::vector<sdsl::int_vector<>>> c_ranks_;
   std::vector<std::vector<sdsl::int_vector<>>> pointer_c_ranks_;
+
+  ~RecursiveBlockTree() {
+    for (auto& rank : this->block_tree_types_rs_) {
+      delete rank;
+    }
+    if constexpr (!types_is_block_tree) {
+      for (auto& bv : this->block_tree_types_) {
+        delete bv;
+      }
+    }
+    for (auto& ptrs : this->block_tree_pointers_) {
+      delete ptrs;
+    }
+    for (auto& offsets : this->block_tree_offsets_) {
+      delete offsets;
+    }
+  }
 
   int64_t access(size_type index) {
     int64_t block_size = block_size_lvl_[0];
@@ -362,18 +391,65 @@ public:
   int64_t print_space_usage() {
     int64_t space_usage = sizeof(tau_) + sizeof(max_leaf_length_) + sizeof(s_) +
                           sizeof(leaf_size);
-    for (auto bv : block_tree_types_) {
-      space_usage += bv->size() / 8;
+    auto delta_size = 0;
+    if constexpr (recursion_level > 0) {
+      for (auto bt : block_tree_types_) {
+        space_usage += bt->print_space_usage();
+        delta_size += bt->print_space_usage();
+      }
+#ifdef BT_DBG
+      std::cout << "bv size: " << delta_size << std::endl;
+      delta_size = 0;
+#endif
     }
-    for (auto rs : block_tree_types_rs_) {
-      space_usage += rs->space_usage();
+    if constexpr (recursion_level == 0) {
+      for (auto bv : block_tree_types_) {
+        space_usage += bv->size() / 8;
+        delta_size += bv->size() / 8;
+      }
+#ifdef BT_DBG
+      std::cout << "bv size: " << delta_size << std::endl;
+      delta_size = 0;
+#endif
+      for (auto rs : block_tree_types_rs_) {
+        space_usage += rs->space_usage();
+        delta_size += rs->space_usage();
+      }
+#ifdef BT_DBG
+      std::cout << "rs size: " << delta_size << std::endl;
+      delta_size = 0;
+#endif
     }
+
+    size_t ptr_cnt = 0;
+    (void)ptr_cnt;
+    size_t level = 0;
+    (void)level;
     for (const auto iv : block_tree_pointers_) {
       space_usage += (int64_t)sdsl::size_in_bytes(*iv);
+      delta_size += (int64_t)sdsl::size_in_bytes(*iv);
+#ifdef BT_DBG
+      ptr_cnt += iv->size();
+      std::cout << "level " << level << " ptrs: " << iv->size()
+                << " block size: " << block_size_lvl_[level] << "\n";
+      level++;
+#endif
     }
+#ifdef BT_DBG
+    std::cout << "ptrs size: " << delta_size << std::endl;
+    std::cout << "pointer count: " << ptr_cnt << std::endl;
+    delta_size = 0;
+#endif
+
     for (const auto iv : block_tree_offsets_) {
       space_usage += (int64_t)sdsl::size_in_bytes(*iv);
+      delta_size += (int64_t)sdsl::size_in_bytes(*iv);
     }
+#ifdef BT_DBG
+    std::cout << "offs size: " << delta_size << std::endl;
+    delta_size = 0;
+#endif
+
     if (rank_support) {
       for (auto c : chars_) {
         int64_t sum = 0;
@@ -396,6 +472,11 @@ public:
     // space_usage += leaves_.size() * sizeof(input_type);
     space_usage += sdsl::size_in_bytes(compressed_leaves_);
     space_usage += compress_map_.size();
+#ifdef BT_DBG
+    std::cout << "leaves size: " << sdsl::size_in_bytes(compressed_leaves_)
+              << std::endl;
+    delta_size = 0;
+#endif
 
     return space_usage;
   };
@@ -743,6 +824,7 @@ public:
   };
 };
 
+template <std::integral input_type, std::signed_integral size_type>
+using BlockTree = RecursiveBlockTree<input_type, size_type, 0>;
 } // namespace pasta
-
 /******************************************************************************/

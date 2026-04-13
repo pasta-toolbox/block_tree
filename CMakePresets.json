@@ -1,65 +1,124 @@
 {
-    "version": 2,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 20,
-        "patch": 0
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default",
+      "description": "Default build options",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fopenmp -Wall -Wextra -pedantic -Werror -march=native -fdiagnostics-color=always",
+        "CMAKE_CXX_FLAGS_RELEASE": "-DNDEBUG -O3",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-DDEBUG -g -O3 -lprofiler",
+        "CMAKE_CXX_FLAGS_DEBUG": "-DDEBUG -O0 -g -static-libasan -fsanitize=address -fsanitize=leak -fsanitize=undefined"
+      }
     },
-    "configurePresets": [
-        {
-            "name": "default",
-            "displayName": "Default",
-            "description": "Default build options",
-            "hidden": true,
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
-            "cacheVariables": {
-                "CMAKE_CXX_FLAGS": "-fopenmp -Wall -Wextra -pedantic -Werror -march=native -fdiagnostics-color=always",
-                "CMAKE_CXX_FLAGS_RELEASE": "-DNDEBUG -O3",
-                "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-DDEBUG -g -O3",
-                "CMAKE_CXX_FLAGS_DEBUG": "-DDEBUG -O0 -g -ggdb -fsanitize=address"
-            }
-        },
-        {
-            "name": "release",
-            "displayName": "Release",
-            "inherits": "default",
-            "binaryDir": "${sourceDir}/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
-        },
-        {
-            "name": "relwithdeb",
-            "displayName": "ReleaseWithDebugInfo",
-            "inherits": "default",
-            "binaryDir": "${sourceDir}/build_with_debug_info",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-            }
-        },
-        {
-            "name": "debug",
-            "displayName": "Debug",
-            "inherits": "default",
-            "binaryDir": "${sourceDir}/debug",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "release",
-            "configurePreset": "release"
-        },
-        {
-            "name": "relwithdeb",
-            "configurePreset": "relwithdeb"
-        },
-        {
-            "name": "debug",
-            "configurePreset": "debug"
-        }
-    ]
+    {
+      "name": "release",
+      "displayName": "Release",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "relwithdeb",
+      "displayName": "ReleaseWithDebugInfo",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build_with_debug_info",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ninja-multi",
+      "displayName": "Ninja Multi-Config",
+      "description": "Default build using Ninja Multi-Config generator",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build_multi",
+      "inherits": "default",
+      "cacheVariables": {
+        "PASTA_BLOCK_TREE_BUILD_TESTS": "ON",
+        "PASTA_BLOCK_TREE_BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "bench",
+      "displayName": "Behcnmarking Configuration",
+      "description": "Release build with extended debug information",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_bench",
+      "inherits": "default",
+      "cacheVariables": {
+        "PASTA_BLOCK_TREE_BUILD_EXAMPLES": "ON",
+        "CMAKE_CXX_FLAGS": "-fopenmp -Wall -Wextra -pedantic -Werror -march=native -fdiagnostics-color=always -g -O3 -lprofiler",
+        "CMAKE_BUILD_TYPE": "Release",
+        "PASTA_BLOCK_TREE_BENCH": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "relwithdeb",
+      "configurePreset": "relwithdeb"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release-multi",
+      "configurePreset": "ninja-multi",
+      "configuration": "Release"
+    },
+    {
+      "name": "relwithdeb-multi",
+      "configurePreset": "ninja-multi",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "debug-multi",
+      "configurePreset": "ninja-multi",
+      "configuration": "Debug"
+    },
+    {
+      "name": "bench",
+      "configurePreset": "bench"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "ninja-multi",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      },
+      "configuration": "RelWithDebInfo"
+    }
+  ]
 }

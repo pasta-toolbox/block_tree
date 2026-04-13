@@ -26,16 +26,19 @@ macro(pasta_block_tree_build_test TESTNAME)
             pasta_block_tree
             GTest::Main)
     include_directories(${TESTNAME_REPLACED} PRIVATE ${gtest_SOURCE_DIR}/include)
-    add_test(
-            NAME ${TESTNAME_REPLACED}
-            COMMAND ${TESTNAME_REPLACED} ${ARGN})
+    #add_test(
+    #        NAME ${TESTNAME_REPLACED}
+    #        COMMAND ${TESTNAME_REPLACED} ${ARGN})
+    gtest_add_tests(TARGET ${TESTNAME_REPLACED})
 endmacro(pasta_block_tree_build_test)
 
 include(CTest)
 
 find_package(GTest REQUIRED)
 pasta_block_tree_build_test(block_tree/block_tree_fp_test)
+pasta_block_tree_build_test(block_tree/block_tree_seq_test)
 pasta_block_tree_build_test(block_tree/block_tree_lpf_test)
 pasta_block_tree_build_test(block_tree/block_tree_lpf_parallel_test)
+pasta_block_tree_build_test(utils/bit_rabin_karp_test)
 
 ################################################################################

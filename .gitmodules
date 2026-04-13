@@ -1,6 +1,37 @@
 [submodule "extlib/libsais"]
 	path = extlib/libsais
 	url = https://github.com/IlyaGrebnov/libsais
+[submodule "extlib/growt"]
+	path = extlib/growt
+	url = https://github.com/TooBiased/growt
+[submodule "extlib/parallel-hashmap"]
+	path = extlib/parallel-hashmap
+	url = https://github.com/greg7mdp/parallel-hashmap
+[submodule "extlib/waitfree-mpsc-queue"]
+	path = extlib/waitfree-mpsc-queue
+	url = https://github.com/dbittman/waitfree-mpsc-queue
+[submodule "extlib/Jiffy"]
+	path = extlib/Jiffy
+	url = https://github.com/DolevAdas/Jiffy
+[submodule "fastwfc"]
+	path = extlib/fastwfc/fast-wait-free-queue
+	url = https://github.com/chaoran/fast-wait-free-queue
+[submodule "extlib/Jiffy-1"]
+	path = extlib/Jiffy-1
+	url = https://github.com/quininer/Jiffy-1
+	branch = fix-atomic
+[submodule "extlib/sdsl-lite"]
+	path = extlib/sdsl-lite
+	url = https://github.com/Skadic/sdsl-lite
+[submodule "extlib/--force"]
+	path = extlib/--force
+	url = https://github.com/rizkg/BBHash
+[submodule "extlib/parlayhash"]
+	path = extlib/parlayhash
+	url = https://github.com/cmuparlay/parlayhash
+[submodule "extlib/unordered_dense"]
+	path = extlib/unordered_dense
+	url = https://github.com/martinus/unordered_dense
 [submodule "extlib/doxygen-awesome-css"]
 	path = extlib/doxygen-awesome-css
 	url = https://github.com/jothepro/doxygen-awesome-css.git
