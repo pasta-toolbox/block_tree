@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.4"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image:src" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<!-- END twitter metadata -->
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="pasta::block_tree" />
+<meta property="og:image" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<meta property="og:image:alt" content="Logo of pasta::block_tree." />
+<meta property="og:description" content="Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel." />
+<meta property="og:url" content="https://pasta-toolbox.github.io/block_tree/" />
+<!-- END opengraph metadata -->
+<title>pasta::block_tree: pasta Namespace Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<link itemprop="thumbnailUrl" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+<span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject"> 
+  <link itemprop="url" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+</span>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/pasta-toolbox/block_tree" class="github-corner" title="View source on GitHub" target="_blank">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">pasta::block_tree
+   &#160;<span id="projectnumber">v0.1.0</span>
+   </div>
+   <div id="projectbrief">Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.9.4 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search",'Search','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('namespacepasta.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#concepts">Concepts</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">pasta Namespace Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Utilities for the construction algorithms using the sharded hash map.  
+<a href="namespacepasta.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTree.html">BlockTree</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFP.html">BlockTreeFP</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFP2.html">BlockTreeFP2</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFPParParlay.html">BlockTreeFPParParlay</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFPParPH.html">BlockTreeFPParPH</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFPParSharded.html">BlockTreeFPParSharded</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map.  <a href="classpasta_1_1BlockTreeFPParSharded.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeFPParShardedSync.html">BlockTreeFPParShardedSync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map.  <a href="classpasta_1_1BlockTreeFPParShardedSync.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1BlockTreeLPF.html">BlockTreeLPF</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1JiffyQueue.html">JiffyQueue</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpasta_1_1Keep.html">Keep</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An update function for sharded maps which upon update does nothing besides inserting the value if it doesn't exist.  <a href="structpasta_1_1Keep.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1MersenneHash.html">MersenneHash</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1MersenneHash_3_01bool_01_4.html">MersenneHash&lt; bool &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1MersenneRabinKarp.html">MersenneRabinKarp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A Rabin-Karp rolling hasher.  <a href="classpasta_1_1MersenneRabinKarp.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1MersenneRabinKarp_3_01bool_00_01size__type_00_01mersenne__exponent_01_4.html">MersenneRabinKarp&lt; bool, size_type, mersenne_exponent &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A Rabin-Karp rolling hasher for bitstrings.  <a href="classpasta_1_1MersenneRabinKarp_3_01bool_00_01size__type_00_01mersenne__exponent_01_4.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1Mpscq.html">Mpscq</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpasta_1_1Overwrite.html">Overwrite</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An update function for sharded maps which on update just overwrites the value.  <a href="structpasta_1_1Overwrite.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RangeMinimum.html">RangeMinimum</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">RecursiveBitBlockTree</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTreeSharded.html">RecursiveBitBlockTreeSharded</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map. Small blocks are not RK-hashed but rather use the blocks themselves.  <a href="classpasta_1_1RecursiveBitBlockTreeSharded.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBlockTree.html">RecursiveBlockTree</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBlockTreeSharded.html">RecursiveBlockTreeSharded</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map. Small blocks are not RK-hashed but rather use the blocks themselves.  <a href="classpasta_1_1RecursiveBlockTreeSharded.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveDenseBitBlockTree.html">RecursiveDenseBitBlockTree</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveDenseBitBlockTreeSharded.html">RecursiveDenseBitBlockTreeSharded</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map. Small blocks are not RK-hashed but rather use the blocks themselves.  <a href="classpasta_1_1RecursiveDenseBitBlockTreeSharded.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1ShardedMap.html">ShardedMap</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A hash map that must be used by multiple threads, each thread having only having write access to a certain segment of the input space.  <a href="classpasta_1_1ShardedMap.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1StupidQueue.html">StupidQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple queue that uses a std::list as the underlying data. Not even lock-free. Probably bad, but should work.  <a href="classpasta_1_1StupidQueue.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1SyncShardedMap.html">SyncShardedMap</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A hash map that must be used by multiple threads, each thread having only having write access to a certain segment of the input space.  <a href="classpasta_1_1SyncShardedMap.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
+Concepts</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptpasta_1_1UpdateFunction.html">UpdateFunction</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents an update function which given a value, updates a value in the map. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:aaeed2f67eb1bc940e999e7c7327e8ca2"><td class="memTemplParams" colspan="2"><a id="aaeed2f67eb1bc940e999e7c7327e8ca2" name="aaeed2f67eb1bc940e999e7c7327e8ca2"></a>
+template&lt;typename key_type , typename value_type , typename hash_type  = std::hash&lt;key_type&gt;&gt; </td></tr>
+<tr class="memitem:aaeed2f67eb1bc940e999e7c7327e8ca2"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>HashMap</b> = ankerl::unordered_dense::map&lt; key_type, value_type, hash_type &gt;</td></tr>
+<tr class="separator:aaeed2f67eb1bc940e999e7c7327e8ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a293332e469e0081ff05722a9f863ebc6"><td class="memTemplParams" colspan="2"><a id="a293332e469e0081ff05722a9f863ebc6" name="a293332e469e0081ff05722a9f863ebc6"></a>
+template&lt;std::signed_integral size_type&gt; </td></tr>
+<tr class="memitem:a293332e469e0081ff05722a9f863ebc6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>BitBlockTree</b> = <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">RecursiveBitBlockTree</a>&lt; size_type &gt;</td></tr>
+<tr class="separator:a293332e469e0081ff05722a9f863ebc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a045c50896ea584bbb557d4ad8e3ab072"><td class="memTemplParams" colspan="2"><a id="a045c50896ea584bbb557d4ad8e3ab072" name="a045c50896ea584bbb557d4ad8e3ab072"></a>
+template&lt;std::integral input_type, std::signed_integral size_type&gt; </td></tr>
+<tr class="memitem:a045c50896ea584bbb557d4ad8e3ab072"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>BlockTree</b> = <a class="el" href="classpasta_1_1RecursiveBlockTree.html">RecursiveBlockTree</a>&lt; input_type, size_type, 0 &gt;</td></tr>
+<tr class="separator:a045c50896ea584bbb557d4ad8e3ab072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af03821c1efc90e232bfff9d0dba5e000"><td class="memTemplParams" colspan="2"><a id="af03821c1efc90e232bfff9d0dba5e000" name="af03821c1efc90e232bfff9d0dba5e000"></a>
+template&lt;std::signed_integral size_type&gt; </td></tr>
+<tr class="memitem:af03821c1efc90e232bfff9d0dba5e000"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>DenseBitBlockTree</b> = <a class="el" href="classpasta_1_1RecursiveDenseBitBlockTree.html">RecursiveDenseBitBlockTree</a>&lt; size_type &gt;</td></tr>
+<tr class="separator:af03821c1efc90e232bfff9d0dba5e000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a8ec20f741118aad9b25cff1d53420a30"><td class="memItemLeft" align="right" valign="top"><a id="a8ec20f741118aad9b25cff1d53420a30" name="a8ec20f741118aad9b25cff1d53420a30"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Whereabouts</b> { <b>NOWHERE</b>
+, <b>IN_MAP</b>
+, <b>IN_QUEUE</b>
+ }</td></tr>
+<tr class="separator:a8ec20f741118aad9b25cff1d53420a30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad6bd024d6de697b9a85e4e392bd86bab"><td class="memTemplParams" colspan="2"><a id="ad6bd024d6de697b9a85e4e392bd86bab" name="ad6bd024d6de697b9a85e4e392bd86bab"></a>
+template&lt;typename input_type , typename size_type &gt; </td></tr>
+<tr class="memitem:ad6bd024d6de697b9a85e4e392bd86bab"><td class="memTemplItemLeft" align="right" valign="top">auto *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>make_block_tree_fp</b> (std::vector&lt; input_type &gt; &amp;input, size_type const tau, size_type const max_leaf_length)</td></tr>
+<tr class="separator:ad6bd024d6de697b9a85e4e392bd86bab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a566d8bdfab2311877ffd0069b709c06f"><td class="memTemplParams" colspan="2"><a id="a566d8bdfab2311877ffd0069b709c06f" name="a566d8bdfab2311877ffd0069b709c06f"></a>
+template&lt;typename input_type , typename size_type &gt; </td></tr>
+<tr class="memitem:a566d8bdfab2311877ffd0069b709c06f"><td class="memTemplItemLeft" align="right" valign="top">auto *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>make_block_tree_lpf</b> (std::vector&lt; input_type &gt; &amp;text, size_type tau, size_type max_leaf_length, bool set_s_to_z)</td></tr>
+<tr class="separator:a566d8bdfab2311877ffd0069b709c06f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af02cd2e88619fe7c9ebfb3184f6505cf"><td class="memTemplParams" colspan="2"><a id="af02cd2e88619fe7c9ebfb3184f6505cf" name="af02cd2e88619fe7c9ebfb3184f6505cf"></a>
+template&lt;typename input_type , typename size_type &gt; </td></tr>
+<tr class="memitem:af02cd2e88619fe7c9ebfb3184f6505cf"><td class="memTemplItemLeft" align="right" valign="top">auto *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>make_block_tree_lpf_parallel</b> (std::vector&lt; input_type &gt; &amp;text, size_type tau, size_type max_leaf_length, bool set_s_to_z, size_t threads)</td></tr>
+<tr class="separator:af02cd2e88619fe7c9ebfb3184f6505cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5205210ed191d5af347f70199dd33ac9"><td class="memItemLeft" align="right" valign="top"><a id="a5205210ed191d5af347f70199dd33ac9" name="a5205210ed191d5af347f70199dd33ac9"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_left</b> (int32_t i)</td></tr>
+<tr class="separator:a5205210ed191d5af347f70199dd33ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adca05b6d72ee9e65460177086858e5c2"><td class="memItemLeft" align="right" valign="top"><a id="adca05b6d72ee9e65460177086858e5c2" name="adca05b6d72ee9e65460177086858e5c2"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_right</b> (int32_t i)</td></tr>
+<tr class="separator:adca05b6d72ee9e65460177086858e5c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8cebe26b5dbd3ba1a25d91239003a75"><td class="memItemLeft" align="right" valign="top"><a id="ad8cebe26b5dbd3ba1a25d91239003a75" name="ad8cebe26b5dbd3ba1a25d91239003a75"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_parent</b> (int32_t i)</td></tr>
+<tr class="separator:ad8cebe26b5dbd3ba1a25d91239003a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7257842a8b54d849f84ef74b5e0d0cfc"><td class="memItemLeft" align="right" valign="top"><a id="a7257842a8b54d849f84ef74b5e0d0cfc" name="a7257842a8b54d849f84ef74b5e0d0cfc"></a>
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_left</b> (int64_t i)</td></tr>
+<tr class="separator:a7257842a8b54d849f84ef74b5e0d0cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7e133210efe6958bb1e699cb4c4fa82"><td class="memItemLeft" align="right" valign="top"><a id="af7e133210efe6958bb1e699cb4c4fa82" name="af7e133210efe6958bb1e699cb4c4fa82"></a>
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_right</b> (int64_t i)</td></tr>
+<tr class="separator:af7e133210efe6958bb1e699cb4c4fa82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1943af4d7cc42bca8596786f382ce44"><td class="memItemLeft" align="right" valign="top"><a id="af1943af4d7cc42bca8596786f382ce44" name="af1943af4d7cc42bca8596786f382ce44"></a>
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_parent</b> (int64_t i)</td></tr>
+<tr class="separator:af1943af4d7cc42bca8596786f382ce44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675331ee72d0ac3d160c935484641e4e"><td class="memItemLeft" align="right" valign="top"><a id="a675331ee72d0ac3d160c935484641e4e" name="a675331ee72d0ac3d160c935484641e4e"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_left_opt</b> (std::vector&lt; std::vector&lt; int32_t &gt; &gt; &amp;table, int32_t depth, int32_t index, int32_t start)</td></tr>
+<tr class="separator:a675331ee72d0ac3d160c935484641e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9902342f24b4d5e0c841ccabcd2f9908"><td class="memItemLeft" align="right" valign="top"><a id="a9902342f24b4d5e0c841ccabcd2f9908" name="a9902342f24b4d5e0c841ccabcd2f9908"></a>
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_left_opt</b> (std::vector&lt; std::vector&lt; int64_t &gt; &gt; &amp;table, int64_t depth, int64_t index, int64_t start)</td></tr>
+<tr class="separator:a9902342f24b4d5e0c841ccabcd2f9908"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4431de5c48d34cc0047717915fb3cd92"><td class="memItemLeft" align="right" valign="top"><a id="a4431de5c48d34cc0047717915fb3cd92" name="a4431de5c48d34cc0047717915fb3cd92"></a>
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_right_opt</b> (std::vector&lt; std::vector&lt; int64_t &gt; &gt; &amp;table, int64_t depth, int64_t index, int64_t start)</td></tr>
+<tr class="separator:a4431de5c48d34cc0047717915fb3cd92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88d41035a79e3455ee91acdbaea38451"><td class="memItemLeft" align="right" valign="top"><a id="a88d41035a79e3455ee91acdbaea38451" name="a88d41035a79e3455ee91acdbaea38451"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_right_opt</b> (std::vector&lt; std::vector&lt; int32_t &gt; &gt; &amp;table, int32_t depth, int32_t index, int32_t start)</td></tr>
+<tr class="separator:a88d41035a79e3455ee91acdbaea38451"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5583d5a4f0e68b7366f315af26945c81"><td class="memTemplParams" colspan="2"><a id="a5583d5a4f0e68b7366f315af26945c81" name="a5583d5a4f0e68b7366f315af26945c81"></a>
+template&lt;typename size_type &gt; </td></tr>
+<tr class="memitem:a5583d5a4f0e68b7366f315af26945c81"><td class="memTemplItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ansv</b> (std::vector&lt; size_type &gt; const &amp;array, std::vector&lt; size_type &gt; &amp;ln, std::vector&lt; size_type &gt; &amp;rn, size_type offset, size_type n)</td></tr>
+<tr class="separator:a5583d5a4f0e68b7366f315af26945c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a121c5cb29d0920405dd539537f88994f"><td class="memTemplParams" colspan="2"><a id="a121c5cb29d0920405dd539537f88994f" name="a121c5cb29d0920405dd539537f88994f"></a>
+template&lt;typename size_type &gt; </td></tr>
+<tr class="memitem:a121c5cb29d0920405dd539537f88994f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ansv_omp</b> (std::vector&lt; size_type &gt; &amp;array, std::vector&lt; size_type &gt; &amp;left, std::vector&lt; size_type &gt; &amp;right, size_type threads)</td></tr>
+<tr class="separator:a121c5cb29d0920405dd539537f88994f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e71f2dc6dd9c0fbf053fbb989f85ae4"><td class="memTemplParams" colspan="2"><a id="a9e71f2dc6dd9c0fbf053fbb989f85ae4" name="a9e71f2dc6dd9c0fbf053fbb989f85ae4"></a>
+template&lt;std::integral Int&gt; </td></tr>
+<tr class="memitem:a9e71f2dc6dd9c0fbf053fbb989f85ae4"><td class="memTemplItemLeft" align="right" valign="top">Int&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap</b> (Int &amp;i)</td></tr>
+<tr class="memdesc:a9e71f2dc6dd9c0fbf053fbb989f85ae4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the bytes in an integer. <br /></td></tr>
+<tr class="separator:a9e71f2dc6dd9c0fbf053fbb989f85ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15f1e09fa3b91abb9715e628bd44d781"><td class="memTemplParams" colspan="2">template&lt;std::integral Int&gt; </td></tr>
+<tr class="memitem:a15f1e09fa3b91abb9715e628bd44d781"><td class="memTemplItemLeft" align="right" valign="top">Int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepasta.html#a15f1e09fa3b91abb9715e628bd44d781">copy_ne</a> (const void *const ptr)</td></tr>
+<tr class="memdesc:a15f1e09fa3b91abb9715e628bd44d781"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies an integer from a pointer using the architecture's native endianness.  <a href="namespacepasta.html#a15f1e09fa3b91abb9715e628bd44d781">More...</a><br /></td></tr>
+<tr class="separator:a15f1e09fa3b91abb9715e628bd44d781"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69ca49d523349d755676440b81dfc448"><td class="memTemplParams" colspan="2">template&lt;std::integral Int&gt; </td></tr>
+<tr class="memitem:a69ca49d523349d755676440b81dfc448"><td class="memTemplItemLeft" align="right" valign="top">Int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepasta.html#a69ca49d523349d755676440b81dfc448">copy_le</a> (const void *const ptr)</td></tr>
+<tr class="memdesc:a69ca49d523349d755676440b81dfc448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies a little endian integer from a pointer.  <a href="namespacepasta.html#a69ca49d523349d755676440b81dfc448">More...</a><br /></td></tr>
+<tr class="separator:a69ca49d523349d755676440b81dfc448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31790e59188d7f974691d619e596a9ab"><td class="memTemplParams" colspan="2">template&lt;std::integral Int&gt; </td></tr>
+<tr class="memitem:a31790e59188d7f974691d619e596a9ab"><td class="memTemplItemLeft" align="right" valign="top">Int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepasta.html#a31790e59188d7f974691d619e596a9ab">copy_be</a> (const void *const ptr)</td></tr>
+<tr class="memdesc:a31790e59188d7f974691d619e596a9ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies a big endian integer from a pointer.  <a href="namespacepasta.html#a31790e59188d7f974691d619e596a9ab">More...</a><br /></td></tr>
+<tr class="separator:a31790e59188d7f974691d619e596a9ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdc111f2ce56a2aa275cbb223f3f8d18"><td class="memTemplParams" colspan="2"><a id="acdc111f2ce56a2aa275cbb223f3f8d18" name="acdc111f2ce56a2aa275cbb223f3f8d18"></a>
+template&lt;typename size_type &gt; </td></tr>
+<tr class="memitem:acdc111f2ce56a2aa275cbb223f3f8d18"><td class="memTemplItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memTemplItemRight" valign="bottom"><b>calculate_lz_factor</b> (size_type &amp;z, std::vector&lt; size_type &gt; &amp;lpf, std::vector&lt; size_type &gt; &amp;lz)</td></tr>
+<tr class="separator:acdc111f2ce56a2aa275cbb223f3f8d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2fbdeeb868ca54f544117fb4481fba9"><td class="memTemplParams" colspan="2"><a id="ab2fbdeeb868ca54f544117fb4481fba9" name="ab2fbdeeb868ca54f544117fb4481fba9"></a>
+template&lt;typename size_type &gt; </td></tr>
+<tr class="memitem:ab2fbdeeb868ca54f544117fb4481fba9"><td class="memTemplItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memTemplItemRight" valign="bottom"><b>calculate_number_lz_factor</b> (size_type &amp;z, std::vector&lt; size_type &gt; &amp;lpf)</td></tr>
+<tr class="separator:ab2fbdeeb868ca54f544117fb4481fba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab81b69bb68c72b9f3d0bccb9ba6861aa"><td class="memItemLeft" align="right" valign="top"><a id="ab81b69bb68c72b9f3d0bccb9ba6861aa" name="ab81b69bb68c72b9f3d0bccb9ba6861aa"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int64_t &gt; &amp;lpf, std::vector&lt; int64_t &gt; &amp;lpf_ptr)</td></tr>
+<tr class="separator:ab81b69bb68c72b9f3d0bccb9ba6861aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd68c12fe6b6b4049d437aed8e33326"><td class="memItemLeft" align="right" valign="top"><a id="a2bd68c12fe6b6b4049d437aed8e33326" name="a2bd68c12fe6b6b4049d437aed8e33326"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_omp</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int64_t &gt; &amp;lpf, std::vector&lt; int64_t &gt; &amp;lpf_ptr, int32_t threads)</td></tr>
+<tr class="separator:a2bd68c12fe6b6b4049d437aed8e33326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80fc4c6b846abe3e3c8b14e597e70ce"><td class="memItemLeft" align="right" valign="top"><a id="ac80fc4c6b846abe3e3c8b14e597e70ce" name="ac80fc4c6b846abe3e3c8b14e597e70ce"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_omp</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int32_t &gt; &amp;lpf, std::vector&lt; int32_t &gt; &amp;lpf_ptr, int32_t threads)</td></tr>
+<tr class="separator:ac80fc4c6b846abe3e3c8b14e597e70ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a507747cada8ed9bb91264d84fc884032"><td class="memItemLeft" align="right" valign="top"><a id="a507747cada8ed9bb91264d84fc884032" name="a507747cada8ed9bb91264d84fc884032"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_stack</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int32_t &gt; &amp;lpf, std::vector&lt; int32_t &gt; &amp;lpf_ptr)</td></tr>
+<tr class="separator:a507747cada8ed9bb91264d84fc884032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1360a1d966491805e95226011f49e03"><td class="memItemLeft" align="right" valign="top"><a id="aa1360a1d966491805e95226011f49e03" name="aa1360a1d966491805e95226011f49e03"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_stack</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int64_t &gt; &amp;lpf, std::vector&lt; int64_t &gt; &amp;lpf_ptr)</td></tr>
+<tr class="separator:aa1360a1d966491805e95226011f49e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e4adf58409d0a590499810db9a8ff77"><td class="memItemLeft" align="right" valign="top"><a id="a0e4adf58409d0a590499810db9a8ff77" name="a0e4adf58409d0a590499810db9a8ff77"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int32_t &gt; &amp;lpf, std::vector&lt; int32_t &gt; &amp;lpf_ptr)</td></tr>
+<tr class="separator:a0e4adf58409d0a590499810db9a8ff77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afee8761b2fcaa5277e706a8bfa1ae06f"><td class="memItemLeft" align="right" valign="top"><a id="afee8761b2fcaa5277e706a8bfa1ae06f" name="afee8761b2fcaa5277e706a8bfa1ae06f"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array</b> (std::string &amp;text, std::vector&lt; int32_t &gt; &amp;lpf, std::vector&lt; int32_t &gt; &amp;lpf_ptr)</td></tr>
+<tr class="separator:afee8761b2fcaa5277e706a8bfa1ae06f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7659c53fbc65d486ba4063c7e1c0b856"><td class="memItemLeft" align="right" valign="top"><a id="a7659c53fbc65d486ba4063c7e1c0b856" name="a7659c53fbc65d486ba4063c7e1c0b856"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_ansv</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int32_t &gt; &amp;lpf, std::vector&lt; int32_t &gt; &amp;prev_Occ, int32_t threads)</td></tr>
+<tr class="separator:a7659c53fbc65d486ba4063c7e1c0b856"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e109e8e29e09ba43c1ec466114e21d"><td class="memItemLeft" align="right" valign="top"><a id="ab0e109e8e29e09ba43c1ec466114e21d" name="ab0e109e8e29e09ba43c1ec466114e21d"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lpf_array_ansv</b> (std::vector&lt; uint8_t &gt; &amp;text, std::vector&lt; int64_t &gt; &amp;lpf, std::vector&lt; int64_t &gt; &amp;prev_Occ, int64_t threads)</td></tr>
+<tr class="separator:ab0e109e8e29e09ba43c1ec466114e21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45318d4ce79e70504018f3cd38e28cf2"><td class="memTemplParams" colspan="2"><a id="a45318d4ce79e70504018f3cd38e28cf2" name="a45318d4ce79e70504018f3cd38e28cf2"></a>
+template&lt;uint8_t exponent&gt; </td></tr>
+<tr class="memitem:a45318d4ce79e70504018f3cd38e28cf2"><td class="memTemplItemLeft" align="right" valign="top">static consteval uint128_t&#160;</td><td class="memTemplItemRight" valign="bottom"><b>mersenne_prime</b> ()</td></tr>
+<tr class="separator:a45318d4ce79e70504018f3cd38e28cf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:afa96e22d093a098e93553a18833c63e4"><td class="memItemLeft" align="right" valign="top"><a id="afa96e22d093a098e93553a18833c63e4" name="afa96e22d093a098e93553a18833c63e4"></a>
+__extension__ typedef unsigned __int128&#160;</td><td class="memItemRight" valign="bottom"><b>uint128_t</b></td></tr>
+<tr class="separator:afa96e22d093a098e93553a18833c63e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5435a267dbe5de5ed134654b6372667"><td class="memItemLeft" align="right" valign="top"><a id="ac5435a267dbe5de5ed134654b6372667" name="ac5435a267dbe5de5ed134654b6372667"></a>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>BLOCK_SIZE</b> = 8192</td></tr>
+<tr class="separator:ac5435a267dbe5de5ed134654b6372667"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Utilities for the construction algorithms using the sharded hash map. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a31790e59188d7f974691d619e596a9ab" name="a31790e59188d7f974691d619e596a9ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31790e59188d7f974691d619e596a9ab">&#9670;&nbsp;</a></span>copy_be()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral Int&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Int pasta::copy_be </td>
+          <td>(</td>
+          <td class="paramtype">const void *const&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies a big endian integer from a pointer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>The pointer to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a69ca49d523349d755676440b81dfc448" name="a69ca49d523349d755676440b81dfc448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69ca49d523349d755676440b81dfc448">&#9670;&nbsp;</a></span>copy_le()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral Int&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Int pasta::copy_le </td>
+          <td>(</td>
+          <td class="paramtype">const void *const&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies a little endian integer from a pointer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>The pointer to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a15f1e09fa3b91abb9715e628bd44d781" name="a15f1e09fa3b91abb9715e628bd44d781"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15f1e09fa3b91abb9715e628bd44d781">&#9670;&nbsp;</a></span>copy_ne()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral Int&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Int pasta::copy_ne </td>
+          <td>(</td>
+          <td class="paramtype">const void *const&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies an integer from a pointer using the architecture's native endianness. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>The pointer to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.2-->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="namespacepasta.html">pasta</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+  </ul>
+</div>
+<script type="text/javascript">
+  $(function() {
+     toggleButton = document.createElement('doxygen-awesome-dark-mode-toggle')
+     toggleButton.title = "Toggle Light/Dark Mode"
+     $(document).ready(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+     $(window).resize(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+   })
+</script>
+</body>
+</html>

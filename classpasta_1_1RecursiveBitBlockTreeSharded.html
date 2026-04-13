@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.4"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image:src" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<!-- END twitter metadata -->
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="pasta::block_tree" />
+<meta property="og:image" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<meta property="og:image:alt" content="Logo of pasta::block_tree." />
+<meta property="og:description" content="Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel." />
+<meta property="og:url" content="https://pasta-toolbox.github.io/block_tree/" />
+<!-- END opengraph metadata -->
+<title>pasta::block_tree: pasta::RecursiveBitBlockTreeSharded&lt; size_type, recursion_level &gt; Class Template Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<link itemprop="thumbnailUrl" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+<span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject"> 
+  <link itemprop="url" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+</span>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/pasta-toolbox/block_tree" class="github-corner" title="View source on GitHub" target="_blank">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">pasta::block_tree
+   &#160;<span id="projectnumber">v0.1.0</span>
+   </div>
+   <div id="projectbrief">Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.9.4 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search",'Search','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('classpasta_1_1RecursiveBitBlockTreeSharded.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classpasta_1_1RecursiveBitBlockTreeSharded-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">pasta::RecursiveBitBlockTreeSharded&lt; size_type, recursion_level &gt; Class Template Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map. Small blocks are not RK-hashed but rather use the blocks themselves.  
+ <a href="classpasta_1_1RecursiveBitBlockTreeSharded.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="rec__bit__block__tree__sharded_8hpp_source.html">rec_bit_block_tree_sharded.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for pasta::RecursiveBitBlockTreeSharded&lt; size_type, recursion_level &gt;:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classpasta_1_1RecursiveBitBlockTreeSharded.png" usemap="#pasta::RecursiveBitBlockTreeSharded_3C_20size_5Ftype_2C_20recursion_5Flevel_20_3E_map" alt=""/>
+  <map id="pasta::RecursiveBitBlockTreeSharded_3C_20size_5Ftype_2C_20recursion_5Flevel_20_3E_map" name="pasta::RecursiveBitBlockTreeSharded_3C_20size_5Ftype_2C_20recursion_5Flevel_20_3E_map">
+<area href="classpasta_1_1RecursiveBitBlockTree.html" alt="pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;" shape="rect" coords="0,0,398,24"/>
+  </map>
+</div></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a51e450e14c2ebd38370e661586e00ed9"><td class="memItemLeft" align="right" valign="top"><a id="a51e450e14c2ebd38370e661586e00ed9" name="a51e450e14c2ebd38370e661586e00ed9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>RecursiveBitBlockTreeSharded</b> (const pasta::BitVector &amp;text, const size_t arity, const size_t root_arity, const size_t max_leaf_length, const size_t threads, const size_t queue_size)</td></tr>
+<tr class="separator:a51e450e14c2ebd38370e661586e00ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:ae126539e116907a1ae0880ffbe8682f5 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ae126539e116907a1ae0880ffbe8682f5" name="ae126539e116907a1ae0880ffbe8682f5"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>height</b> () const</td></tr>
+<tr class="separator:ae126539e116907a1ae0880ffbe8682f5 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15cb227c9e7de2983a24b6c8769e720f inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a15cb227c9e7de2983a24b6c8769e720f" name="a15cb227c9e7de2983a24b6c8769e720f"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td></tr>
+<tr class="separator:a15cb227c9e7de2983a24b6c8769e720f inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ebc6ca58cb83f4efa1e3d43f6eca23 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="af4ebc6ca58cb83f4efa1e3d43f6eca23" name="af4ebc6ca58cb83f4efa1e3d43f6eca23"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (const size_type bit_index) const</td></tr>
+<tr class="separator:af4ebc6ca58cb83f4efa1e3d43f6eca23 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae83841c89ebe137f2cd1aca1bd58fd38 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ae83841c89ebe137f2cd1aca1bd58fd38" name="ae83841c89ebe137f2cd1aca1bd58fd38"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>access</b> (const size_type bit_index) const</td></tr>
+<tr class="separator:ae83841c89ebe137f2cd1aca1bd58fd38 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acee670a4901b4a5da742f28d2572ebb3 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="acee670a4901b4a5da742f28d2572ebb3" name="acee670a4901b4a5da742f28d2572ebb3"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>select1</b> (size_t rank) const</td></tr>
+<tr class="separator:acee670a4901b4a5da742f28d2572ebb3 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c3eba1b908d98ba953b4d4578396beb inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a9c3eba1b908d98ba953b4d4578396beb" name="a9c3eba1b908d98ba953b4d4578396beb"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>select0</b> (size_t rank) const</td></tr>
+<tr class="separator:a9c3eba1b908d98ba953b4d4578396beb inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdf66c96ad41cd93aaa663fb2722769c inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="afdf66c96ad41cd93aaa663fb2722769c" name="afdf66c96ad41cd93aaa663fb2722769c"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>rank1</b> (const size_type bit_index) const</td></tr>
+<tr class="memdesc:afdf66c96ad41cd93aaa663fb2722769c inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts the number of 1-bits up to (and excluding) an index. <br /></td></tr>
+<tr class="separator:afdf66c96ad41cd93aaa663fb2722769c inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad666af4eaf02280e456089542e335611 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ad666af4eaf02280e456089542e335611" name="ad666af4eaf02280e456089542e335611"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>rank0</b> (const size_type bit_index) const</td></tr>
+<tr class="memdesc:ad666af4eaf02280e456089542e335611 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts the number of 0-bits up to (and excluding) an index. <br /></td></tr>
+<tr class="separator:ad666af4eaf02280e456089542e335611 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab77b56fd2fe23f9d2279672aa9b24378 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ab77b56fd2fe23f9d2279672aa9b24378" name="ab77b56fd2fe23f9d2279672aa9b24378"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>print_space_usage</b> () const</td></tr>
+<tr class="separator:ab77b56fd2fe23f9d2279672aa9b24378 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6155f5422b21a4b5402399a1cb6d9436 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a6155f5422b21a4b5402399a1cb6d9436" name="a6155f5422b21a4b5402399a1cb6d9436"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>add_bit_rank_support</b> (size_t threads=std::thread::hardware_concurrency())</td></tr>
+<tr class="separator:a6155f5422b21a4b5402399a1cb6d9436 inherit pub_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_types_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:ad5cf6b4cd515c7dfd257ca5a91108dc3 inherit pub_types_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ad5cf6b4cd515c7dfd257ca5a91108dc3" name="ad5cf6b4cd515c7dfd257ca5a91108dc3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>IsInternalType</b> = std::conditional_t&lt; types_is_block_tree, <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">RecursiveBitBlockTree</a>&lt; size_type, recursion_level - 1 &gt;, pasta::BitVector &gt;</td></tr>
+<tr class="separator:ad5cf6b4cd515c7dfd257ca5a91108dc3 inherit pub_types_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae202cbdeb27aab58bea08137a7379da5 inherit pub_types_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ae202cbdeb27aab58bea08137a7379da5" name="ae202cbdeb27aab58bea08137a7379da5"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>IsInternalRankType</b> = std::conditional_t&lt; types_is_block_tree, <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">RecursiveBitBlockTree</a>&lt; size_type, recursion_level - 1 &gt;, pasta::RankSelect&lt; pasta::OptimizedFor::ONE_QUERIES &gt; &gt;</td></tr>
+<tr class="separator:ae202cbdeb27aab58bea08137a7379da5 inherit pub_types_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:a28efd767fe5bf924e2a0ccf5fa038c73 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTree.html#a28efd767fe5bf924e2a0ccf5fa038c73">CUT_FIRST_LEVELS</a></td></tr>
+<tr class="separator:a28efd767fe5bf924e2a0ccf5fa038c73 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7c5267ffdec189e96152eed0b69f067 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="af7c5267ffdec189e96152eed0b69f067" name="af7c5267ffdec189e96152eed0b69f067"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>tau_</b></td></tr>
+<tr class="memdesc:af7c5267ffdec189e96152eed0b69f067 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">The arity of the tree. <br /></td></tr>
+<tr class="separator:af7c5267ffdec189e96152eed0b69f067 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad03228b0b36ea55a21f9209c5dfe825c inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ad03228b0b36ea55a21f9209c5dfe825c" name="ad03228b0b36ea55a21f9209c5dfe825c"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>max_leaf_length_</b></td></tr>
+<tr class="separator:ad03228b0b36ea55a21f9209c5dfe825c inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5853ddf7e35cce7e13b4e024b93dd890 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a5853ddf7e35cce7e13b4e024b93dd890" name="a5853ddf7e35cce7e13b4e024b93dd890"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>s_</b></td></tr>
+<tr class="memdesc:a5853ddf7e35cce7e13b4e024b93dd890 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">The arity of the tree's root. <br /></td></tr>
+<tr class="separator:a5853ddf7e35cce7e13b4e024b93dd890 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fc91487f76461b9f76e9adf0ab7bf54 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a2fc91487f76461b9f76e9adf0ab7bf54" name="a2fc91487f76461b9f76e9adf0ab7bf54"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>leaf_size</b></td></tr>
+<tr class="separator:a2fc91487f76461b9f76e9adf0ab7bf54 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a142172a1ad3ac3c9015dd67c7e7202a1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a142172a1ad3ac3c9015dd67c7e7202a1" name="a142172a1ad3ac3c9015dd67c7e7202a1"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>amount_of_leaves</b></td></tr>
+<tr class="separator:a142172a1ad3ac3c9015dd67c7e7202a1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc78176aa04b46d1e9d27f27076d0703 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="afc78176aa04b46d1e9d27f27076d0703" name="afc78176aa04b46d1e9d27f27076d0703"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>num_bits_</b></td></tr>
+<tr class="separator:afc78176aa04b46d1e9d27f27076d0703 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8911318a95c3bfac6045ff2c16e66364 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a8911318a95c3bfac6045ff2c16e66364" name="a8911318a95c3bfac6045ff2c16e66364"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>rank_support</b></td></tr>
+<tr class="separator:a8911318a95c3bfac6045ff2c16e66364 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab654569064c109cab655ddd8c7c54d77 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="ab654569064c109cab655ddd8c7c54d77" name="ab654569064c109cab655ddd8c7c54d77"></a>
+std::vector&lt; IsInternalType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>block_tree_types_</b></td></tr>
+<tr class="memdesc:ab654569064c109cab655ddd8c7c54d77 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively compress the bit vectors of the tree. <br /></td></tr>
+<tr class="separator:ab654569064c109cab655ddd8c7c54d77 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e6ec3ad6e3cf5a4bb66f134c4f01744 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a7e6ec3ad6e3cf5a4bb66f134c4f01744" name="a7e6ec3ad6e3cf5a4bb66f134c4f01744"></a>
+std::vector&lt; IsInternalRankType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>block_tree_types_rs_</b></td></tr>
+<tr class="separator:a7e6ec3ad6e3cf5a4bb66f134c4f01744 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb5bac531a208be6dba33e8252708ec8 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top">std::vector&lt; sdsl::int_vector&lt;&gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTree.html#abb5bac531a208be6dba33e8252708ec8">block_tree_pointers_</a></td></tr>
+<tr class="separator:abb5bac531a208be6dba33e8252708ec8 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7be7165e13eb7fda10f9741ddacfa78b inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a7be7165e13eb7fda10f9741ddacfa78b" name="a7be7165e13eb7fda10f9741ddacfa78b"></a>
+std::vector&lt; sdsl::int_vector&lt;&gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>block_tree_offsets_</b></td></tr>
+<tr class="separator:a7be7165e13eb7fda10f9741ddacfa78b inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a727dbe75e491b9a5772e5c771c187758 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a727dbe75e491b9a5772e5c771c187758" name="a727dbe75e491b9a5772e5c771c187758"></a>
+std::vector&lt; int64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>block_size_lvl_</b></td></tr>
+<tr class="separator:a727dbe75e491b9a5772e5c771c187758 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0162d594625aedbc7ecbbf30e32d413 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="af0162d594625aedbc7ecbbf30e32d413" name="af0162d594625aedbc7ecbbf30e32d413"></a>
+std::vector&lt; int64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>block_per_lvl_</b></td></tr>
+<tr class="separator:af0162d594625aedbc7ecbbf30e32d413 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa19e99e3067e7c48afaac35e40d064b1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="aa19e99e3067e7c48afaac35e40d064b1" name="aa19e99e3067e7c48afaac35e40d064b1"></a>
+std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>leaves_</b></td></tr>
+<tr class="separator:aa19e99e3067e7c48afaac35e40d064b1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5972882947250ccbda6d6d7e80edf1e inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="af5972882947250ccbda6d6d7e80edf1e" name="af5972882947250ccbda6d6d7e80edf1e"></a>
+std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>compress_map_</b></td></tr>
+<tr class="separator:af5972882947250ccbda6d6d7e80edf1e inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa0590eb237aa512034478cf1a1b9286 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="aaa0590eb237aa512034478cf1a1b9286" name="aaa0590eb237aa512034478cf1a1b9286"></a>
+std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>decompress_map_</b></td></tr>
+<tr class="separator:aaa0590eb237aa512034478cf1a1b9286 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6937bcfd861dfdbce217012e9cadd0af inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a6937bcfd861dfdbce217012e9cadd0af" name="a6937bcfd861dfdbce217012e9cadd0af"></a>
+sdsl::int_vector&#160;</td><td class="memItemRight" valign="bottom"><b>compressed_leaves_</b></td></tr>
+<tr class="separator:a6937bcfd861dfdbce217012e9cadd0af inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a141e534cc2b232404bd5b1b4810f7cf3 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a141e534cc2b232404bd5b1b4810f7cf3" name="a141e534cc2b232404bd5b1b4810f7cf3"></a>
+std::vector&lt; sdsl::int_vector&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>one_ranks_</b></td></tr>
+<tr class="memdesc:a141e534cc2b232404bd5b1b4810f7cf3 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each level and each block, contains the number of 1s up to (and including) the block. <br /></td></tr>
+<tr class="separator:a141e534cc2b232404bd5b1b4810f7cf3 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbde7c8478735b4e99764b06efcbc8a1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="adbde7c8478735b4e99764b06efcbc8a1" name="adbde7c8478735b4e99764b06efcbc8a1"></a>
+std::vector&lt; sdsl::int_vector&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pointer_prefix_one_counts_</b></td></tr>
+<tr class="memdesc:adbde7c8478735b4e99764b06efcbc8a1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each level and each back block, contains the number of 1s up to (and including) the pointed-to area of the back-block. <br /></td></tr>
+<tr class="separator:adbde7c8478735b4e99764b06efcbc8a1 inherit pub_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_attribs_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:a54d3bd4931d4763574532a4494093ee3 inherit pub_static_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a54d3bd4931d4763574532a4494093ee3" name="a54d3bd4931d4763574532a4494093ee3"></a>
+static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>types_is_block_tree</b></td></tr>
+<tr class="separator:a54d3bd4931d4763574532a4494093ee3 inherit pub_static_attribs_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:a7ddf034b9e188c369e4b8a963a98ce49 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a7ddf034b9e188c369e4b8a963a98ce49" name="a7ddf034b9e188c369e4b8a963a98ce49"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>compress_leaves</b> ()</td></tr>
+<tr class="separator:a7ddf034b9e188c369e4b8a963a98ce49 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ae8294fc63be1e64707795e49db2a77 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTree.html#a6ae8294fc63be1e64707795e49db2a77">calculate_padding</a> (int64_t &amp;padding, int64_t text_length, int64_t &amp;height, int64_t &amp;blk_size)</td></tr>
+<tr class="memdesc:a6ae8294fc63be1e64707795e49db2a77 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the padding and minimum height and the size of the blocks on the top level of a block tree with s top-level blocks and an arity of tau with leaves also of size tau.  <a href="classpasta_1_1RecursiveBitBlockTree.html#a6ae8294fc63be1e64707795e49db2a77">More...</a><br /></td></tr>
+<tr class="separator:a6ae8294fc63be1e64707795e49db2a77 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34b2dc72d8b3939690d3dd3947752095 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a34b2dc72d8b3939690d3dd3947752095" name="a34b2dc72d8b3939690d3dd3947752095"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>bit_rank_block</b> (size_type level, size_type block_index)</td></tr>
+<tr class="separator:a34b2dc72d8b3939690d3dd3947752095 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a054a75fb39e8576586379a848ead9a7f inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a054a75fb39e8576586379a848ead9a7f" name="a054a75fb39e8576586379a848ead9a7f"></a>
+size_type&#160;</td><td class="memItemRight" valign="bottom"><b>part_bit_rank_block</b> (const size_type level, const size_type block_index, const size_type chars_to_process)</td></tr>
+<tr class="separator:a054a75fb39e8576586379a848ead9a7f inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac19288c3c3059cd57f76583746567233 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top">size_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpasta_1_1RecursiveBitBlockTree.html#ac19288c3c3059cd57f76583746567233">bit_rank_leaf</a> (size_type leaf_index, size_type max_char_index)</td></tr>
+<tr class="memdesc:ac19288c3c3059cd57f76583746567233 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count ones in leaf block.  <a href="classpasta_1_1RecursiveBitBlockTree.html#ac19288c3c3059cd57f76583746567233">More...</a><br /></td></tr>
+<tr class="separator:ac19288c3c3059cd57f76583746567233 inherit pro_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classpasta_1_1RecursiveBitBlockTree')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classpasta_1_1RecursiveBitBlockTree.html">pasta::RecursiveBitBlockTree&lt; size_type, recursion_level &gt;</a></td></tr>
+<tr class="memitem:a903dac31f9980b9cf38e0f4632323215 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="a903dac31f9980b9cf38e0f4632323215" name="a903dac31f9980b9cf38e0f4632323215"></a>
+static size_type&#160;</td><td class="memItemRight" valign="bottom"><b>leading_zeros</b> (const int32_t val)</td></tr>
+<tr class="memdesc:a903dac31f9980b9cf38e0f4632323215 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the number of leading zeros for a 32-bit integer. This value is capped at 31. <br /></td></tr>
+<tr class="separator:a903dac31f9980b9cf38e0f4632323215 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeed0fde5bf8afa4affa44f5e970155a8 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memItemLeft" align="right" valign="top"><a id="aeed0fde5bf8afa4affa44f5e970155a8" name="aeed0fde5bf8afa4affa44f5e970155a8"></a>
+static size_type&#160;</td><td class="memItemRight" valign="bottom"><b>leading_zeros</b> (const int64_t val)</td></tr>
+<tr class="memdesc:aeed0fde5bf8afa4affa44f5e970155a8 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the number of leading zeros for a 64-bit integer. This value is capped at 64. <br /></td></tr>
+<tr class="separator:aeed0fde5bf8afa4affa44f5e970155a8 inherit pro_static_methods_classpasta_1_1RecursiveBitBlockTree"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;std::signed_integral size_type, uint8_t recursion_level&gt;<br />
+class pasta::RecursiveBitBlockTreeSharded&lt; size_type, recursion_level &gt;</div><p >A parallel block tree construction algorithm using Rabin-Karp hashes and a sharded hash map. Small blocks are not RK-hashed but rather use the blocks themselves. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">size_type</td><td>The type used for indices etc. (must be a signed integer) in the sharded hash map. </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/pasta/block_tree/construction/<a class="el" href="rec__bit__block__tree__sharded_8hpp_source.html">rec_bit_block_tree_sharded.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.2-->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="namespacepasta.html">pasta</a></li><li class="navelem"><a class="el" href="classpasta_1_1RecursiveBitBlockTreeSharded.html">RecursiveBitBlockTreeSharded</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+  </ul>
+</div>
+<script type="text/javascript">
+  $(function() {
+     toggleButton = document.createElement('doxygen-awesome-dark-mode-toggle')
+     toggleButton.title = "Toggle Light/Dark Mode"
+     $(document).ready(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+     $(window).resize(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+   })
+</script>
+</body>
+</html>

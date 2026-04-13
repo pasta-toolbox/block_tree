@@ -1,0 +1,576 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.4"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image:src" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<!-- END twitter metadata -->
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="pasta::block_tree" />
+<meta property="og:image" content="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png" />
+<meta property="og:image:alt" content="Logo of pasta::block_tree." />
+<meta property="og:description" content="Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel." />
+<meta property="og:url" content="https://pasta-toolbox.github.io/block_tree/" />
+<!-- END opengraph metadata -->
+<title>pasta::block_tree: include/pasta/block_tree/utils/sync_sharded_map.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<link itemprop="thumbnailUrl" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+<span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject"> 
+  <link itemprop="url" href="https://raw.githubusercontent.com/pasta-toolbox/block_tree/main/docs/images/logo_pasta_block_tree.png"> 
+</span>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/pasta-toolbox/block_tree" class="github-corner" title="View source on GitHub" target="_blank">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">pasta::block_tree
+   &#160;<span id="projectnumber">v0.1.0</span>
+   </div>
+   <div id="projectbrief">Engineered Block Tree Construction Based on the Longest Previous Factor Array that also Works in Parallel.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.9.4 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search",'Search','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('sync__sharded__map_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">sync_sharded_map.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*******************************************************************************</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * This file is part of pasta::block_tree</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * Copyright (C) 2023 Etienne Palanga</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> * pasta::block_tree is free software: you can redistribute it and/or modify</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> * it under the terms of the GNU General Public License as published by</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> * (at your option) any later version.</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * pasta::block_tree is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> * GNU General Public License for more details.</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment"> * You should have received a copy of the GNU General Public License</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * along with pasta::block_tree.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment"> ******************************************************************************/</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;sharded_util.hpp&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;atomic&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;barrier&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;omp.h&gt;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;pasta/block_tree/utils/concepts.hpp&gt;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;pasta/block_tree/utils/debug.hpp&gt;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &lt;span&gt;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &lt;syncstream&gt;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &lt;tlx/math/aggregate.hpp&gt;</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepasta.html">pasta</a> {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">enum</span> Whereabouts { NOWHERE, IN_MAP, IN_QUEUE };</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment"></span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">/// @brief A hash map that must be used by multiple threads, each thread having</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment">///     only having write access to a certain segment of the input space.</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment">/// @tparam K The type of the keys in the hash map.</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="comment">/// @tparam V The type of the values in the hash map.</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment">/// @tparam SeqHashMapType The type of the hash map used internally.</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment">///     This should be compatible with std::unordered_map.</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="comment">/// @tparam UpdateFn The update function deciding how to insert or update values</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">///     in the map.</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment"></span><span class="keyword">template</span> &lt;std::copy_constructible K,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>          std::move_constructible V,</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>          <span class="keyword">template</span> &lt;<span class="keyword">typename</span>, <span class="keyword">typename</span>&gt; <span class="keyword">typename</span> SeqHashMapType =</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>              std::unordered_map,</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>          UpdateFunction&lt;K, V&gt; UpdateFn = <a class="code hl_struct" href="structpasta_1_1Overwrite.html">pasta::Overwrite&lt;K, V&gt;</a>&gt;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  <span class="keyword">requires</span> std::movable&lt;typename UpdateFn::InputValue&gt;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap.html">   55</a></span><span class="keyword">class </span><a class="code hl_class" href="classpasta_1_1SyncShardedMap.html">SyncShardedMap</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="comment">  /// The sequential backing hash map type</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment"></span>  <span class="keyword">using </span>SeqHashMap = SeqHashMapType&lt;K, V&gt;;<span class="comment"></span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment">  /// The sequential hash map&#39;s hasher</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment"></span>  <span class="keyword">using </span>Hasher = <span class="keyword">typename</span> SeqHashMap::hasher;<span class="comment"></span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">  /// The type used for updates</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment"></span>  <span class="keyword">using </span>InputValue = <span class="keyword">typename</span> UpdateFn::InputValue;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="comment"></span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="comment">  /// The actual pair of key and value stored in the map</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="comment"></span>  <span class="keyword">using </span>StoredValue = std::pair&lt;K, InputValue&gt;;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keyword">using </span>Queue = std::span&lt;StoredValue&gt;;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment"></span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment">  /// The memory order namespace from the standard library</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="comment"></span>  <span class="keyword">using </span>mem = std::memory_order;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="comment"></span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">  /// @brief The number of threads operating on this map.</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment"></span>  <span class="keyword">const</span> <span class="keywordtype">size_t</span> thread_count_;<span class="comment"></span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="comment">  /// @brief Contains a hash map for each thread</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="comment"></span>  std::vector&lt;SeqHashMap&gt; map_;<span class="comment"></span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="comment">  /// @brief Contains a task queue for each thread, holding insert</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="comment">  ///   operations for each thread.</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="comment"></span>  std::vector&lt;Queue&gt; task_queue_;<span class="comment"></span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment">  /// @brief Contains the number of tasks in each thread&#39;s queue.</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment"></span>  std::span&lt;std::atomic_size_t&gt; task_count_;<span class="comment"></span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">  /// @brief Contains the number of threads currently handling their queues.</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">  ///   This is used 1. signal to other threads that they should handle their</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment">  ///   queue, and 2. to keep track of whether all threads have handled their</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment">  ///   queues.</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment"></span>  std::atomic_size_t threads_handling_queue_;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  <span class="keyword">const</span> <span class="keywordtype">size_t</span> queue_capacity_;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  std::atomic_size_t num_cycles_;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  std::function&lt;void()&gt; FN = [<span class="keyword">this</span>]() <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    this-&gt;num_cycles_.fetch_add(1, mem::acq_rel);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>  };</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>  <span class="keyword">constexpr</span> <span class="keyword">static</span> std::invocable <span class="keyword">auto</span> FN = []() <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>  };</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>  std::barrier&lt;<span class="keyword">decltype</span>(FN)&gt; barrier_;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>  std::atomic_size_t num_updates_;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>  std::atomic_size_t num_inserts_;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>  <span class="comment">//</span><span class="comment"></span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment">  /// @brief Creates a new sharded map.</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">  ///</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">  /// @param thread_count The exact number of threads working on this map.</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">  /// @param queue_capacity The maximum amount of tasks allowed in each queue.</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="comment">  /// @param map_capacity The initial capacity for each thread&#39;s local hash map.</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment">  ///</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap.html#aed750f587b04e0ad912daa6ba5135f39">  110</a></span><span class="comment"></span>  <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#aed750f587b04e0ad912daa6ba5135f39">SyncShardedMap</a>(<span class="keywordtype">size_t</span> thread_count, <span class="keywordtype">size_t</span> queue_capacity)</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      : thread_count_(thread_count),</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        map_(),</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        task_queue_(),</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        task_count_(),</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        threads_handling_queue_(0),</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        queue_capacity_(queue_capacity),</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        barrier_(static_cast&lt;ptrdiff_t&gt;(thread_count), FN),</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        num_updates_(0),</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        num_inserts_(0) {</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    map_.reserve(thread_count);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    task_queue_.reserve(thread_count);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    task_count_ =</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        std::span&lt;std::atomic_size_t&gt;(<span class="keyword">new</span> std::atomic_size_t[thread_count],</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>                                      thread_count);</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; thread_count; i++) {</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>      map_.emplace_back();</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>      task_queue_.emplace_back(<span class="keyword">new</span> StoredValue[queue_capacity], queue_capacity);</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>      task_count_[i] = 0;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    }</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  }</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>  <a class="code hl_class" href="classpasta_1_1SyncShardedMap.html">~SyncShardedMap</a>() {</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keyword">delete</span>[] task_count_.data();</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; queue : task_queue_) {</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>      <span class="keyword">delete</span>[] queue.data();</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  }</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap_1_1Shard.html">  139</a></span>  <span class="keyword">class </span><a class="code hl_class" href="classpasta_1_1SyncShardedMap_1_1Shard.html">Shard</a> {</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <a class="code hl_class" href="classpasta_1_1SyncShardedMap.html">SyncShardedMap</a>&amp; sharded_map_;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> thread_id_;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    SeqHashMap&amp; map_;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    Queue&amp; task_queue_;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    std::atomic_size_t&amp; task_count_;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="preprocessor">#if defined BT_INSTRUMENT || defined BT_DBG</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    tlx::Aggregate&lt;size_t&gt; start_idle_ns_;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    tlx::Aggregate&lt;size_t&gt; handle_queue_ns_;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    tlx::Aggregate&lt;size_t&gt; finish_idle_ns_;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <a class="code hl_class" href="classpasta_1_1SyncShardedMap_1_1Shard.html">Shard</a>(<a class="code hl_class" href="classpasta_1_1SyncShardedMap.html">SyncShardedMap</a>&amp; sharded_map, <span class="keywordtype">size_t</span> thread_id)</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        : sharded_map_(sharded_map),</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>          thread_id_(thread_id),</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>          map_(sharded_map_.map_[thread_id]),</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>          task_queue_(sharded_map_.task_queue_[thread_id]),</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>          task_count_(sharded_map.task_count_[thread_id])</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span><span class="preprocessor">#if defined BT_INSTRUMENT || defined BT_DBG</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>          ,</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>          start_idle_ns_(),</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>          handle_queue_ns_(),</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>          finish_idle_ns_()</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    {</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    }</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="comment"></span> </div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="comment">    /// @brief Inserts or updates a new value in the map, depending on whether</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment">    /// @param k The key to insert or update a value for.</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="comment">    /// @param in_value The value with which to insert or update.</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a4e15590355f54e1efd2956df8621c2d0">  170</a></span><span class="comment"></span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a4e15590355f54e1efd2956df8621c2d0">insert_or_update_direct</a>(<span class="keyword">const</span> K&amp; k, InputValue&amp;&amp; in_value) {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>      <span class="keyword">auto</span> res = map_.find(k);</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>      <span class="keywordflow">if</span> (res == map_.end()) {</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="comment">// If the value does not exist, insert it</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        K key = k;</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        V initial = UpdateFn::init(key, std::move(in_value));</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        map_.emplace(key, std::move(initial));</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        sharded_map_.num_inserts_.fetch_add(1, mem::acq_rel);</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        <span class="comment">// Otherwise, update it.</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        V&amp; val = res-&gt;second;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        UpdateFn::update(k, val, std::move(in_value));</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        sharded_map_.num_updates_.fetch_add(1, mem::acq_rel);</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>      }</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    }</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keywordtype">void</span> handle_queue_sync(<span class="keyword">const</span> <span class="keywordtype">bool</span> make_others_wait = <span class="keyword">true</span>) {</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>      <span class="keywordflow">if</span> (make_others_wait) {</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        <span class="comment">// If this value is &gt;0 then other threads will also handle their queue</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        <span class="comment">// when trying to insert</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        sharded_map_.threads_handling_queue_.fetch_add(1, mem::acq_rel);</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>      }</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>      <span class="keyword">auto</span> now = std::chrono::high_resolution_clock::now();</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>      sharded_map_.barrier_.arrive_and_wait();</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>      <span class="keywordtype">size_t</span> ns_count = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                            std::chrono::high_resolution_clock::now() - now)</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                            .count();</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>      start_idle_ns_.add(ns_count);</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>      now = std::chrono::high_resolution_clock::now();</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>      <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a496e7b04357d01e7949df722befa330b">handle_queue</a>();</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>      ns_count = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                     std::chrono::high_resolution_clock::now() - now)</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                     .count();</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>      handle_queue_ns_.add(ns_count);</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>      now = std::chrono::high_resolution_clock::now();</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>      <span class="keywordflow">if</span> (make_others_wait) {</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        sharded_map_.threads_handling_queue_.fetch_sub(1, mem::acq_rel);</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>      }</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>      sharded_map_.barrier_.arrive_and_wait();</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>      ns_count = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                     std::chrono::high_resolution_clock::now() - now)</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                     .count();</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>      finish_idle_ns_.add(ns_count);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    }</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="comment"></span> </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="comment">    /// @brief Handles this thread&#39;s queue, inserting or updating all values in</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment">    ///     its queue, waiting for other threads to be</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="comment">    ///     done with their handle_queue call.</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a496e7b04357d01e7949df722befa330b">  232</a></span><span class="comment"></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a496e7b04357d01e7949df722befa330b">handle_queue</a>() {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>      <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_tasks_raw = task_count_.exchange(0, mem::acq_rel);</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>      BT_ASSERT(num_tasks_raw &lt;= sharded_map_.queue_capacity_);</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>      <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_tasks =</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>          std::min(num_tasks_raw, sharded_map_.queue_capacity_);</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>      <span class="keywordflow">if</span> (num_tasks == 0) {</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>      }</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>      <span class="comment">//  Handle all tasks in the queue</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>      <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; num_tasks; ++i) {</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        <span class="keyword">auto</span>&amp; entry = task_queue_[i];</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a4e15590355f54e1efd2956df8621c2d0">insert_or_update_direct</a>(entry.first, std::move(entry.second));</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>      }</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    }</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment"></span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment">    /// @brief Inserts or updates a new value in the map.</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">    ///</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">    /// If the value is inserted into the current thread&#39;s map,</span></div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment">    /// it is inserted immediately. If not, then it is added to that thread&#39;s</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">    /// queue. It will only be inserted into the map, once the thread comes</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">    /// around to handle its queue using the handle_queue method.</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">    ///</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">    /// @param pair The key-value pair to insert or update.</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap_1_1Shard.html#aba733cd77bb56935c2f2d837c0db1545">  256</a></span><span class="comment"></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#aba733cd77bb56935c2f2d837c0db1545">insert</a>(StoredValue&amp;&amp; pair) {</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>      <span class="keywordflow">if</span> (sharded_map_.threads_handling_queue_.load(mem::acquire) &gt; 0) {</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        handle_queue_sync();</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>      }</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>      <span class="keyword">const</span> <span class="keywordtype">size_t</span> hash = Hasher{}(pair.first);</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>      <span class="keyword">const</span> <span class="keywordtype">size_t</span> target_thread_id =</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>          internal::sharded::mix_select(hash) % sharded_map_.thread_count_;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>      <span class="comment">// Otherwise enqueue the new value in the target thread</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>      std::atomic_size_t&amp; target_task_count =</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>          sharded_map_.task_count_[target_thread_id];</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>      <span class="keywordtype">size_t</span> task_idx = target_task_count.fetch_add(1, mem::acq_rel);</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>      <span class="comment">// If the target queue is full, signal to the other threads, that they</span></div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>      <span class="comment">// need to handle their queue and handle this thread&#39;s queue</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>      <span class="keywordflow">if</span> (task_idx &gt;= sharded_map_.queue_capacity_) {</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="comment">//  Since we incremented that thread&#39;s task count, but didn&#39;t insert</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        <span class="comment">//  anything, we need to decrement it again so that it has the correct</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        <span class="comment">//  value</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        target_task_count.fetch_sub(1, mem::acq_rel);</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        handle_queue_sync();</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        <span class="comment">// Since the queue was handled, the task count is now 0</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#aba733cd77bb56935c2f2d837c0db1545">insert</a>(std::move(pair));</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>      }</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>      <span class="comment">// Insert the value into the queue</span></div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>      sharded_map_.task_queue_[target_thread_id][task_idx] = std::move(pair);</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    }</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="comment"></span> </div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span><span class="comment">    /// @brief Inserts or updates a new value in the map.</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="comment">    ///</span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span><span class="comment">    /// If the value is inserted into the current thread&#39;s map,</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment">    /// it is inserted immediately. If not, then it is added to that thread&#39;s</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="comment">    /// queue. It will only be inserted into the map, once the thread comes</span></div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="comment">    /// around to handle its queue using the handle_queue method.</span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="comment">    ///</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="comment">    /// @param key The key of the value to insert.</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="comment">    /// @param value The value to associate with the key.</span></div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a155d1ff4cb305aeb7dbd089ba737d8ca">  294</a></span><span class="comment"></span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#a155d1ff4cb305aeb7dbd089ba737d8ca">insert</a>(K&amp; key, InputValue value) {</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>      <a class="code hl_function" href="classpasta_1_1SyncShardedMap_1_1Shard.html#aba733cd77bb56935c2f2d837c0db1545">insert</a>(StoredValue(key, value));</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    }</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    [[nodiscard]] <span class="keyword">const</span> tlx::Aggregate&lt;size_t&gt;&amp; start_idle_ns()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>      <span class="keywordflow">return</span> start_idle_ns_;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    }</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    [[nodiscard]] <span class="keyword">const</span> tlx::Aggregate&lt;size_t&gt;&amp; handle_queue_ns()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>      <span class="keywordflow">return</span> handle_queue_ns_;</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    }</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    [[nodiscard]] <span class="keyword">const</span> tlx::Aggregate&lt;size_t&gt;&amp; finish_idle_ns()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>      <span class="keywordflow">return</span> finish_idle_ns_;</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    }</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>  };</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span><span class="preprocessor">#ifdef BT_INSTRUMENT</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>  [[nodiscard]] <span class="keywordtype">size_t</span> num_cycles()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    <span class="keywordflow">return</span> num_cycles_.load(mem::acquire);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>  }</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span> </div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>  Shard get_shard(<span class="keyword">const</span> <span class="keywordtype">size_t</span> thread_id) {</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="keywordflow">return</span> Shard(*<span class="keyword">this</span>, thread_id);</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>  }</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="comment"></span> </div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><span class="comment">  /// @brief Returns the number of key-value pairs in the map.</span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="comment">  ///</span></div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="comment">  /// Note, that this method calculates the size for each map separately and</span></div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="comment">  ///     is therefore not O(1).</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="comment">  /// @return The number of key-value pairs in the map.</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">  328</a></span><span class="comment"></span>  [[nodiscard]] <span class="keywordtype">size_t</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">size</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">size</a> = 0;</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> SeqHashMap&amp; map : map_) {</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>      <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">size</a> += map.size();</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    }</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">size</a>;</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>  }</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>  [[maybe_unused]] Whereabouts where(<span class="keyword">const</span> K&amp; k) {</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> hash = Hasher{}(k);</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> target_thread_id =</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        internal::sharded::mix_select(hash) % thread_count_;</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>    SeqHashMap&amp; map = map_[target_thread_id];</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keyword">typename</span> SeqHashMap::iterator it = map.find(k);</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    <span class="keywordflow">if</span> (it != map.end()) {</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>      <span class="keywordflow">return</span> IN_MAP;</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    }</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>    Queue&amp; queue = task_queue_[target_thread_id];</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; task_count_[target_thread_id]; ++i) {</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>      <span class="keywordflow">if</span> (queue[i].first == k) {</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">return</span> IN_QUEUE;</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>      }</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>    }</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>    <span class="keywordflow">return</span> NOWHERE;</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>  }</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span><span class="comment"></span> </div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span><span class="comment">  /// @brief Runs a method for each value in the map.</span></div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span><span class="comment">  ///</span></div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span><span class="comment">  /// The given function must take const references to a key and a value</span></div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span><span class="comment">  ///     respectively.</span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span><span class="comment">  /// @param f The function or lambda to run for each value.</span></div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno"><a class="line" href="classpasta_1_1SyncShardedMap.html#a68930c39980e043f3b5577bda241b1e2">  359</a></span><span class="comment"></span>  <span class="keywordtype">void</span> <a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a68930c39980e043f3b5577bda241b1e2">for_each</a>(std::invocable&lt;const K&amp;, const V&amp;&gt; <span class="keyword">auto</span> f)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> SeqHashMap&amp; map : map_) {</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>      <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; [k, v] : map) {</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>        f(k, v);</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>      }</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>    }</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>  }</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span> </div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>  <span class="keyword">typename</span> SeqHashMap::iterator end() {</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>    <span class="keywordflow">return</span> map_.back().end();</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>  }</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>  <span class="keyword">typename</span> SeqHashMap::iterator find(<span class="keyword">const</span> K&amp; key) {</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> hash = Hasher{}(key);</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> target_thread_id =</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>        internal::sharded::mix_select(hash) % thread_count_;</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    SeqHashMap&amp; map = map_[target_thread_id];</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>    <span class="keyword">typename</span> SeqHashMap::iterator it = map.find(key);</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    <span class="keywordflow">if</span> (it == map.end()) {</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>      <span class="keywordflow">return</span> end();</div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>    }</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    <span class="keywordflow">return</span> it;</div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>  }</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>  [[maybe_unused]] <span class="keywordtype">void</span> print_map_loads() {</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; map_.size(); ++i) {</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>      std::cout &lt;&lt; <span class="stringliteral">&quot;Map &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; load: &quot;</span> &lt;&lt; map_[i].size() &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>    }</div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>  }</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span> </div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>  [[maybe_unused]] <span class="keywordtype">void</span> print_queue_loads() {</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>    <span class="keyword">auto</span> so = std::osyncstream(std::cout);</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span> </div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; map_.size(); ++i) {</div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>      so &lt;&lt; <span class="stringliteral">&quot;Queue &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; load: &quot;</span> &lt;&lt; task_count_[i].load(mem::acquire)</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>         &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    }</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>    so &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>  }</div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span> </div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>  [[nodiscard]] std::vector&lt;size_t&gt; map_loads()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>    std::vector&lt;size_t&gt; loads;</div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>    loads.reserve(thread_count_);</div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; thread_count_; ++i) {</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>      loads.push_back(map_[i].<a class="code hl_function" href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">size</a>());</div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>    }</div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>    <span class="keywordflow">return</span> loads;</div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>  }</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span> </div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>  [[maybe_unused]] <span class="keywordtype">void</span> print_ins_upd()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>    std::osyncstream(std::cout)</div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>        &lt;&lt; <span class="stringliteral">&quot;Inserts: &quot;</span> &lt;&lt; num_inserts_.load()</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>        &lt;&lt; <span class="stringliteral">&quot;\nUpdates: &quot;</span> &lt;&lt; num_updates_.load() &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>  }</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span> </div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>  std::barrier&lt;<span class="keyword">decltype</span>(FN)&gt;&amp; barrier() {</div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>    <span class="keywordflow">return</span> barrier_;</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>  }</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span> </div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>}; <span class="comment">// namespace pasta</span></div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span> </div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>} <span class="comment">// namespace pasta</span></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_1_1Shard_html"><div class="ttname"><a href="classpasta_1_1SyncShardedMap_1_1Shard.html">pasta::SyncShardedMap::Shard</a></div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:139</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_1_1Shard_html_a155d1ff4cb305aeb7dbd089ba737d8ca"><div class="ttname"><a href="classpasta_1_1SyncShardedMap_1_1Shard.html#a155d1ff4cb305aeb7dbd089ba737d8ca">pasta::SyncShardedMap::Shard::insert</a></div><div class="ttdeci">void insert(K &amp;key, InputValue value)</div><div class="ttdoc">Inserts or updates a new value in the map.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:294</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_1_1Shard_html_a496e7b04357d01e7949df722befa330b"><div class="ttname"><a href="classpasta_1_1SyncShardedMap_1_1Shard.html#a496e7b04357d01e7949df722befa330b">pasta::SyncShardedMap::Shard::handle_queue</a></div><div class="ttdeci">void handle_queue()</div><div class="ttdoc">Handles this thread's queue, inserting or updating all values in its queue, waiting for other threads...</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:232</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_1_1Shard_html_a4e15590355f54e1efd2956df8621c2d0"><div class="ttname"><a href="classpasta_1_1SyncShardedMap_1_1Shard.html#a4e15590355f54e1efd2956df8621c2d0">pasta::SyncShardedMap::Shard::insert_or_update_direct</a></div><div class="ttdeci">void insert_or_update_direct(const K &amp;k, InputValue &amp;&amp;in_value)</div><div class="ttdoc">Inserts or updates a new value in the map, depending on whether.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:170</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_1_1Shard_html_aba733cd77bb56935c2f2d837c0db1545"><div class="ttname"><a href="classpasta_1_1SyncShardedMap_1_1Shard.html#aba733cd77bb56935c2f2d837c0db1545">pasta::SyncShardedMap::Shard::insert</a></div><div class="ttdeci">void insert(StoredValue &amp;&amp;pair)</div><div class="ttdoc">Inserts or updates a new value in the map.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:256</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_html"><div class="ttname"><a href="classpasta_1_1SyncShardedMap.html">pasta::SyncShardedMap</a></div><div class="ttdoc">A hash map that must be used by multiple threads, each thread having only having write access to a ce...</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:55</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_html_a5ef2f941bcb54186f4a787ec33680013"><div class="ttname"><a href="classpasta_1_1SyncShardedMap.html#a5ef2f941bcb54186f4a787ec33680013">pasta::SyncShardedMap::size</a></div><div class="ttdeci">size_t size() const</div><div class="ttdoc">Returns the number of key-value pairs in the map.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:328</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_html_a68930c39980e043f3b5577bda241b1e2"><div class="ttname"><a href="classpasta_1_1SyncShardedMap.html#a68930c39980e043f3b5577bda241b1e2">pasta::SyncShardedMap::for_each</a></div><div class="ttdeci">void for_each(std::invocable&lt; const K &amp;, const V &amp; &gt; auto f) const</div><div class="ttdoc">Runs a method for each value in the map.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:359</div></div>
+<div class="ttc" id="aclasspasta_1_1SyncShardedMap_html_aed750f587b04e0ad912daa6ba5135f39"><div class="ttname"><a href="classpasta_1_1SyncShardedMap.html#aed750f587b04e0ad912daa6ba5135f39">pasta::SyncShardedMap::SyncShardedMap</a></div><div class="ttdeci">SyncShardedMap(size_t thread_count, size_t queue_capacity)</div><div class="ttdoc">Creates a new sharded map.</div><div class="ttdef"><b>Definition:</b> sync_sharded_map.hpp:110</div></div>
+<div class="ttc" id="anamespacepasta_html"><div class="ttname"><a href="namespacepasta.html">pasta</a></div><div class="ttdoc">Utilities for the construction algorithms using the sharded hash map.</div><div class="ttdef"><b>Definition:</b> block_tree.hpp:33</div></div>
+<div class="ttc" id="astructpasta_1_1Overwrite_html"><div class="ttname"><a href="structpasta_1_1Overwrite.html">pasta::Overwrite</a></div><div class="ttdoc">An update function for sharded maps which on update just overwrites the value.</div><div class="ttdef"><b>Definition:</b> sharded_util.hpp:325</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.2-->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_661b2411fc91acf6678dc3b62139fa61.html">pasta</a></li><li class="navelem"><a class="el" href="dir_c9b032f61ad36a8d97fd7023602684b9.html">block_tree</a></li><li class="navelem"><a class="el" href="dir_8def8ada668cb405bc36663e24d89835.html">utils</a></li><li class="navelem"><b>sync_sharded_map.hpp</b></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+  </ul>
+</div>
+<script type="text/javascript">
+  $(function() {
+     toggleButton = document.createElement('doxygen-awesome-dark-mode-toggle')
+     toggleButton.title = "Toggle Light/Dark Mode"
+     $(document).ready(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+     $(window).resize(function(){
+       document.getElementById("MSearchBox").parentNode.appendChild(toggleButton)
+     })
+   })
+</script>
+</body>
+</html>
