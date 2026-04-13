@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        compiler: [{cpp: g++-10, c: gcc-10}]
 
     runs-on: ${{ matrix.os }}
 
